@@ -1,0 +1,20 @@
+{% extends "base_layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>Index</h1>
+    <h2><a href="/register">Register</a></h2>
+    <p class="important">
+        Welcome on my awesome homepage.
+        {% if current_user.is_authenticated %}
+            <p>Hi {{ current_user.first_name }}!
+            <h2><a href="/logout">Logout</a> </h2>
+        {% else %}
+            <h2><a href="/login">Login</a> </h2>
+        {% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base_layout.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+{% from "formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.email) }}
+        {{ render_field(form.password) }}
+    </dl>
+    <p>
+        <input type=submit value=Login>
+        <input type=hidden name='next' value="{{ '/' or '' }}">
+</form>
+{% endblock %}

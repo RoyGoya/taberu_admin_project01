@@ -1,0 +1,6 @@
+taberu_admin/__init__.py
+taberu_admin.egg-info/PKG-INFO
+taberu_admin.egg-info/SOURCES.txt
+taberu_admin.egg-info/dependency_links.txt
+taberu_admin.egg-info/requires.txt
+taberu_admin.egg-info/top_level.txt

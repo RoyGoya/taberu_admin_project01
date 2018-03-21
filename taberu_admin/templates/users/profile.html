@@ -1,0 +1,18 @@
+{% extends "base_layout.html" %}
+{% block title %}Profile{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+{% from "formhelpers.html" import render_field %}
+<form method=post>
+    <h2>Profile</h2>
+    {% if current_user.is_authenticated %}
+        <h3>This is {{ current_user.first_name }}'s profile page</h3>
+        <h2><a href="/logout">Logout</a> </h2>
+    {% endif %}
+</form>
+{% endblock %}
