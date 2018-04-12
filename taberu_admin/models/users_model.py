@@ -1,6 +1,7 @@
 # SQLAlchemy
 # http://flask.pocoo.org/docs/0.12/patterns/sqlalchemy/
-# flask_user_sign_in.html
+# flask-login
+# https://code.tutsplus.com/tutorials/intro-to-flask-signing-in-and-out--net-29982
 
 
 from sqlalchemy import Column, Integer, VARCHAR, Boolean, DATETIME
@@ -13,24 +14,27 @@ from taberu_admin.helpers.timezone_gen import utc_now
 
 
 class User(Base, UserMixin):
-    __tablename__ = 'user'
+    __tablename__ = 'admin_user'
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(VARCHAR(255), unique=True)
     is_active = Column(Boolean, default=True)
-    first_name = Column(VARCHAR(30))
-    last_name = Column(VARCHAR(30))
+    last_login_datetime = Column(DATETIME)
     created_datetime = Column(DATETIME)
     password_hash = Column(VARCHAR(100))
+    first_name = Column(VARCHAR(100))
+    last_name = Column(VARCHAR(100))
 
-    def __init__(self, email=None, password=None, first_name=None,
-                 last_name=None, is_active=True,
-                 created_datetime=utc_now().isoformat()):
+    def __init__(self, email=None, is_active=True,
+                 last_login_datetime=utc_now().isoformat(),
+                 created_datetime=utc_now().isoformat(),
+                 password=None, first_name=None, last_name=None):
         self.email = email
+        self.is_active = is_active
+        self.last_login_datetime = last_login_datetime
+        self.created_datetime = created_datetime
         self.set_password(password)
         self.first_name = first_name
         self.last_name = last_name
-        self.is_active = is_active
-        self.created_datetime = created_datetime
 
     def __repr__(self):
         return '<User %r>' % (self.email)
@@ -47,3 +51,24 @@ class User(Base, UserMixin):
             return self.email
         except AttributeError:
             raise NotImplementedError('No `id` attribute - override `get_id`')
+
+
+class AdminUser(Base):
+    __tablename__ = 'admin_user'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer)
+    is_active = Column(Boolean)
+    is_authenticated = Column(Boolean)
+    access_level = Column(VARCHAR(6))
+    eng_name = Column(VARCHAR(100))
+
+    def __init__(self, user_id=None, is_active=None,
+                 is_authenticated=None, access_level=None, eng_name=None):
+        self.user_id = user_id
+        self.is_active = is_active
+        self.is_authenticated = is_authenticated
+        self.access_level = access_level
+        self.eng_name = eng_name
+
+    def __repr__(self):
+        return '<AdminUser %r>' % (self.user_id)

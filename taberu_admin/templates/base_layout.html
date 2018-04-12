@@ -7,6 +7,15 @@
     {% endblock %}
   </head>
   <body>
+    <div id="navbar">
+        <ul>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/contents">Contents</a></li>
+            <li><a href="/models">Models</a></li>
+            <li><a href="/tags">Tags</a></li>
+            <li><a href="/project">Taberu</a></li>
+        </ul>
+    </div>
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">
       {% block footer %}

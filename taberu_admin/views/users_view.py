@@ -7,10 +7,11 @@ from flask.views import View
 
 from flask_login import login_user, logout_user
 
-from taberu_admin.database import db_session
-from taberu_admin.forms.users_form import RegistrationForm, LoginForm
-from taberu_admin.models.users_model import User
-from taberu_admin.helpers.secu_redir import get_redirect_target, redirect_back
+from ..database import db_session
+from ..forms.users_form import RegistrationForm, LoginForm
+from ..models.users_model import User
+from ..helpers.secu_redir import get_redirect_target, redirect_back
+from ..helpers.auth_admin import is_admin
 
 
 class RegisterView(View):
@@ -45,13 +46,17 @@ class LoginView(View):
         form = LoginForm(request.form)
         if request.method == 'POST' and form.validate():
             user = User(form.email.data, form.password.data)
-            login_user(user, remember=False)
-            # Remember me
-            # login_user(user, remember=True)
-            flash('Logged in successfully.')
-            next_page = get_redirect_target()
-            return redirect_back(next_page or 'index_page')
-        return render_template(self.template_name, form=form)
+            if is_admin(user) is True:
+                login_user(user, remember=False)
+                # Remember me
+                # login_user(user, remember=True)
+                flash('Logged in successfully.')
+                next_page = get_redirect_target()
+                return redirect_back(next_page or 'index_page')
+            else:
+                return render_template(self.template_name, form=form)
+        else:
+            return render_template(self.template_name, form=form)
 
 
 class LogoutView(View):
@@ -66,6 +71,16 @@ class LogoutView(View):
 
 
 class ProfileView(View):
+    methods = ['GET', 'POST']
+
+    def __init__(self, template_name):
+        self.template_name = template_name
+
+    def dispatch_request(self):
+        return render_template(self.template_name)
+
+
+class ManageUsersView(View):
     methods = ['GET', 'POST']
 
     def __init__(self, template_name):

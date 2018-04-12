@@ -16,14 +16,14 @@ app = Flask(__name__)
 
 # Configuration Handling
 # http://flask.pocoo.org/docs/0.12/config/
-app.config.from_object('taberu.config.DevelopmentConfig')
+app.config.from_object('taberu_admin.config.DevelopmentConfig')
 app.config.from_pyfile('settings.cfg')
 # app.config.from_envvar('TABERU_ADMIN_SETTINGS')
 
 # Flask-Login
 # https://flask-login.readthedocs.io/en/latest/
 login_manager = LoginManager()
-login_manager.login_view = "login"
+login_manager.login_view = "login_page"
 login_manager.login_message = u"Please log in to access this page."
 login_manager.init_app(app)
 
@@ -45,19 +45,27 @@ def shutdown_session(exception=None):
 
 # Decorating Views
 # http://flask.pocoo.org/docs/0.12/views/
+index_view = login_required(IndexView.as_view(
+    'index_page', template_name='index.html'
+))
+register_view = RegisterView.as_view(
+    'register_page', template_name='users/register.html'
+)
+login_view = LoginView.as_view(
+    'login_page', template_name='users/login.html'
+)
 logout_view = login_required(LogoutView.as_view(
-    'logout_action', next_url='index_page'))
+    'logout_action', next_url='index_page'
+))
 profile_view = login_required(ProfileView.as_view(
-    'profile_page', template_name='users/profile.html'))
+    'profile_page', template_name='users/profile.html'
+))
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
-app.add_url_rule('/', view_func=IndexView.as_view(
-    'index_page', template_name='index.html'))
-app.add_url_rule('/register', view_func=RegisterView.as_view(
-    'register_page', template_name='users/register.html'))
-app.add_url_rule('/login', view_func=LoginView.as_view(
-    'login_page', template_name='users/login.html'))
+app.add_url_rule('/', view_func=index_view)
+app.add_url_rule('/register', view_func=register_view)
+app.add_url_rule('/login', view_func=login_view)
 app.add_url_rule('/logout', view_func=logout_view)
 app.add_url_rule('/profile', view_func=profile_view)
 
