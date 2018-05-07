@@ -14,7 +14,7 @@ class ProductionConfig(Config):
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    DATABASE_URI = 'postgresql://postgres:12344@localhost:5435/nell02_test'
+    DATABASE_URI = 'postgresql://postgres:12344@localhost:5435/taberu01_test2'
 
 
 class TestingConfig(Config):

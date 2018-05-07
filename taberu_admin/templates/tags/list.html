@@ -1,0 +1,16 @@
+{% extends "base_layout.html" %}
+{% block title %}Tag List{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+    <ul>
+    {% for tag in tags %}
+        <li>{{ tag.dt_pattern|e}}{{ tag.pattern|e }}{{ tag.serial|e }}
+            {{ tag.eng_name|e}}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

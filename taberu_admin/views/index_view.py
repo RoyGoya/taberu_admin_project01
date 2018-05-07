@@ -5,6 +5,8 @@
 from flask import render_template
 from flask.views import View
 
+from ..database import db_session
+
 
 class IndexView(View):
     methods = ['GET', 'POST']
@@ -13,4 +15,5 @@ class IndexView(View):
         self.template_name = template_name
 
     def dispatch_request(self):
+
         return render_template(self.template_name)
