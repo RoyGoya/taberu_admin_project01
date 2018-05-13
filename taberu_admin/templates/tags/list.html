@@ -2,15 +2,83 @@
 {% block title %}Tag List{% endblock %}
 {% block head %}
   {{ super() }}
-  <style type="text/css">
-    .important { color: #336699; }
-  </style>
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+    <script type="text/javascript">
+    
+        // JS Functions
+        function submitTagToDetail(thisForm, dtPattern, pattern, serial
+            , engName) {
+            thisForm.attr({
+                name: "form",
+                action: "/tags/detail",
+                method: "post"
+            })
+                .find( "input" )
+                .eq(3)
+                    .attr({
+                        name: "dt_pattern",
+                        value: dtPattern
+                    })
+                    .end()
+                .eq(2)
+                    .attr({
+                        name: "pattern",
+                        value: pattern
+                    })
+                    .end()
+                .eq(1)
+                    .attr({
+                        name: "serial",
+                        value: serial
+                    })
+                    .end()
+                .eq(0)
+                    .attr({
+                        name: "selected_tag_name",
+                        value: engName
+                    })
+
+            thisForm.submit();
+        }
+
+        // Selection Chaining
+        // http://learn.jquery.com/using-jquery-core/working-with-selections/
+        $(document).ready(function(){
+            $( "#content" )
+                .find( "ul.tag-list > li" )
+                .on( "click", function() {
+                    console.log( "Selection Chaining Successfully Loaded!" );
+                    var thisForm = $( "form#tag-detail" )
+                        ,dtPattern = this.dataset.dtPattern
+                        ,pattern = this.dataset.pattern
+                        ,serial = this.dataset.serial
+                        ,engName = this.dataset.engName
+                    submitTagToDetail(thisForm, dtPattern, pattern, serial
+                        , engName)
+                })
+        })
+    </script>
+    <form id="tag-detail">
+        <input type="hidden">
+        <input type="hidden">
+        <input type="hidden">
+        <input type="hidden">
+    </form>
 {% endblock %}
 {% block content %}
-    <ul>
+    <ul class="tag-list">
     {% for tag in tags %}
-        <li>{{ tag.dt_pattern|e}}{{ tag.pattern|e }}{{ tag.serial|e }}
-            {{ tag.eng_name|e}}</li>
+        <li
+                data-dt-pattern="{{ tag.dt_pattern|e }}"
+                data-pattern="{{ tag.pattern|e }}"
+                data-serial="{{ tag.serial|e }}"
+                data-eng-name="{{ tag.eng_name|e }}"
+        >
+            {{ tag.dt_pattern|e}}{{ tag.pattern|e }}{{ tag.serial|e }}
+            {{ tag.eng_name|e}}
+        </li>
     {% endfor %}
     </ul>
 {% endblock %}

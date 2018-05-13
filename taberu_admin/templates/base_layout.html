@@ -2,8 +2,11 @@
 <html>
   <head>
     {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <title>{% block title %}{% endblock %} - My Webpage</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>window.JQuery || document.write('<script src="{{
+        url_for('static', filename='jquery-3.3.1.min.js') }}">\x3C/script>')</script>
+        <title>{% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
   <body>

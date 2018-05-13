@@ -9,7 +9,7 @@ from flask_login import LoginManager, login_required
 from .database import db_session
 from .views.index_view import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
-from .views.tags_view import TagListView
+from .views.tags_view import TagListView, TagDetailView
 # from .models.users_model import User
 
 
@@ -64,6 +64,9 @@ def shutdown_session(exception=None):
 taglist_view = TagListView.as_view(
     'taglist_page', template_name='tags/list.html'
 )
+tagdetail_view = TagDetailView.as_view(
+    'tagdetail_page', template_name='tags/detail.html'
+)
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -73,6 +76,7 @@ taglist_view = TagListView.as_view(
 # app.add_url_rule('/logout', view_func=logout_view)
 # app.add_url_rule('/profile', view_func=profile_view)
 app.add_url_rule('/tags', view_func=taglist_view)
+app.add_url_rule('/tags/detail', view_func=tagdetail_view)
 
 
 if __name__ == '__main__':
