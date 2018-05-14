@@ -1,0 +1,29 @@
+{% extends "base_layout.html" %}
+{% block title %}Nutrition List{% endblock %}
+{% block head %}
+  {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+    <script type="text/javascript">
+    
+    </script>
+{% endblock %}
+{% block content %}
+    <div>{{ selected_nutrition_name|e }}</div>
+    <ul class="nutrition-list">
+    {% for nutrition in nutritions %}
+        <li
+                data-dt-pattern="{{ nutrition.dt_pattern|e }}"
+                data-nt-pattern1="{{ nutrition.nt_pattern1|e }}"
+                data-nt-pattern2="{{ nutrition.nt_pattern2|e }}"
+                data-serial="{{ nutrition.serial|e }}"
+                data-eng-name="{{ nutrition.eng_name|e }}"
+        >
+            {{ nutrition.dt_pattern|e}}{{ nutrition.nt_pattern1|e }}
+            {{ nutrition.nt_pattern2 }}{{ nutrition.serial|e }}
+            {{ nutrition.eng_name|e}}
+        </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

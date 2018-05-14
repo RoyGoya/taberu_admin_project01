@@ -10,6 +10,7 @@ from .database import db_session
 from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
+from .views.nutrition_views import NutritionListView, NutritionDetailView
 # from .models.users_model import User
 
 
@@ -61,11 +62,17 @@ def shutdown_session(exception=None):
 # profile_view = login_required(ProfileView.as_view(
 #     'profile_page', template_name='users/profile.html'
 # ))
-taglist_view = TagListView.as_view(
-    'taglist_page', template_name='tags/tag_list.html'
+tag_list_view = TagListView.as_view(
+    'tag_list_page', template_name='tags/tag_list.html'
 )
-tagdetail_view = TagDetailView.as_view(
-    'tagdetail_page', template_name='tags/tag_detail.html'
+tag_detail_view = TagDetailView.as_view(
+    'tag_detail_page', template_name='tags/tag_detail.html'
+)
+nutrition_list_view = NutritionListView.as_view(
+    'nutrition_list_page', template_name='nutrition/nutrition_list.html'
+)
+nutrition_detail_view = NutritionDetailView.as_view(
+    'nutrition_detail_page', template_name='nutrition/nutrition_detail.html'
 )
 
 # Pluggable Views
@@ -75,8 +82,10 @@ tagdetail_view = TagDetailView.as_view(
 # app.add_url_rule('/login', view_func=login_view)
 # app.add_url_rule('/logout', view_func=logout_view)
 # app.add_url_rule('/profile', view_func=profile_view)
-app.add_url_rule('/tags', view_func=taglist_view)
-app.add_url_rule('/tags/detail', view_func=tagdetail_view)
+app.add_url_rule('/tags', view_func=tag_list_view)
+app.add_url_rule('/tags/detail', view_func=tag_detail_view)
+app.add_url_rule('/nutrition', view_func=nutrition_list_view)
+app.add_url_rule('/nutrition/detail', view_func=nutrition_detail_view)
 
 
 if __name__ == '__main__':

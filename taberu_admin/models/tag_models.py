@@ -18,10 +18,10 @@ class Tag(Base):
     jpn_name = Column(String(100))
     chn_name = Column(String(100))
 
-    def __init__(self, dt_pattern=None, pattern=None, serial=None
-                 , is_set=None, is_active=None, icon_code=None
-                 , eng_name=None, kor_name=None, jpn_name=None
-                 , chn_name=None):
+    def __init__(self, dt_pattern=None, pattern=None, serial=None,
+                 is_set=None, is_active=None, icon_code=None,
+                 eng_name=None, kor_name=None, jpn_name=None,
+                 chn_name=None):
         self.dt_pattern = dt_pattern
         self.pattern = pattern
         self.serial = serial
@@ -48,10 +48,10 @@ class TagSet(Base):
     sub_tag_serial = Column(Integer, primary_key=True)
 
 
-    def __init__(self, super_tag_dt_pattern=None, super_tag_pattern=None
-                 , super_tag_serial=None, is_active=None
-                 , sub_tag_dt_pattern=None, sub_tag_pattern=None
-                 , sub_tag_serial=None):
+    def __init__(self, super_tag_dt_pattern=None, super_tag_pattern=None,
+                 super_tag_serial=None, is_active=None,
+                 sub_tag_dt_pattern=None, sub_tag_pattern=None,
+                 sub_tag_serial=None):
         self.super_tag_dt_pattern = super_tag_dt_pattern
         self.super_tag_pattern = super_tag_pattern
         self.super_tag_serial = super_tag_serial
