@@ -8,8 +8,8 @@ from flask.views import View
 from flask_login import login_user, logout_user
 
 from ..database import db_session
-from ..forms.users_form import RegistrationForm, LoginForm
-from ..models.users_model import User
+from ..forms.user_forms import RegistrationForm, LoginForm
+from ..models.user_models import User
 from ..helpers.secu_redir import get_redirect_target, redirect_back
 from ..helpers.auth_admin import is_admin
 

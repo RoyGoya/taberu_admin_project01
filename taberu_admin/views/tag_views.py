@@ -5,8 +5,10 @@
 from flask import render_template, request
 from flask.views import View
 
-from ..models.tags_model import Tag
-from ..helpers.secu_redir import get_redirect_target, redirect_back
+from sqlalchemy import and_
+
+from ..models.tag_models import Tag, TagSet
+from ..helpers.secu_redir import redirect_back
 
 
 class TagListView(View):
@@ -31,10 +33,17 @@ class TagDetailView(View):
         form = request.form
         if request.method == 'POST':
             selected_tag_name = form.get('selected_tag_name')
-            tags = Tag.query.filter_by(dt_pattern=form.get('dt_pattern'),
-                                       pattern=form.get('pattern'),
-                                       serial=form.get('serial'),
-                                       is_active=True)
+            subq = TagSet.query.filter_by(
+                super_tag_dt_pattern=form.get('dt_pattern')
+                , super_tag_pattern=form.get('pattern')
+                , super_tag_serial=form.get('serial')
+                , is_active=True).subquery()
+            tags = Tag.query.join(subq, and_(
+                subq.c.sub_tag_dt_pattern == Tag.dt_pattern,
+                subq.c.sub_tag_pattern == Tag.pattern,
+                subq.c.sub_tag_serial == Tag.serial
+            )).all()
+
             return render_template(self.template_name
                                    , selected_tag_name=selected_tag_name
                                    , tags=tags)

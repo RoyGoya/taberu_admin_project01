@@ -1,4 +1,4 @@
-from ..models.users_model import AdminUser
+from ..models.user_models import AdminUser
 
 
 def is_admin(user):

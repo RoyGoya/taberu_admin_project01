@@ -7,9 +7,9 @@ from flask import Flask
 from flask_login import LoginManager, login_required
 
 from .database import db_session
-from .views.index_view import IndexView
+from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
-from .views.tags_view import TagListView, TagDetailView
+from .views.tag_views import TagListView, TagDetailView
 # from .models.users_model import User
 
 
@@ -62,10 +62,10 @@ def shutdown_session(exception=None):
 #     'profile_page', template_name='users/profile.html'
 # ))
 taglist_view = TagListView.as_view(
-    'taglist_page', template_name='tags/list.html'
+    'taglist_page', template_name='tags/tag_list.html'
 )
 tagdetail_view = TagDetailView.as_view(
-    'tagdetail_page', template_name='tags/detail.html'
+    'tagdetail_page', template_name='tags/tag_detail.html'
 )
 
 # Pluggable Views
