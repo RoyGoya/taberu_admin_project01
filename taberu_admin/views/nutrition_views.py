@@ -34,7 +34,7 @@ class DetailNutritionView(View):
 
     def dispatch_request(self):
         if request.method == 'POST':
-            form = request.nutrition_form
+            form = request.form
             selected_nutrition_name = form.get('selected_nutrition_name')
 
             # Get Selected Nutrition's Components from db.
@@ -81,6 +81,9 @@ class CreateNutritionView(View):
 
     def dispatch_request(self):
         form = CreateNutritionForm(request.form)
+        nutrition_packs = Nutrition.query.filter(Nutrition.dt_pattern=='s',
+                                                 Nutrition.is_active==True
+                                                 ).all()
         if request.method == 'POST' and form.validate():
             nutrition_serial = int(Nutrition.query.filter_by(
                 dt_pattern=form.dt_pattern, nt_pattern1=form.nt_pattern1,
@@ -104,4 +107,5 @@ class CreateNutritionView(View):
                               "serial": nutrition.serial,
                               "selected_nutrition_name": nutrition.eng_name}
             return redirect(url_for('detail_nutrition_page', nutrition_form))
-        return render_template(self.template_name, form=form)
+        return render_template(self.template_name, form=form,
+                               nutrition_packs=nutrition_packs)

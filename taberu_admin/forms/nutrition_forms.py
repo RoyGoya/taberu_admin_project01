@@ -35,7 +35,9 @@ class CreateNutritionForm(Form):
     render_kw=None, _form=None, _name=None, _prefix='',
     _translations=None, _meta=None):
     """
-    dt_pattern = RadioField(label="DataType", choices=get_dt_pattern_choices())
+    dt_pattern_choices = get_dt_pattern_choices()
+    dt_pattern = RadioField(label="DataType", choices=dt_pattern_choices,
+                            default=dt_pattern_choices[0][0])
     nt_pattern1 = RadioField(label="Nutrition Type 1",
                              choices=get_nt_pattern1_choices())
     nt_pattern2 = RadioField(label="Nutrition Type 2", choices=[])

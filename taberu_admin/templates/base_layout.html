@@ -2,6 +2,30 @@
 <html>
   <head>
     {% block head %}
+        <style>
+        div > ul#navbar-ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333333;
+        }
+
+        div > ul#navbar-ul > li {
+            float: left;
+        }
+
+        div > ul#navbar-ul > li > a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 16px;
+            text-decoration: none;
+        }
+        div > ul#navbar-ul > li > a:hover {
+            background-color: #111111;
+        }
+        </style>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script>window.JQuery || document.write('<script src="{{
@@ -11,7 +35,7 @@
   </head>
   <body>
     <div id="navbar">
-        <ul>
+        <ul id="navbar-ul">
             <li><a href="/users">Users</a></li>
             <li><a href="/contents">Contents</a></li>
             <li><a href="/models">Models</a></li>

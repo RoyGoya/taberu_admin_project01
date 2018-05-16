@@ -13,6 +13,7 @@ from .views.tag_views import TagListView, TagDetailView
 from .views.nutrition_views import ListNutritionView, DetailNutritionView, \
     CreateNutritionView
 # from .models.users_model import User
+from .apis.nutrition_apis import NutritionList, NTPattern2List
 
 
 app = Flask(__name__)
@@ -78,6 +79,9 @@ detail_nutrition_view = DetailNutritionView.as_view(
 create_nutrition_view = CreateNutritionView.as_view(
     'create_nutrition_page', template_name='nutrition/create_nutrition.html'
 )
+nutritionlist_api_view = NutritionList.as_view('nutritionlist_api')
+ntpattern2_api_view = NTPattern2List.as_view('ntpattern2_api')
+
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -91,6 +95,11 @@ app.add_url_rule('/tags/detail', view_func=detail_tag_view)
 app.add_url_rule('/nutrition', view_func=list_nutrition_view)
 app.add_url_rule('/nutrition/detail', view_func=detail_nutrition_view)
 app.add_url_rule('/nutrition/create', view_func=create_nutrition_view)
+
+app.add_url_rule('/api/nutrition/nutritionlist',
+                 view_func=nutritionlist_api_view, methods=['GET'])
+app.add_url_rule('/api/nutrition/getntpattern2/',
+                 view_func=ntpattern2_api_view, methods=['GET'])
 
 
 if __name__ == '__main__':
