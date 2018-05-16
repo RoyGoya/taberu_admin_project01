@@ -146,3 +146,45 @@ class NutritionFactorSet(Base):
 
     def __repr__(self):
         return '<Nutrition Factor Set>'
+
+
+class NutritionPattern(Base):
+    __tablename__ = 'nutrition_pattern'
+    pattern1 = Column(CHAR(1), primary_key=True)
+    pattern2 = Column(CHAR(2), primary_key=True)
+    is_active = Column(Boolean)
+    eng_name = Column(String(100))
+    eng_plural = Column(String(100))
+    kor_name = Column(String(100))
+    jpn_name = Column(String(100))
+    chn_name = Column(String(100))
+
+    def __init__(self, pattern1=None, pattern2=None, is_active=None,
+                 eng_name=None, eng_plural=None, kor_name=None,
+                 jpn_name=None, chn_name=None):
+        self.pattern1 = pattern1
+        self.pattern2 = pattern2
+        self.is_active = is_active
+        self.eng_name = eng_name
+        self.eng_plural = eng_plural
+        self.kor_name = kor_name
+        self.jpn_name = jpn_name
+        self.chn_name = chn_name
+
+    def __repr__(self):
+        return '<Nutrition Pattern>'
+
+
+class DataPattern(Base):
+    __tablename__ = 'data_pattern'
+    pattern = Column(CHAR(1), primary_key=True)
+    name = Column(String(100))
+    is_active = Column(Boolean)
+
+    def __init__(self, pattern=None, name=None, is_active=None):
+        self.pattern = pattern
+        self.name = pattern
+        self.is_active = is_active
+
+    def __repr__(self):
+        return '<Data Pattern>'

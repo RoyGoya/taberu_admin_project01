@@ -1,5 +1,5 @@
 # WTForms
-# http://flask.pocoo.org/docs/0.12/patterns/wtforms/
+# http://flask.pocoo.org/docs/1.0/patterns/wtforms/
 
 
 from wtforms import Form, BooleanField, StringField, PasswordField, \

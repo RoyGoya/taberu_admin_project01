@@ -1,19 +1,20 @@
-# Pluggable Views
-# http://flask.pocoo.org/docs/0.12/views/
+"""Pluggable Views
 
+http://flask.pocoo.org/docs/0.12/views/"""
 
-from flask import render_template, request
+from flask import render_template, request, flash, redirect, url_for
 from flask.views import View
 
 from sqlalchemy import and_
 
-from ..models.tag_models import Tag, TagSet
+from ..database import db_session
+from ..forms.nutrition_forms import CreateNutritionForm
 from ..models.nutrition_models import Nutrition, NutritionSet, \
     NutritionFactor, NutritionFactorSet
 from ..helpers.secu_redir import redirect_back
 
 
-class NutritionListView(View):
+class ListNutritionView(View):
     methods = ['GET', 'POST']
 
     def __init__(self, template_name):
@@ -25,7 +26,7 @@ class NutritionListView(View):
         return render_template(self.template_name, nutritions=nutritions)
 
 
-class NutritionDetailView(View):
+class DetailNutritionView(View):
     methods = ['GET', 'POST']
 
     def __init__(self, template_name):
@@ -33,7 +34,7 @@ class NutritionDetailView(View):
 
     def dispatch_request(self):
         if request.method == 'POST':
-            form = request.form
+            form = request.nutrition_form
             selected_nutrition_name = form.get('selected_nutrition_name')
 
             # Get Selected Nutrition's Components from db.
@@ -70,3 +71,37 @@ class NutritionDetailView(View):
                 nutritions=nutritions, factors=factors)
         else:
             return redirect_back('index_page')
+
+
+class CreateNutritionView(View):
+    methods = ['GET', 'POST']
+
+    def __init__(self, template_name):
+        self.template_name = template_name
+
+    def dispatch_request(self):
+        form = CreateNutritionForm(request.form)
+        if request.method == 'POST' and form.validate():
+            nutrition_serial = int(Nutrition.query.filter_by(
+                dt_pattern=form.dt_pattern, nt_pattern1=form.nt_pattern1,
+                nt_pattern2=form.nt_pattern2).count()) + 1
+            nutrition = Nutrition(dt_pattern=form.dt_pattern,
+                                  nt_pattern1=form.nt_pattern1,
+                                  nt_pattern2=form.nt_pattern2,
+                                  serial=nutrition_serial,
+                                  is_active=True, is_set=form.is_set,
+                                  eng_name=form.eng_name,
+                                  eng_plural=form.eng_plural,
+                                  kor_name=form.kor_name,
+                                  jpn_name=form.jpn_name,
+                                  chn_name=form.chn_name,)
+            db_session.add(nutrition)
+            db_session.commit()
+            flash('Nutrition created successfully.')
+            nutrition_form = {"dt_pattern": nutrition.dt_pattern,
+                              "nt_pattern1": nutrition.nt_pattern1,
+                              "nt_pattern2": nutrition.nt_pattern2,
+                              "serial": nutrition.serial,
+                              "selected_nutrition_name": nutrition.eng_name}
+            return redirect(url_for('detail_nutrition_page', nutrition_form))
+        return render_template(self.template_name, form=form)

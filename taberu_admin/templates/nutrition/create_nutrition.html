@@ -1,0 +1,25 @@
+{% extends "base_layout.html" %}
+{% block title %}Create Nutrition{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+{% from "formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.dt_pattern) }}
+        {{ render_field(form.nt_pattern1) }}
+        {{ render_field(form.nt_pattern2) }}
+        {{ render_field(form.is_set) }}
+        {{ render_field(form.eng_name) }}
+        {{ render_field(form.eng_plural) }}
+        {{ render_field(form.kor_name) }}
+        {{ render_field(form.jpn_name) }}
+        {{ render_field(form.chn_name) }}
+        {{ render_field(form.submit) }}
+    </dl>
+</form>
+{% endblock %}

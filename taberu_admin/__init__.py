@@ -10,7 +10,8 @@ from .database import db_session
 from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
-from .views.nutrition_views import NutritionListView, NutritionDetailView
+from .views.nutrition_views import ListNutritionView, DetailNutritionView, \
+    CreateNutritionView
 # from .models.users_model import User
 
 
@@ -62,17 +63,20 @@ def shutdown_session(exception=None):
 # profile_view = login_required(ProfileView.as_view(
 #     'profile_page', template_name='users/profile.html'
 # ))
-tag_list_view = TagListView.as_view(
-    'tag_list_page', template_name='tags/tag_list.html'
+list_tag_view = TagListView.as_view(
+    'list_tag_page', template_name='tags/list_tag.html'
 )
-tag_detail_view = TagDetailView.as_view(
-    'tag_detail_page', template_name='tags/tag_detail.html'
+detail_tag_view = TagDetailView.as_view(
+    'detail_tag_page', template_name='tags/detail_tag.html'
 )
-nutrition_list_view = NutritionListView.as_view(
-    'nutrition_list_page', template_name='nutrition/nutrition_list.html'
+list_nutrition_view = ListNutritionView.as_view(
+    'list_nutrition_page', template_name='nutrition/list_nutrition.html'
 )
-nutrition_detail_view = NutritionDetailView.as_view(
-    'nutrition_detail_page', template_name='nutrition/nutrition_detail.html'
+detail_nutrition_view = DetailNutritionView.as_view(
+    'detail_nutrition_page', template_name='nutrition/detail_nutrition.html'
+)
+create_nutrition_view = CreateNutritionView.as_view(
+    'create_nutrition_page', template_name='nutrition/create_nutrition.html'
 )
 
 # Pluggable Views
@@ -82,10 +86,11 @@ nutrition_detail_view = NutritionDetailView.as_view(
 # app.add_url_rule('/login', view_func=login_view)
 # app.add_url_rule('/logout', view_func=logout_view)
 # app.add_url_rule('/profile', view_func=profile_view)
-app.add_url_rule('/tags', view_func=tag_list_view)
-app.add_url_rule('/tags/detail', view_func=tag_detail_view)
-app.add_url_rule('/nutrition', view_func=nutrition_list_view)
-app.add_url_rule('/nutrition/detail', view_func=nutrition_detail_view)
+app.add_url_rule('/tags', view_func=list_tag_view)
+app.add_url_rule('/tags/detail', view_func=detail_tag_view)
+app.add_url_rule('/nutrition', view_func=list_nutrition_view)
+app.add_url_rule('/nutrition/detail', view_func=detail_nutrition_view)
+app.add_url_rule('/nutrition/create', view_func=create_nutrition_view)
 
 
 if __name__ == '__main__':
