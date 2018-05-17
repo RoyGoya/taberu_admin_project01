@@ -3,13 +3,13 @@
 {% block head %}
   {{ super() }}
     <style type="text/css">
-        ul#nc-field {
+        ul#wrap-nt {
             list-style-type: none;
             margin: 0;
             padding: 0;
             overflow: hidden;
         }
-        li#nc-selection-field {
+        li#box-selection {
             display: inline-block;
             float: left;
             border-style: solid;
@@ -20,7 +20,7 @@
             margin-left: 0;
             margin-right: 20px;
         }
-        li.nc-preview {
+        li.box-preview {
             display: inline-block;
             float: left;
             border-style: solid;
@@ -45,7 +45,7 @@
                 dataType: "json"
             })
                 .done(function ( jsonDataSet ) {
-                    var targetEl = $("ol.nc-preview").empty();
+                    var targetEl = $("ol.box-preview").empty();
 
                     for (key in jsonDataSet) {
                         var li = $('<li>'),

@@ -10,7 +10,7 @@ from .database import db_session
 from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
-from .views.nutrition_views import ListNutritionView, DetailNutritionView, \
+from .views.nutrition_views import NutritionView, DetailNutritionView, \
     CreateNutritionView
 # from .models.users_model import User
 from .apis.nutrition_apis import NutritionList, NTPattern2List
@@ -70,15 +70,10 @@ list_tag_view = TagListView.as_view(
 detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
-list_nutrition_view = ListNutritionView.as_view(
-    'list_nutrition_page', template_name='nutrition/list_nutrition.html'
+nutrition_view = NutritionView.as_view(
+    'nutrition_page', template_name='nutrition.html'
 )
-detail_nutrition_view = DetailNutritionView.as_view(
-    'detail_nutrition_page', template_name='nutrition/detail_nutrition.html'
-)
-create_nutrition_view = CreateNutritionView.as_view(
-    'create_nutrition_page', template_name='nutrition/create_nutrition.html'
-)
+
 nutritionlist_api_view = NutritionList.as_view('nutritionlist_api')
 ntpattern2_api_view = NTPattern2List.as_view('ntpattern2_api')
 
@@ -92,9 +87,7 @@ ntpattern2_api_view = NTPattern2List.as_view('ntpattern2_api')
 # app.add_url_rule('/profile', view_func=profile_view)
 app.add_url_rule('/tags', view_func=list_tag_view)
 app.add_url_rule('/tags/detail', view_func=detail_tag_view)
-app.add_url_rule('/nutrition', view_func=list_nutrition_view)
-app.add_url_rule('/nutrition/detail', view_func=detail_nutrition_view)
-app.add_url_rule('/nutrition/create', view_func=create_nutrition_view)
+app.add_url_rule('/nutrition', view_func=nutrition_view)
 
 app.add_url_rule('/api/nutrition/nutritionlist',
                  view_func=nutritionlist_api_view, methods=['GET'])

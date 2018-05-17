@@ -60,6 +60,3 @@ class CreateNutritionForm(Form):
     chn_name = StringField(label="Chinese Name", validators=[
         validators.Length(min=2, max=100)
     ])
-    submit = SubmitField("Send")
-
-

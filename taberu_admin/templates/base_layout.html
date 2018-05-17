@@ -10,7 +10,6 @@
             overflow: hidden;
             background-color: #333333;
         }
-
         div > ul#navbar-ul > li {
             float: left;
         }
@@ -25,6 +24,18 @@
         div > ul#navbar-ul > li > a:hover {
             background-color: #111111;
         }
+        div#content {
+            margin-bottom: 20px;
+        }
+        div#footer {
+            background-color: ghostwhite;
+            min-height: 80px;
+        }
+        p#txt-footer {
+            text-align: center;
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
         </style>
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -36,17 +47,21 @@
   <body>
     <div id="navbar">
         <ul id="navbar-ul">
-            <li><a href="/users">Users</a></li>
-            <li><a href="/contents">Contents</a></li>
-            <li><a href="/models">Models</a></li>
-            <li><a href="/tags">Tags</a></li>
-            <li><a href="/project">Taberu</a></li>
+            <li><a href="/project">TABERU</a></li>
+            <li><a href="/nutrition">NUTRITION</a></li>
+            <li><a href="/medication">MEDICATION</a></li>
+            <li><a href="/condition">CONDITION</a></li>
+            <li><a href="/exercise">EXERCISE</a></li>
+            <li><a href="/tag">TAG</a></li>
+            <li><a href="/user">USER</a></li>
         </ul>
     </div>
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">
       {% block footer %}
-      &copy; Copyright 2017 by <a href="http://domain.invalid/">you</a>.
+          <p id="txt-footer">
+            &copy; Copyright 2018 by <a href="https://github.com/RoyGoya/taberu_admin_project01">RoyGoya</a>.
+          </p>
       {% endblock %}
     </div>
   </body>

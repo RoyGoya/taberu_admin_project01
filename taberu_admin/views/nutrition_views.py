@@ -14,16 +14,21 @@ from ..models.nutrition_models import Nutrition, NutritionSet, \
 from ..helpers.secu_redir import redirect_back
 
 
-class ListNutritionView(View):
+class NutritionView(View):
     methods = ['GET', 'POST']
 
     def __init__(self, template_name):
         self.template_name = template_name
 
     def dispatch_request(self):
-        nutritions = Nutrition.query.filter_by(dt_pattern='s',
-                                               is_active=True).all()
-        return render_template(self.template_name, nutritions=nutritions)
+        form = CreateNutritionForm(request.form)
+        nutrition_pack = Nutrition.query.filter(Nutrition.dt_pattern=='s',
+                                                 Nutrition.is_active==True
+                                                 ).all()
+        pack_cnt = len(nutrition_pack)
+        return render_template(self.template_name, form=form,
+                               nutrition_pack=nutrition_pack,
+                               pack_cnt=pack_cnt)
 
 
 class DetailNutritionView(View):
