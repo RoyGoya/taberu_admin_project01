@@ -41,7 +41,7 @@ class CreateNutritionForm(Form):
     nt_pattern1 = RadioField(label="Nutrition Type 1",
                              choices=get_nt_pattern1_choices())
     nt_pattern2 = RadioField(label="Nutrition Type 2", choices=[])
-    is_set = RadioField(label="Is Set of Nutrition or not", choices=[
+    is_set = RadioField(label="Is group of nutrition ?", choices=[
         (True, 'Yes'), (False, 'No')
     ])
     eng_name = StringField(label="English Name", validators=[

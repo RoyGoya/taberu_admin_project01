@@ -1,0 +1,18 @@
+{% extends "base_layout.html" %}
+{% block title %}Create Nutrition{% endblock %}
+{% block head %}
+  {{ super() }}
+    <link rel="stylesheet" href=
+            "{{ url_for('static', filename='css/nutrition.css') }}">
+    <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
+{% endblock %}
+{% block content %}
+    <ul id="wrap-nt">
+        <li id="box-selection">
+            {% include 'nutrition/form_nutrition.html' %}
+        </li>
+        <li id="box-preview">
+            {% include 'nutrition/section_nutrition.html' %}
+        </li>
+    </ul>
+{% endblock %}

@@ -13,7 +13,8 @@ from .views.tag_views import TagListView, TagDetailView
 from .views.nutrition_views import NutritionView, DetailNutritionView, \
     CreateNutritionView
 # from .models.users_model import User
-from .apis.nutrition_apis import NutritionList, NTPattern2List
+from .apis.nutrition_apis import NutritionList, NTPattern2List, \
+    NutritionFormTemplate
 
 
 app = Flask(__name__)
@@ -71,11 +72,13 @@ detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
 nutrition_view = NutritionView.as_view(
-    'nutrition_page', template_name='nutrition.html'
+    'nutrition_page', template_name='nutrition/base_nutrition.html'
 )
 
 nutritionlist_api_view = NutritionList.as_view('nutritionlist_api')
 ntpattern2_api_view = NTPattern2List.as_view('ntpattern2_api')
+nutrition_form_templateview = NutritionFormTemplate.as_view(
+    'nutrition_form_template')
 
 
 # Pluggable Views
@@ -91,8 +94,10 @@ app.add_url_rule('/nutrition', view_func=nutrition_view)
 
 app.add_url_rule('/api/nutrition/nutritionlist',
                  view_func=nutritionlist_api_view, methods=['GET'])
-app.add_url_rule('/api/nutrition/getntpattern2/',
+app.add_url_rule('/api/nutrition/getntpattern2',
                  view_func=ntpattern2_api_view, methods=['GET'])
+app.add_url_rule('/api/nutrition/formtemplate',
+                 view_func=nutrition_form_templateview, methods=['GET'])
 
 
 if __name__ == '__main__':

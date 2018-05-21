@@ -1,0 +1,22 @@
+<p>
+    <div id="title-selection">Select Nutrition Option</div><br/>
+    <div id="selected-item">None Selected</div>
+</p>
+{% from "formhelpers.html" import render_field %}
+<form method=post>
+    <dl>
+        {{ render_field(form.dt_pattern) }}<br/>
+        {{ render_field(form.nt_pattern1) }}<br/>
+        {{ render_field(form.nt_pattern2) }}<br/>
+        {{ render_field(form.is_set) }}<br/>
+        <div id="bt-reset">
+            <input type="reset" value="Reset Text"/>
+        </div>
+        {{ render_field(form.eng_name) }}<br/>
+        {{ render_field(form.eng_plural) }}<br/>
+        {{ render_field(form.kor_name) }}<br/>
+        {{ render_field(form.jpn_name) }}<br/>
+        {{ render_field(form.chn_name) }}<br/>
+        <p id="bt-send" >CREATE</p>
+    </dl>
+</form>
