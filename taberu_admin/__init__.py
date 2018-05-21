@@ -72,7 +72,7 @@ detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
 nutrition_view = NutritionView.as_view(
-    'nutrition_page', template_name='nutrition/base_nutrition.html'
+    'nutrition_page', template_name='nutrition/nt_base.html'
 )
 
 nutritionlist_api_view = NutritionList.as_view('nutritionlist_api')

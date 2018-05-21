@@ -6,8 +6,8 @@ $(document).ready(function () {
         $.ajax({
             url: "/api/nutrition/nutritionlist",
             data: {
-                dtPattern: dtPatternVal,
-                ntPattern1: ntPattern1Val
+                "dtPattern": dtPatternVal,
+                "ntPattern1": ntPattern1Val
             },
             type: "GET",
             dataType: "json"
@@ -104,11 +104,13 @@ $(document).ready(function () {
             inputEls.eq(idx).prop("checked", false);});
     };
 
+    // Jquery Custom Events
+    // https://learn.jquery.com/events/introduction-to-custom-events/
     $( "li#box-selection" ).on("click", "ul#dt_pattern > li > input, " +
         "ul#nt_pattern1 > li > input, ul#nt_pattern2 > li > input",
         function (event) {
             var _currentEle = $( this ),
-                _dtEle = $( "ul#dt_pattern"),
+                _dtEle = $( "ul#dt_pattern" ),
                 _nt1Ele = $( "ul#nt_pattern1" ),
                 _nt2Ele = $( "ul#nt_pattern2" );
 
@@ -140,13 +142,23 @@ $(document).ready(function () {
                 _boxSelecEle = $( "li#box-selection" );
 
             if ( _currentEle.is( "div.tr-preview" )) {
-            var _dtPatternVal = _currentEle.data("dtPattern"),
-                _ntPattern1Val = _currentEle.data("ntPattern1"),
-                _ntPattern2Val = _currentEle.data("ntPattern2"),
-                _serial = _currentEle.data("serial");
-            _boxSelecEle.load('/api/nutrition/formtemplate');
-            console.log("loaded!")
-            }
-        })
-});
+                var _dtPatternVal = _currentEle.data("dtPattern"),
+                    _ntPattern1Val = _currentEle.data("ntPattern1"),
+                    _ntPattern2Val = _currentEle.data("ntPattern2"),
+                    _serial = _currentEle.data("serial"),
+                    _dataSet = {
+                        dt_pattern: _dtPatternVal,
+                        nt_pattern1: _ntPattern1Val,
+                        nt_pattern2: _ntPattern2Val,
+                        serial: _serial
+                    },
+                    _paramData = $.param(_dataSet);
 
+                _boxSelecEle.load('/api/nutrition/formtemplate', _paramData,
+                    function () {
+                        console.log("success!");
+                    }
+                );
+            }
+        });
+});

@@ -22,12 +22,12 @@ class NutritionView(View):
 
     def dispatch_request(self):
         form = CreateNutritionForm(request.form)
-        nutrition_pack = Nutrition.query.filter(Nutrition.dt_pattern=='s',
+        nutrition_list = Nutrition.query.filter(Nutrition.dt_pattern=='s',
                                                  Nutrition.is_active==True
                                                  ).all()
-        pack_cnt = len(nutrition_pack)
+        pack_cnt = len(nutrition_list)
         return render_template(self.template_name, form=form,
-                               nutrition_pack=nutrition_pack,
+                               nutrition_list=nutrition_list,
                                pack_cnt=pack_cnt)
 
 

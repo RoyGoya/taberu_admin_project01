@@ -1,6 +1,11 @@
 <p>
     <div id="title-selection">Select Nutrition Option</div><br/>
-    <div id="selected-item">None Selected</div>
+    {% if nutrition %}
+        <div id="selected-item" style="color: dodgerblue">
+            {{ nutrition.eng_name }} ({{ nutrition.dt_pattern }}{{ nutrition.nt_pattern1 }}{{ nutrition.nt_pattern2 }}{{ nutrition.serial }})</div>
+    {% else %}
+        <div id="selected-item" style="color: orangered">None Selected</div>
+    {% endif %}
 </p>
 {% from "formhelpers.html" import render_field %}
 <form method=post>
@@ -9,6 +14,7 @@
         {{ render_field(form.nt_pattern1) }}<br/>
         {{ render_field(form.nt_pattern2) }}<br/>
         {{ render_field(form.is_set) }}<br/>
+        {{ render_field(form.is_active) }}<br/>
         <div id="bt-reset">
             <input type="reset" value="Reset Text"/>
         </div>
@@ -17,6 +23,10 @@
         {{ render_field(form.kor_name) }}<br/>
         {{ render_field(form.jpn_name) }}<br/>
         {{ render_field(form.chn_name) }}<br/>
-        <p id="bt-send" >CREATE</p>
+        {% if nutrition %}
+            <p id="bt-send">UPDATE</p>
+        {% else %}
+            <p id="bt-send">CREATE</p>
+        {% endif %}
     </dl>
 </form>

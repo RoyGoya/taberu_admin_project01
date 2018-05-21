@@ -9,10 +9,19 @@
 {% block content %}
     <ul id="wrap-nt">
         <li id="box-selection">
-            {% include 'nutrition/form_nutrition.html' %}
+            {% include 'nutrition/nt_form.html' %}
         </li>
         <li id="box-preview">
-            {% include 'nutrition/section_nutrition.html' %}
+            {% include 'nutrition/nt_list.html' %}
+        </li>
+        <li id="box-prevfactors">
+            --'s Factor Set
+        </li>
+        <li id="box-selectfactors">
+            select Factors
+        </li>
+        <li id="box-logs">
+            Logs
         </li>
     </ul>
 {% endblock %}

@@ -27,6 +27,20 @@ def get_nt_pattern1_choices():
     return choice_tuple_list
 
 
+def get_nt_pattern2_choices(nt_pattern1):
+    choice_tuple_list = []
+    nt_pattern2_list = NutritionPattern.query.filter(
+        NutritionPattern.pattern1 == nt_pattern1,
+        NutritionPattern.pattern2 != '00',
+        NutritionPattern.is_active == True
+    ).all()
+
+    for nt_pattern2 in nt_pattern2_list:
+        choice_tuple = (nt_pattern2.pattern2, nt_pattern2.eng_name)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
+
+
 class CreateNutritionForm(Form):
 
     """Field Class's Parameters
@@ -41,8 +55,11 @@ class CreateNutritionForm(Form):
     nt_pattern1 = RadioField(label="Nutrition Type 1",
                              choices=get_nt_pattern1_choices())
     nt_pattern2 = RadioField(label="Nutrition Type 2", choices=[])
-    is_set = RadioField(label="Is group of nutrition ?", choices=[
-        (True, 'Yes'), (False, 'No')
+    is_set = RadioField(label="Has Sub?", choices=[
+        (True, 'True'), (False, 'False')
+    ])
+    is_active = RadioField(label="Is Active?", choices=[
+        (True, 'True'), (False, 'False')
     ])
     eng_name = StringField(label="English Name", validators=[
         validators.DataRequired("Please Enter A English Name."),

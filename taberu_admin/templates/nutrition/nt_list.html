@@ -6,9 +6,13 @@
     <header>
         <div>Code</div>
         <div>EngName</div>
+        <div>EngPlural</div>
+        <div>KorName</div>
+        <div>JpnName</div>
+        <div>ChnName</div>
         <div>HasSub</div>
     </header>
-{% for nutrition in nutrition_pack %}
+{% for nutrition in nutrition_list %}
     <div
             class="tr-preview"
             data-dt-pattern="{{ nutrition.dt_pattern|e }}"
@@ -20,6 +24,10 @@
             {{ nutrition.dt_pattern|e}}{{ nutrition.nt_pattern1|e }}{{ nutrition.nt_pattern2|e }}{{ nutrition.serial|e }}
         </div>
         <div>{{ nutrition.eng_name|e }}</div>
+        <div>{{ nutrition.eng_plural|e }}</div>
+        <div>{{ nutrition.kor_name|e }}</div>
+        <div>{{ nutrition.jpn_name|e }}</div>
+        <div>{{ nutrition.chn_name|e }}</div>
         {% if nutrition.is_set %}
             <div style="color: green">{{ nutrition.is_set }}</div>
         {% else%}

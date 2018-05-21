@@ -2,7 +2,7 @@
 from flask import request, Response, jsonify, render_template
 from flask.views import MethodView
 
-from ..forms.nutrition_forms import CreateNutritionForm
+from ..forms.nutrition_forms import CreateNutritionForm, get_nt_pattern2_choices
 from ..models.nutrition_models import Nutrition, NutritionPattern
 
 
@@ -71,5 +71,31 @@ class NTPattern2List(MethodView):
 class NutritionFormTemplate(MethodView):
 
     def get(self):
+        request_args = request.args
+        dt_pattern = request_args.get('dt_pattern')
+        nt_pattern1 = request_args.get('nt_pattern1')
+        nt_pattern2 = request_args.get('nt_pattern2')
+        serial = request_args.get('serial')
+
+        nutrition = Nutrition.query.filter(
+            Nutrition.dt_pattern==dt_pattern,
+            Nutrition.nt_pattern1==nt_pattern1,
+            Nutrition.nt_pattern2==nt_pattern2,
+            Nutrition.serial==serial
+        ).first()
+        nt_pattern2_choices = get_nt_pattern2_choices(nt_pattern1)
         form = CreateNutritionForm(request.form)
-        return render_template('nutrition/form_nutrition.html', form=form)
+        form.nt_pattern2.choices = nt_pattern2_choices
+
+        form.dt_pattern.data = nutrition.dt_pattern
+        form.nt_pattern1.data = nutrition.nt_pattern1
+        form.nt_pattern2.data = nutrition.nt_pattern2
+        form.is_set.data = str(nutrition.is_set)
+        form.is_active.data = str(nutrition.is_active)
+        form.eng_name.data = nutrition.eng_name
+        form.eng_plural.data = nutrition.eng_plural
+        form.kor_name.data = nutrition.kor_name
+        form.jpn_name.data = nutrition.jpn_name
+        form.chn_name.data = nutrition.chn_name
+        return render_template('nutrition/nt_form.html', form=form,
+                               nutrition=nutrition)
