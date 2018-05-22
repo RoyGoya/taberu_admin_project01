@@ -2,54 +2,19 @@
 <html>
   <head>
     {% block head %}
-        <style>
-        div > ul#navbar-ul {
-            list-style-type: none;
-            margin-left: 5px;
-            margin-right: 10px;
-            margin-top: 0;
-            margin-bottom: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333333;
-        }
-        div > ul#navbar-ul > li {
-            float: left;
-        }
-
-        div > ul#navbar-ul > li > a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 16px;
-            text-decoration: none;
-        }
-        div > ul#navbar-ul > li > a:hover {
-            background-color: #111111;
-        }
-        div#content {
-            margin-bottom: 20px;
-        }
-        div#footer {
-            background-color: ghostwhite;
-            min-height: 80px;
-        }
-        p#txt-footer {
-            text-align: center;
-            padding-top: 30px;
-            padding-bottom: 30px;
-        }
-        </style>
-{#        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">#}
+        <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
+        <link rel="stylesheet" href=
+            "{{ url_for('static', filename='css/common.css') }}">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script>window.JQuery || document.write('<script src="{{
         url_for('static', filename='jquery-3.3.1.min.js') }}">\x3C/script>')</script>
+        <script src="{{ url_for('static', filename='js/taberu_module.js') }}"></script>
         <title>{% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
   <body>
     <div id="navbar">
-        <ul id="navbar-ul">
+        <ul id="navbar-list">
             <li><a href="/project">TABERU</a></li>
             <li><a href="/nutrition">NUTRITION</a></li>
             <li><a href="/medication">MEDICATION</a></li>

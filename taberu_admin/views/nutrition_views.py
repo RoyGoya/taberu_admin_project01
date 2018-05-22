@@ -25,10 +25,10 @@ class NutritionView(View):
         nutrition_list = Nutrition.query.filter(Nutrition.dt_pattern=='s',
                                                  Nutrition.is_active==True
                                                  ).all()
-        pack_cnt = len(nutrition_list)
+        nutrition_list_len = len(nutrition_list)
         return render_template(self.template_name, form=form,
                                nutrition_list=nutrition_list,
-                               pack_cnt=pack_cnt)
+                               nutrition_list_cnt=nutrition_list_len)
 
 
 class DetailNutritionView(View):
@@ -45,22 +45,22 @@ class DetailNutritionView(View):
             # Get Selected Nutrition's Components from db.
             nset_subq = NutritionSet.query.filter_by(
                 super_nutrition_dt_pattern=form.get('dt_pattern'),
-                super_nutrition_nt_pattern1=form.get('nt_pattern1'),
-                super_nutrition_nt_pattern2=form.get('nt_pattern2'),
+                super_nutrition_nt_pattern1=form.get('pattern1'),
+                super_nutrition_nt_pattern2=form.get('pattern2'),
                 super_nutrition_serial=form.get('serial')
             ).subquery()
             nutritions = Nutrition.query.join(nset_subq, and_(
                 nset_subq.c.sub_nutrition_dt_pattern == Nutrition.dt_pattern,
-                nset_subq.c.sub_nutrition_nt_pattern1 == Nutrition.nt_pattern1,
-                nset_subq.c.sub_nutrition_nt_pattern2 == Nutrition.nt_pattern2,
+                nset_subq.c.sub_nutrition_nt_pattern1 == Nutrition.pattern1,
+                nset_subq.c.sub_nutrition_nt_pattern2 == Nutrition.pattern2,
                 nset_subq.c.sub_nutrition_serial == Nutrition.serial
             )).all()
 
             # Get Selected Nutrition's Factors from db.
             fset_suq = NutritionFactorSet.query.filter_by(
                 nutrition_dt_pattern=form.get('dt_pattern'),
-                nutrition_nt_pattern1=form.get('nt_pattern1'),
-                nutrition_nt_pattern2=form.get('nt_pattern2'),
+                nutrition_nt_pattern1=form.get('pattern1'),
+                nutrition_nt_pattern2=form.get('pattern2'),
                 nutrition_serial=form.get('serial')
             ).subquery()
             factors = NutritionFactor.query.join(fset_suq, and_(
@@ -91,24 +91,24 @@ class CreateNutritionView(View):
                                                  ).all()
         if request.method == 'POST' and form.validate():
             nutrition_serial = int(Nutrition.query.filter_by(
-                dt_pattern=form.dt_pattern, nt_pattern1=form.nt_pattern1,
-                nt_pattern2=form.nt_pattern2).count()) + 1
+                dt_pattern=form.dt_pattern, nt_pattern1=form.pattern1,
+                nt_pattern2=form.pattern2).count()) + 1
             nutrition = Nutrition(dt_pattern=form.dt_pattern,
-                                  nt_pattern1=form.nt_pattern1,
-                                  nt_pattern2=form.nt_pattern2,
+                                  pattern1=form.pattern1,
+                                  pattern2=form.pattern2,
                                   serial=nutrition_serial,
-                                  is_active=True, is_set=form.is_set,
+                                  is_active=True, has_sub=form.has_sub,
                                   eng_name=form.eng_name,
                                   eng_plural=form.eng_plural,
                                   kor_name=form.kor_name,
                                   jpn_name=form.jpn_name,
-                                  chn_name=form.chn_name,)
+                                  chn_name=form.chn_name, )
             db_session.add(nutrition)
             db_session.commit()
             flash('Nutrition created successfully.')
             nutrition_form = {"dt_pattern": nutrition.dt_pattern,
-                              "nt_pattern1": nutrition.nt_pattern1,
-                              "nt_pattern2": nutrition.nt_pattern2,
+                              "pattern1": nutrition.pattern1,
+                              "pattern2": nutrition.pattern2,
                               "serial": nutrition.serial,
                               "selected_nutrition_name": nutrition.eng_name}
             return redirect(url_for('detail_nutrition_page', nutrition_form))

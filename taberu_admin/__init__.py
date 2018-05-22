@@ -13,8 +13,8 @@ from .views.tag_views import TagListView, TagDetailView
 from .views.nutrition_views import NutritionView, DetailNutritionView, \
     CreateNutritionView
 # from .models.users_model import User
-from .apis.nutrition_apis import NutritionList, NTPattern2List, \
-    NutritionFormTemplate
+from .apis.nutrition_apis import NutritionListTemplate, NutritionPattern2, \
+    NutritionDetailTemplate, NutritionFactorDetail, NutritionFactorList
 
 
 app = Flask(__name__)
@@ -75,11 +75,17 @@ nutrition_view = NutritionView.as_view(
     'nutrition_page', template_name='nutrition/nt_base.html'
 )
 
-nutritionlist_api_view = NutritionList.as_view('nutritionlist_api')
-ntpattern2_api_view = NTPattern2List.as_view('ntpattern2_api')
-nutrition_form_templateview = NutritionFormTemplate.as_view(
-    'nutrition_form_template')
-
+nutrition_nlist_api = NutritionListTemplate.as_view(
+    'nutrition_list_api')
+nutrition_pattern2_api = NutritionPattern2.as_view(
+    'nutrition_pattern2_api')
+nutrition_ndetail_api = NutritionDetailTemplate.as_view(
+    'nutrition_detail_api')
+nutrition_fdetail_api = NutritionFactorDetail.as_view(
+    'nutrition_factor_detail_api')
+nutrition_flist_api = NutritionFactorList.as_view(
+    'nutrition_factor_list_api'
+)
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -92,12 +98,16 @@ app.add_url_rule('/tags', view_func=list_tag_view)
 app.add_url_rule('/tags/detail', view_func=detail_tag_view)
 app.add_url_rule('/nutrition', view_func=nutrition_view)
 
-app.add_url_rule('/api/nutrition/nutritionlist',
-                 view_func=nutritionlist_api_view, methods=['GET'])
-app.add_url_rule('/api/nutrition/getntpattern2',
-                 view_func=ntpattern2_api_view, methods=['GET'])
-app.add_url_rule('/api/nutrition/formtemplate',
-                 view_func=nutrition_form_templateview, methods=['GET'])
+app.add_url_rule('/api/nutrition/list',
+                 view_func=nutrition_nlist_api, methods=['GET'])
+app.add_url_rule('/api/nutrition/pattern2',
+                 view_func=nutrition_pattern2_api, methods=['GET'])
+app.add_url_rule('/api/nutrition/detail',
+                 view_func=nutrition_ndetail_api, methods=['GET'])
+app.add_url_rule('/api/nutrition/factor/detail',
+                 view_func=nutrition_fdetail_api, methods=['GET'])
+app.add_url_rule('/api/nutrition/factor/list',
+                 view_func=nutrition_flist_api, methods=['GET'])
 
 
 if __name__ == '__main__':

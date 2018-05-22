@@ -17,7 +17,7 @@ def get_dt_pattern_choices():
     return choice_tuple_list
 
 
-def get_nt_pattern1_choices():
+def get_nutrition_pattern1_choices():
     choice_tuple_list = []
     nutrition_patterns = NutritionPattern.query.filter_by(pattern2='00',
                                                           is_active=True).all()
@@ -27,16 +27,16 @@ def get_nt_pattern1_choices():
     return choice_tuple_list
 
 
-def get_nt_pattern2_choices(nt_pattern1):
+def get_nutrition_pattern2_choices(pattern1):
     choice_tuple_list = []
-    nt_pattern2_list = NutritionPattern.query.filter(
-        NutritionPattern.pattern1 == nt_pattern1,
+    nutrition_patterns = NutritionPattern.query.filter(
+        NutritionPattern.pattern1 == pattern1,
         NutritionPattern.pattern2 != '00',
         NutritionPattern.is_active == True
     ).all()
 
-    for nt_pattern2 in nt_pattern2_list:
-        choice_tuple = (nt_pattern2.pattern2, nt_pattern2.eng_name)
+    for nutrition_pattern in nutrition_patterns:
+        choice_tuple = (nutrition_pattern.pattern2, nutrition_pattern.eng_name)
         choice_tuple_list += {choice_tuple}
     return choice_tuple_list
 
@@ -52,10 +52,10 @@ class CreateNutritionForm(Form):
     dt_pattern_choices = get_dt_pattern_choices()
     dt_pattern = RadioField(label="DataType", choices=dt_pattern_choices,
                             default=dt_pattern_choices[0][0])
-    nt_pattern1 = RadioField(label="Nutrition Type 1",
-                             choices=get_nt_pattern1_choices())
-    nt_pattern2 = RadioField(label="Nutrition Type 2", choices=[])
-    is_set = RadioField(label="Has Sub?", choices=[
+    pattern1 = RadioField(label="Pattern1",
+                             choices=get_nutrition_pattern1_choices())
+    pattern2 = RadioField(label="Pattern2", choices=[])
+    has_sub = RadioField(label="Has Sub?", choices=[
         (True, 'True'), (False, 'False')
     ])
     is_active = RadioField(label="Is Active?", choices=[

@@ -1,0 +1,86 @@
+/* Body > Navigation Bar */
+div#navbar {
+    font-family: 'Nanum Gothic', sans-serif;
+}
+div > ul#navbar-list {
+    list-style-type: none;
+    margin-left: 5px;
+    margin-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+}
+div > ul#navbar-list > li {
+    float: left;
+}
+div > ul#navbar-list > li > a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+div > ul#navbar-list > li > a:hover {
+    background-color: #111111;
+}
+div#content {
+    margin-bottom: 20px;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+div#footer {
+    background-color: ghostwhite;
+    min-height: 80px;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+p#txt-footer {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+/* div Title */
+.title {
+    text-align: center;
+    font-size: 18px;
+}
+
+/* Section Table */
+.tb {
+    display: table;
+    text-align: center;
+    font-size: 13px;
+}
+.tb > header {
+    display: table-row;
+}
+.tb > div.tr {
+    display: table-row;
+}
+.tb > header > div {
+    display: table-cell;
+    min-width: 70px;
+    padding-bottom: 10px;
+}
+.tb > div.tr > div {
+    display: table-cell;
+}
+.tb > div.tr:hover {
+    background-color: aliceblue;
+}
+
+/* p Button */
+.bt {
+    color: orange;
+    font-size: 18px;
+}
+.bt:hover {
+    color: forestgreen;
+}
+
+/* div Cnt */
+.cnt {
+    text-align: right;
+    color: orangered;
+}

@@ -1,38 +1,44 @@
 <p>
-    <div id="title-preview">Preview Nutrition List</div><br/>
-    <div id="cnt-preview">{{ pack_cnt|e }}</div>
+    <div id="title-nlist">Nutrition List</div><br/>
+    <div class="cnt"id="cnt-nlist">{{ nutrition_list_cnt|e }}</div>
 </p>
-<section id="tb-preview">
+<section class="tb" id="tb-nlist">
     <header>
         <div>Code</div>
         <div>EngName</div>
+        <div>IsActive</div>
+        <div>HasSub</div>
         <div>EngPlural</div>
         <div>KorName</div>
         <div>JpnName</div>
         <div>ChnName</div>
-        <div>HasSub</div>
     </header>
 {% for nutrition in nutrition_list %}
     <div
-            class="tr-preview"
+            class="tr tr-nlist"
             data-dt-pattern="{{ nutrition.dt_pattern|e }}"
-            data-nt-pattern1="{{ nutrition.nt_pattern1|e }}"
-            data-nt-pattern2="{{ nutrition.nt_pattern2|e }}"
+            data-pattern1="{{ nutrition.pattern1|e }}"
+            data-pattern2="{{ nutrition.pattern2|e }}"
             data-serial="{{ nutrition.serial|e }}"
     >
         <div>
-            {{ nutrition.dt_pattern|e}}{{ nutrition.nt_pattern1|e }}{{ nutrition.nt_pattern2|e }}{{ nutrition.serial|e }}
+            {{ nutrition.dt_pattern|e}}{{ nutrition.pattern1|e }}{{ nutrition.pattern2|e }}{{ nutrition.serial|e }}
         </div>
         <div>{{ nutrition.eng_name|e }}</div>
+        {% if nutrition.is_active %}
+            <div style="color: dodgerblue">{{ nutrition.is_active }}</div>
+        {% else%}
+            <div style="color: lightblue">{{ nutrition.is_active }}</div>
+        {% endif %}
+        {% if nutrition.has_sub %}
+            <div style="color: dodgerblue">{{ nutrition.has_sub }}</div>
+        {% else%}
+            <div style="color: lightblue">{{ nutrition.has_sub }}</div>
+        {% endif %}
         <div>{{ nutrition.eng_plural|e }}</div>
         <div>{{ nutrition.kor_name|e }}</div>
         <div>{{ nutrition.jpn_name|e }}</div>
         <div>{{ nutrition.chn_name|e }}</div>
-        {% if nutrition.is_set %}
-            <div style="color: green">{{ nutrition.is_set }}</div>
-        {% else%}
-            <div style="color: lightblue">{{ nutrition.is_set }}</div>
-        {% endif %}
     </div>
 {% endfor %}
 </section>

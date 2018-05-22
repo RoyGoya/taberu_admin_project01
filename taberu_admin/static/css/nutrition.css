@@ -6,8 +6,8 @@ ul#wrap-nt {
     overflow: hidden;
 }
 
-/* Content > Selection */
-li#box-selection {
+/* Content > Nutrition Detail */
+li#box-ndetail {
     display: inline-block;
     float: left;
     min-width: 250px;
@@ -19,26 +19,21 @@ li#box-selection {
     margin-left: 5px;
     margin-right: 10px;
 }
-div#title-selection {
+div#detail-item {
     text-align: center;
-    font-size: 18px;
 }
-div#selected-item {
-    text-align: center;
+form#ndetail_form {
+    font-size: 15px;
 }
 div#bt-reset {
     text-align: right;
 }
 p#bt-send {
     text-align: center;
-    color: orange;
-}
-p#bt-send:hover {
-    color: forestgreen;
 }
 
-/* Content > Preview */
-li#box-preview {
+/* Content > Nutrition List */
+li#box-nlist {
     display: inline-block;
     float: left;
     min-width: 250px;
@@ -46,45 +41,35 @@ li#box-preview {
     border-width: 1px;
     padding-top: 0px;
     padding-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 25px;
+    padding-left: 0;
+    padding-right: 10px;
     margin-top: 10px;
     margin-right: 10px;
 }
-div#title-preview {
-    text-align: center;
-    font-size: 18px;
+
+/* Nutrition List > Section */
+
+
+/* Content > Factor Detail */
+li#box-fdetail {
+    display: inline-block;
+    float: left;
+    min-width: 250px;
+    border-style: solid;
+    border-width: 1px;
+    padding-top: 0px;
+    padding-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
 }
-div#cnt-preview {
+p#bt-add-fdetail {
     text-align: right;
-    color: orangered;
 }
 
-/* Preview > Section */
-section#tb-preview {
-    display: table;
-    text-align: center;
-}
-section#tb-preview > header {
-    display: table-row;
-}
-section#tb-preview > div.tr-preview {
-    display: table-row;
-}
-section#tb-preview > header > div {
-    display: table-cell;
-    min-width: 80px;
-    padding-bottom: 10px;
-}
-section#tb-preview > div.tr-preview > div {
-    display: table-cell;
-}
-section#tb-preview > div.tr-preview:hover {
-    background-color: aliceblue;
-}
-
-/* Content > Preview Factors */
-li#box-prevfactors {
+/* Content > Factor List */
+li#box-flist {
     display: inline-block;
     float: left;
     min-width: 250px;
@@ -93,22 +78,7 @@ li#box-prevfactors {
     padding-top: 0px;
     padding-bottom: 10px;
     padding-left: 10px;
-    padding-right: 25px;
-    margin-top: 10px;
-    margin-right: 10px;
-}
-
-/* Content > Select Factors */
-li#box-selectfactors {
-    display: inline-block;
-    float: left;
-    min-width: 250px;
-    border-style: solid;
-    border-width: 1px;
-    padding-top: 0px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 25px;
+    padding-right: 10px;
     margin-top: 10px;
     margin-right: 10px;
 }

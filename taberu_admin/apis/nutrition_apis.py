@@ -2,19 +2,23 @@
 from flask import request, Response, jsonify, render_template
 from flask.views import MethodView
 
-from ..forms.nutrition_forms import CreateNutritionForm, get_nt_pattern2_choices
-from ..models.nutrition_models import Nutrition, NutritionPattern
+from sqlalchemy import and_
+
+from ..forms.nutrition_forms import CreateNutritionForm, \
+    get_nutrition_pattern2_choices
+from ..models.nutrition_models import Nutrition, NutritionPattern,\
+    NutritionFactorSet, NutritionFactor
 
 
-class NutritionList(MethodView):
+class NutritionListTemplate(MethodView):
 
     def get(self):
-        dt_pattern = request.args.get('dtPattern')
-        nt_pattern1 = request.args.get('ntPattern1')
+        dt_pattern = request.args.get('dt_pattern')
+        pattern1 = request.args.get('pattern1')
         list_data = []
         if dt_pattern is None:
             pass
-        elif nt_pattern1 is None:
+        elif pattern1 is None:
             nutrition_list = Nutrition.query.filter(
                 Nutrition.dt_pattern==dt_pattern,
                 Nutrition.is_active==True
@@ -22,43 +26,25 @@ class NutritionList(MethodView):
         else:
             nutrition_list = Nutrition.query.filter(
                 Nutrition.dt_pattern==dt_pattern,
-                Nutrition.nt_pattern1==nt_pattern1,
+                Nutrition.pattern1==pattern1,
                 Nutrition.is_active==True
             ).all()
-        for index, nutrition in enumerate(nutrition_list):
-            eng_name = nutrition.eng_name
-            is_set = nutrition.is_set
-            dt_pattern = nutrition.dt_pattern
-            nt_pattern1 = nutrition.nt_pattern1
-            nt_pattern2 = nutrition.nt_pattern2
-            serial = nutrition.serial
-            list_data.append(
-                {
-                    'dt_pattern': dt_pattern,
-                    'nt_pattern1': nt_pattern1,
-                    'nt_pattern2': nt_pattern2,
-                    'serial': serial,
-                    'eng_name': eng_name,
-                    'is_set': is_set
-                }
-            )
-
-        list_cnt = len(list_data)
-        list_data.insert(0, {'cnt': list_cnt})
-        test = jsonify(list_data)
-        return test
+        nutrition_list_len = len(list_data)
+        return render_template('nutrition/nt_list.html',
+                               nutrition_list=nutrition_list,
+                               nutrition_list_cnt=nutrition_list_len)
 
 
-class NTPattern2List(MethodView):
+class NutritionPattern2(MethodView):
 
     def get(self):
-        nt_pattern1 = request.args.get('ntPattern1')
-        if nt_pattern1 is None:
+        npattern1 = request.args.get('pattern1')
+        if npattern1 is None:
             pass
         else:
             dict_data = dict()
             nutrition_patterns = NutritionPattern.query.filter(
-                NutritionPattern.pattern1==nt_pattern1,
+                NutritionPattern.pattern1==npattern1,
                 NutritionPattern.pattern2!='00',
                 NutritionPattern.is_active==True
             ).all()
@@ -68,34 +54,81 @@ class NTPattern2List(MethodView):
             return json_data
 
 
-class NutritionFormTemplate(MethodView):
+class NutritionDetailTemplate(MethodView):
 
     def get(self):
         request_args = request.args
         dt_pattern = request_args.get('dt_pattern')
-        nt_pattern1 = request_args.get('nt_pattern1')
-        nt_pattern2 = request_args.get('nt_pattern2')
+        pattern1 = request_args.get('pattern1')
+        pattern2 = request_args.get('pattern2')
         serial = request_args.get('serial')
 
         nutrition = Nutrition.query.filter(
-            Nutrition.dt_pattern==dt_pattern,
-            Nutrition.nt_pattern1==nt_pattern1,
-            Nutrition.nt_pattern2==nt_pattern2,
-            Nutrition.serial==serial
+            Nutrition.dt_pattern == dt_pattern,
+            Nutrition.pattern1 == pattern1,
+            Nutrition.pattern2 == pattern2,
+            Nutrition.serial == serial
         ).first()
-        nt_pattern2_choices = get_nt_pattern2_choices(nt_pattern1)
+        pattern2_choices = get_nutrition_pattern2_choices(pattern1)
         form = CreateNutritionForm(request.form)
-        form.nt_pattern2.choices = nt_pattern2_choices
+        form.pattern2.choices = pattern2_choices
 
         form.dt_pattern.data = nutrition.dt_pattern
-        form.nt_pattern1.data = nutrition.nt_pattern1
-        form.nt_pattern2.data = nutrition.nt_pattern2
-        form.is_set.data = str(nutrition.is_set)
+        form.pattern1.data = nutrition.pattern1
+        form.pattern2.data = nutrition.pattern2
+        form.has_sub.data = str(nutrition.has_sub)
         form.is_active.data = str(nutrition.is_active)
         form.eng_name.data = nutrition.eng_name
         form.eng_plural.data = nutrition.eng_plural
         form.kor_name.data = nutrition.kor_name
         form.jpn_name.data = nutrition.jpn_name
         form.chn_name.data = nutrition.chn_name
-        return render_template('nutrition/nt_form.html', form=form,
+        return render_template('nutrition/nt_detail.html', form=form,
                                nutrition=nutrition)
+
+
+class NutritionFactorDetail(MethodView):
+
+    def get(self):
+        request_args = request.args
+        dt_pattern = request_args.get('dt_pattern')
+        pattern1 = request_args.get('pattern1')
+        pattern2 = request_args.get('pattern2')
+        serial = request_args.get('serial')
+
+        # Get Selected Nutrition's Factors
+        fset_suq = NutritionFactorSet.query.filter(
+            NutritionFactorSet.nutrition_dt_pattern==dt_pattern,
+            NutritionFactorSet.nutrition_pattern1==pattern1,
+            NutritionFactorSet.nutrition_pattern2==pattern2,
+            NutritionFactorSet.nutrition_serial==serial
+        ).subquery()
+        factors = NutritionFactor.query.join(fset_suq, and_(
+            fset_suq.c.nf_pattern1==NutritionFactor.pattern1,
+            fset_suq.c.nf_pattern2==NutritionFactor.pattern2,
+            fset_suq.c.nf_pattern3==NutritionFactor.pattern3,
+            fset_suq.c.nf_pattern4==NutritionFactor.pattern4
+        )).all()
+
+        # Get Selected Nutrition Info
+        nutrition = Nutrition.query.filter(
+            Nutrition.dt_pattern == dt_pattern,
+            Nutrition.pattern1 == pattern1,
+            Nutrition.pattern2 == pattern2,
+            Nutrition.serial == serial
+        ).first()
+        factors_len = len(factors)
+        return render_template('nutrition/nt_factor_detail.html',
+                               factors=factors, factors_cnt=factors_len,
+                               nutrition=nutrition)
+
+
+class NutritionFactorList(MethodView):
+
+    def get(self):
+        factors = NutritionFactor.query.filter(
+            NutritionFactor.pattern2=='0'
+        ).all()
+        factors_len = len(factors)
+        return render_template('nutrition/nt_factor_list.html',
+                               factors=factors, factors_cnt=factors_len)

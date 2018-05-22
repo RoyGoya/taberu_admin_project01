@@ -8,20 +8,20 @@
 {% endblock %}
 {% block content %}
     <ul id="wrap-nt">
-        <li id="box-selection">
-            {% include 'nutrition/nt_form.html' %}
+        <li id="box-ndetail">
+            {% include 'nutrition/nt_detail.html' %}
         </li>
-        <li id="box-preview">
+        <li id="box-nlist">
             {% include 'nutrition/nt_list.html' %}
         </li>
-        <li id="box-prevfactors">
-            --'s Factor Set
+        <li id="box-fdetail">
+            Factor Detail
         </li>
-        <li id="box-selectfactors">
-            select Factors
+        <li id="box-flist">
+            Factor List
         </li>
         <li id="box-logs">
-            Logs
+            Modified Logs
         </li>
     </ul>
 {% endblock %}
