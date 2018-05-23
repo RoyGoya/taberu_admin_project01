@@ -1,7 +1,7 @@
 <p>
     <div class="title">Nutrition Detail</div><br/>
     {% if nutrition %}
-        <div id="detail-item" style="color: dodgerblue">
+        <div class="selected-item" style="color: dodgerblue">
             ({{ nutrition.eng_name }} {{ nutrition.dt_pattern }}{{ nutrition.pattern1 }}{{ nutrition.pattern2 }}{{ nutrition.serial }})</div>
     {% else %}
         <div id="detail-item" style="color: orangered">None Selected</div>

@@ -46,6 +46,11 @@ p#txt-footer {
     font-size: 18px;
 }
 
+/* div Selected Item */
+.selected-item {
+    text-align: center;
+}
+
 /* Section Table */
 .tb {
     display: table;

@@ -17,24 +17,21 @@ $( document ).ready(function () {
         };
 
         var _nutrition = (function() {
-
-            var _loadTemplate = function (url, targetEle) {
-                targetEle.load(url, function () {
-                        console.log("Load Templete Complete.")
-                    });
-                };
-
+            var _clearCheckedInputEls = function (inputEls) {
+                inputEls.each(function (idx) {
+                    inputEls.eq(idx).prop("checked", false);});
+            };
+            
             var _loadTemplate = function (url, targetEle, paramData) {
                 targetEle.load(url, paramData, function () {
                         console.log("Load Templete Complete.")
                     });
                 };
-
-            var _clearCheckedInputEls = function (inputEls) {
-                inputEls.each(function (idx) {
-                    inputEls.eq(idx).prop("checked", false);});
-            };
-
+            
+            var _appendTemplate = function (url, targetEle, paramData) {
+                
+            }
+            
             var _getNutritionPattern2 = function(url, pattern1Val) {
                 $.ajax({
                     url: url,

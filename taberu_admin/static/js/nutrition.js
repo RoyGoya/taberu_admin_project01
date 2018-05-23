@@ -1,9 +1,7 @@
 $(document).ready(function () {
 
-    /*
- Module Pattern
-     https://learn.jquery.com/code-organization/concepts/
-*/
+    //Module Pattern
+    // https://learn.jquery.com/code-organization/concepts/
     var _nutrition = $.taberu.nutrition,
         _url = $.taberu.url;
 
@@ -19,24 +17,22 @@ $(document).ready(function () {
                 _nlistEle = $( "li#box-nlist" );
 
             if ( _currentEle.is( "ul#dt_pattern > li > input" ) ) {
-                var _dtPatternVal = _currentEle.val(),
-                    _dtInputs = $( "ul#dt_pattern").find( "input" ),
-                    _ntInputs = $( "ul#pattern1" ).find( "input" ),
-                    _paramData = $.param({ dt_pattern: _dtPatternVal});
-                _nutrition.clearCheckedInputEls(_dtInputs);
+                var _paramData = $.param({ dt_pattern: _currentEle.val()});
+                _nutrition.clearCheckedInputEls(
+                    $( "ul#dt_pattern").find( "input" ));
                 _currentEle.prop("checked", true);
-                _nutrition.clearCheckedInputEls(_ntInputs);
+                _nutrition.clearCheckedInputEls(
+                    $( "ul#pattern1" ).find( "input" ));
                 _pattern2Ele.empty();
                 _nutrition.loadTemplate(_url.nutrition.list, _nlistEle,
                     _paramData);
 
             } else if ( _currentEle.is( "ul#pattern1 > li > input" ) ) {
-                var _dtPatternVal = _dtPatternEle.find( "input:checked" ).val(),
-                    _pattern1Val = _currentEle.val(),
-                    _pattern1Inputs = _pattern1Ele.find( "input" ),
+                var _pattern1Inputs = _pattern1Ele.find( "input" ),
                     _paramData = $.param({
-                        dt_pattern: _dtPatternVal,
-                        pattern1: _pattern1Val
+                        dt_pattern: _dtPatternEle.find( "input:checked" )
+                            .val(),
+                        pattern1: _currentEle.val()
                     });
                 _nutrition.clearCheckedInputEls(_pattern1Inputs);
                 _currentEle.prop("checked", true);
@@ -58,15 +54,11 @@ $(document).ready(function () {
                 _fdetailEle = $( "li#box-fdetail" );
 
             if ( _currentEle.is( "div.tr-nlist" )) {
-                var _dtPatternVal = _currentEle.data("dtPattern"),
-                    _pattern1Val = _currentEle.data("pattern1"),
-                    _pattern2Val = _currentEle.data("pattern2"),
-                    _serial = _currentEle.data("serial"),
-                    _paramData = $.param({
-                        dt_pattern: _dtPatternVal,
-                        pattern1: _pattern1Val,
-                        pattern2: _pattern2Val,
-                        serial: _serial
+                var _paramData = $.param({
+                        dt_pattern: _currentEle.data("dtPattern"),
+                        pattern1: _currentEle.data("pattern1"),
+                        pattern2: _currentEle.data("pattern2"),
+                        serial: _currentEle.data("serial")
                     });
                 _nutrition.loadTemplate(
                     _url.nutrition.detail, _ndetailEle, _paramData);
@@ -84,5 +76,20 @@ $(document).ready(function () {
                 _nutrition.loadTemplate(_url.nutrition.factor.list,
                     _flistEle);
             }
+        });
+
+    $( "li#box-flist" ).on("click", "div.tr-flist",
+        function ( e ) {
+           var _currentEle = $( this );
+
+           if( _currentEle.is("div.tr-flist") ) {
+                var _paramData = $.param({
+                        pattern1: _currentEle.data("pattern1"),
+                        pattern2: _currentEle.data("pattern2"),
+                        pattern3: _currentEle.data("pattern3"),
+                        pattern4: _currentEle.data("pattern4")
+                    });
+           }
+
         });
 });
