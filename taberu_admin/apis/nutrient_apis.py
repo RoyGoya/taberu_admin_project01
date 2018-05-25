@@ -70,7 +70,7 @@ class NutrientDetailTemplate(MethodView):
             Nutrient.serial == serial
         ).first()
         pattern2_choices = get_nutrient_pattern2_choices(pattern1)
-        form = CreatenutrientForm(request.form)
+        form = CreateNutrientForm(request.form)
         form.pattern2.choices = pattern2_choices
 
         form.dt_pattern.data = nutrient.dt_pattern

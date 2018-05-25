@@ -79,8 +79,24 @@ li#box-flist {
     margin-top: 10px;
     margin-right: 10px;
 }
-div#bt-reset-flist {
-    text-align: left;
+ul#selected-factor {
+    list-style-type: none;
+    overflow: hidden;
+    margin-left: -20px;
+    font-size: 13px;
+}
+ul#selected-factor > li {
+    float: left;
+    margin-right: 10px;
+    color: magenta;
+}
+ul#wrap-bt {
+    list-style-type: none;
+    overflow: hidden;
+}
+ul#wrap-bt > li {
+    float: right;
+    margin-right: 20px;
 }
 
 /* Content > Logs */

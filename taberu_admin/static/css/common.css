@@ -65,7 +65,7 @@ p#txt-footer {
 }
 .tb > header > div {
     display: table-cell;
-    min-width: 50px;
+    min-width: 60px;
     padding-bottom: 10px;
 }
 .tb > div.tr > div {
@@ -81,7 +81,7 @@ p#txt-footer {
 /* p Button */
 .bt {
     color: orange;
-    font-size: 18px;
+    font-size: 15px;
 }
 .bt:hover {
     color: forestgreen;

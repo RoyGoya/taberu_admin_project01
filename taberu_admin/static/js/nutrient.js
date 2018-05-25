@@ -61,8 +61,8 @@ $(document).ready(function () {
                         pattern2: _currentEle.data("pattern2"),
                         serial: _currentEle.data("serial")
                     });
-                _nutrient.loadTemplate(
-                    _url.nutrient.detail, _ndetailEle, _paramData);
+                _nutrient.loadTemplate(_url.nutrient.detail,
+                    _ndetailEle, _paramData);
                 _nutrient.loadTemplate(_url.nutrient.factor.detail,
                     _fdetailEle, _paramData);
             }
@@ -82,10 +82,9 @@ $(document).ready(function () {
             }
         });
 
-    $( "li#box-flist" ).on("click", "div.tr-flist, div#bt-reset-flist",
+    $( "li#box-flist" ).on("click", "div.tr-flist, li#bt-reset",
         function ( e ) {
-           var _currentEle = $( this ),
-               _flistEle = $( "li#box-flist" );;
+           var _currentEle = $( this );
 
            if( _currentEle.is("div.tr-flist") ) {
                var _paramData = $.param({
@@ -97,14 +96,41 @@ $(document).ready(function () {
                });
                _nutrient.toggleListOfEls(_currentEle, _paramData);
                if ( _currentEle.is(".sub") ) {
-                   console.log("This is Sub.");
+                   var _markedEle = $( "ul#selected-factor" ).empty(),
+                       _wrapBtEle = $( "ul#wrap-bt" ),
+                       _liBt = $( "<li>" ).addClass("bt bt-add"),
+                       _vals = [_currentEle.data("code"),
+                                _currentEle.data("engName"),
+                                _currentEle.data("korName")];
+                   _vals.forEach(function (val, idx) {
+                       var _li = $('<li>').text(val);
+                       _markedEle.append( _li );
+                   });
+                   // TODO: Add Selected Factor.
+                   _markedEle.append($("<select>")
+                       .append($("<option>").attr("value", "test")
+                           .text("test")));
+                   _markedEle.append($("<input>").attr("type", "text"));
+                   if (_wrapBtEle.is(".off")) {
+                       _wrapBtEle.append(_liBt.text("ADD"));
+                       _wrapBtEle.removeClass("off");
+                       _wrapBtEle.addClass("on");
+                   }
+
                }
-           } else if ( _currentEle.is("div#bt-reset-flist")) {
-                var _paramData = $.param({
-                    type: 'initial'
-                });
+           } else if ( _currentEle.is("li#bt-reset")) {
+                var _flistEle = $( "li#box-flist" ),
+                    _wrapBtEle = $( "ul#wrap-bt" ),
+                    _paramData = $.param({
+                        type: 'initial'
+                    });
                 _nutrient.loadTemplate(_url.nutrient.factor.list,
                     _flistEle, _paramData);
+                if (_wrapBtEle.is(".on")) {
+                    _wrapBtEle.find(".bt-add").remove();
+                    _wrapBtEle.removeClass("on");
+                    _wrapBtEle.addClass("off");
+                }
            }
 
         });
