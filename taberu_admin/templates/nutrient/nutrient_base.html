@@ -1,18 +1,18 @@
 {% extends "base_layout.html" %}
-{% block title %}Create Nutrition{% endblock %}
+{% block title %}Nutrients{% endblock %}
 {% block head %}
   {{ super() }}
     <link rel="stylesheet" href=
-            "{{ url_for('static', filename='css/nutrition.css') }}">
-    <script src="{{ url_for('static', filename='js/nutrition.js') }}"></script>
+            "{{ url_for('static', filename='css/nutrient.css') }}">
+    <script src="{{ url_for('static', filename='js/nutrient.js') }}"></script>
 {% endblock %}
 {% block content %}
     <ul id="wrap-nt">
         <li id="box-ndetail">
-            {% include 'nutrition/detail_nt.html' %}
+            {% include 'nutrient/nutrient_detail.html' %}
         </li>
         <li id="box-nlist">
-            {% include 'nutrition/list_nt.html' %}
+            {% include 'nutrient/nutrient_list.html' %}
         </li>
         <li id="box-fdetail">
             Factor Detail

@@ -1,0 +1,30 @@
+<p>
+    <div class="title">Nutrient Detail</div><br/>
+    {% if nutrient %}
+        <div class="selected-item" style="color: dodgerblue">
+            ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})</div>
+    {% else %}
+        <div class="selected-item" style="color: lightblue">None Selected</div>
+    {% endif %}
+</p>
+{% from "formhelpers.html" import render_field %}
+<form method=post id="ndetail_form">
+    {{ render_field(form.dt_pattern) }}
+    {{ render_field(form.pattern1) }}
+    {{ render_field(form.pattern2) }}
+    {{ render_field(form.has_sub) }}
+    {{ render_field(form.is_active) }}
+    <div id="bt-reset">
+        <input type="reset" value="Reset Text"/>
+    </div>
+    {{ render_field(form.eng_name) }}
+    {{ render_field(form.eng_plural) }}
+    {{ render_field(form.kor_name) }}
+    {{ render_field(form.jpn_name) }}
+    {{ render_field(form.chn_name) }}
+    {% if nutrient %}
+        <p class="bt" id="bt-send">UPDATE</p>
+    {% else %}
+        <p class="bt" id="bt-send">CREATE</p>
+    {% endif %}
+</form>

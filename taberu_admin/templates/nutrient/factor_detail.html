@@ -1,7 +1,7 @@
 <p>
     <div class="title" >Factor Detail</div><br/>
     <div class="selected-item" style="color:dodgerblue">
-        ({{ nutrition.eng_name }} {{ nutrition.dt_pattern }}{{ nutrition.pattern1 }}{{ nutrition.pattern2 }}{{ nutrition.serial }})
+        ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})
     </div>
     <div class="cnt">{{ factors_cnt|e }}</div>
 </p>
@@ -18,10 +18,10 @@
 {% for factor in factors %}
     <div
             class="tr-fdetail"
-            data-dt-pattern="{{ factor.nutrition_dt_pattern|e }}"
-            data-pattern1="{{ factor.nutrition_pattern1|e }}"
-            data-pattern2="{{ factor.nutrition_pattern2|e }}"
-            data-serial="{{ factor.nutrition_serial|e }}"
+            data-dt-pattern="{{ factor.nutrient_dt_pattern|e }}"
+            data-pattern1="{{ factor.nutrient_pattern1|e }}"
+            data-pattern2="{{ factor.nutrient_pattern2|e }}"
+            data-serial="{{ factor.nutrient_serial|e }}"
             data-nf-pattern1="{{ factor.pattern1|e }}"
             data-nf-pattern2="{{ factor.pattern2|e }}"
             data-nf-pattern3="{{ factor.pattern3|e }}"
@@ -47,4 +47,4 @@
     </div>
 {% endfor %}
 </section>
-<p class="bt" id="bt-add-fdetail">Add</p>
+<p class="bt" id="bt-get-flist">Add</p>

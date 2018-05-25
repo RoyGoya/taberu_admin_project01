@@ -1,25 +1,18 @@
-<p>
-    <div class="title" >Factor List</div>
-    <div class="cnt">{{ factors_cnt|e }}</div>
-</p>
-<section class="tb" id="tb-flist">
-    <header>
-        <div>Code</div>
-        <div>EngName</div>
-        <div>IsActive</div>
-        <div>HasSub</div>
-        <div>KorName</div>
-        <div>JpnName</div>
-        <div>ChnName</div>
-    </header>
 {% for factor in factors %}
     <div
-            class="tr tr-flist"
+            class="tr tr-flist off"
             data-pattern1="{{ factor.pattern1|e }}"
             data-pattern2="{{ factor.pattern2|e }}"
             data-pattern3="{{ factor.pattern3|e }}"
             data-pattern4="{{ factor.pattern4|e }}"
+            data-has-sub="{{ factor.has_sub|e }}"
+            data-code="{{ factor.pattern1|e }}{{ factor.pattern2|e }}{{ factor.pattern3|e }}{{ factor.pattern4|e }}"
     >
+        <div class="bullet">
+            {% if factor.has_sub %}
+                &#10149;
+            {% endif %}
+        </div>
         <div>
             {{ factor.pattern1|e }}{{ factor.pattern2|e }}{{ factor.pattern3|e }}{{ factor.pattern4|e }}
         </div>
@@ -43,5 +36,3 @@
         <div>{{ factor.chn_name|e }}</div>
     </div>
 {% endfor %}
-</section>
-<p class="bt" id="bt-add-flist">Add</p>

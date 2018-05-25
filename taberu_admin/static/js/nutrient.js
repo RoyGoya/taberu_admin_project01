@@ -1,8 +1,8 @@
 $(document).ready(function () {
 
-    //Module Pattern
+    // Module Pattern
     // https://learn.jquery.com/code-organization/concepts/
-    var _nutrition = $.taberu.nutrition,
+    var _nutrient = $.taberu.nutrient,
         _url = $.taberu.url;
 
     // Jquery Custom Events
@@ -18,28 +18,29 @@ $(document).ready(function () {
 
             if ( _currentEle.is( "ul#dt_pattern > li > input" ) ) {
                 var _paramData = $.param({ dt_pattern: _currentEle.val()});
-                _nutrition.clearCheckedInputEls(
+                _nutrient.clearCheckedInputEls(
                     $( "ul#dt_pattern").find( "input" ));
                 _currentEle.prop("checked", true);
-                _nutrition.clearCheckedInputEls(
+                _nutrient.clearCheckedInputEls(
                     $( "ul#pattern1" ).find( "input" ));
                 _pattern2Ele.empty();
-                _nutrition.loadTemplate(_url.nutrition.list, _nlistEle,
+                _nutrient.loadTemplate(_url.nutrient.list, _nlistEle,
                     _paramData);
 
             } else if ( _currentEle.is( "ul#pattern1 > li > input" ) ) {
                 var _pattern1Inputs = _pattern1Ele.find( "input" ),
+                    _pattern1Vla = _currentEle.val(),
                     _paramData = $.param({
                         dt_pattern: _dtPatternEle.find( "input:checked" )
                             .val(),
-                        pattern1: _currentEle.val()
+                        pattern1: _pattern1Vla
                     });
-                _nutrition.clearCheckedInputEls(_pattern1Inputs);
+                _nutrient.clearCheckedInputEls(_pattern1Inputs);
                 _currentEle.prop("checked", true);
-                _nutrition.loadTemplate(_url.nutrition.list, _nlistEle,
+                _nutrient.loadTemplate(_url.nutrient.list, _nlistEle,
                     _paramData);
-                _nutrition.getNutritionPattern2(_url.nutrition.pattern2,
-                    _pattern1Val);
+                _nutrient.getNutrientPattern2(_url.nutrient.pattern2,
+                    _pattern1Vla);
 
             } else if ( _currentEle.is( "ul#pattern2 > li > input" ) ) {
                 console.log("pattern2");
@@ -60,35 +61,50 @@ $(document).ready(function () {
                         pattern2: _currentEle.data("pattern2"),
                         serial: _currentEle.data("serial")
                     });
-                _nutrition.loadTemplate(
-                    _url.nutrition.detail, _ndetailEle, _paramData);
-                _nutrition.loadTemplate(_url.nutrition.factor.detail,
+                _nutrient.loadTemplate(
+                    _url.nutrient.detail, _ndetailEle, _paramData);
+                _nutrient.loadTemplate(_url.nutrient.factor.detail,
                     _fdetailEle, _paramData);
             }
         });
 
-    $( "li#box-fdetail" ).on("click", "p#bt-add-fdetail",
+    $( "li#box-fdetail" ).on("click", "p#bt-get-flist",
         function ( e ) {
             var _currentEle = $( this ),
                 _flistEle = $( "li#box-flist" );
 
-            if ( _currentEle.is( "p#bt-add-fdetail" )) {
-                _nutrition.loadTemplate(_url.nutrition.factor.list,
-                    _flistEle);
+            if ( _currentEle.is( "p#bt-get-flist" )) {
+                var _paramData = $.param({
+                    type: 'initial'
+                });
+                _nutrient.loadTemplate(_url.nutrient.factor.list,
+                    _flistEle, _paramData);
             }
         });
 
-    $( "li#box-flist" ).on("click", "div.tr-flist",
+    $( "li#box-flist" ).on("click", "div.tr-flist, div#bt-reset-flist",
         function ( e ) {
-           var _currentEle = $( this );
+           var _currentEle = $( this ),
+               _flistEle = $( "li#box-flist" );;
 
            if( _currentEle.is("div.tr-flist") ) {
+               var _paramData = $.param({
+                   type: 'addition',
+                   pattern1: _currentEle.data("pattern1"),
+                   pattern2: _currentEle.data("pattern2"),
+                   pattern3: _currentEle.data("pattern3"),
+                   pattern4: _currentEle.data("pattern4")
+               });
+               _nutrient.toggleListOfEls(_currentEle, _paramData);
+               if ( _currentEle.is(".sub") ) {
+                   console.log("This is Sub.");
+               }
+           } else if ( _currentEle.is("div#bt-reset-flist")) {
                 var _paramData = $.param({
-                        pattern1: _currentEle.data("pattern1"),
-                        pattern2: _currentEle.data("pattern2"),
-                        pattern3: _currentEle.data("pattern3"),
-                        pattern4: _currentEle.data("pattern4")
-                    });
+                    type: 'initial'
+                });
+                _nutrient.loadTemplate(_url.nutrient.factor.list,
+                    _flistEle, _paramData);
            }
 
         });

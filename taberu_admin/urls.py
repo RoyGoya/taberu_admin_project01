@@ -2,10 +2,10 @@
 from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
-from .views.nutrition_views import NutritionView, DetailNutritionView, \
+from .views.nutrient_views import NutritionView, DetailNutritionView, \
     CreateNutritionView
-from .apis.nutrition_apis import NutritionListTemplate, NutritionPattern2, \
-    NutritionDetailTemplate, NutritionFactorDetail, NutritionFactorList
+from .apis.nutrient_apis import NutrientListTemplate, NutrientPattern2, \
+    NutrientDetailTemplate, NutrientFactorDetail, NutrientFactorList
 
 # Decorate Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -33,19 +33,19 @@ list_tag_view = TagListView.as_view(
 detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
-nutrition_view = NutritionView.as_view(
-    'nutrition_page', template_name='nutrition/base_nt.html'
+nutrient_view = NutritionView.as_view(
+    'nutrition_page', template_name='nutrient/nutrient_base.html'
 )
 
-nutrition_nlist_api = NutritionListTemplate.as_view(
+nutrient_list_api = NutrientListTemplate.as_view(
     'nutrition_list_api')
-nutrition_pattern2_api = NutritionPattern2.as_view(
+nutrient_pattern2_api = NutrientPattern2.as_view(
     'nutrition_pattern2_api')
-nutrition_ndetail_api = NutritionDetailTemplate.as_view(
+nutrient_detail_api = NutrientDetailTemplate.as_view(
     'nutrition_detail_api')
-nutrition_fdetail_api = NutritionFactorDetail.as_view(
+factor_detail_api = NutrientFactorDetail.as_view(
     'nutrition_factor_detail_api')
-nutrition_flist_api = NutritionFactorList.as_view(
+factor_list_api = NutrientFactorList.as_view(
     'nutrition_factor_list_api'
 )
 
@@ -62,10 +62,10 @@ nutrition_flist_api = NutritionFactorList.as_view(
 
 url_patterns = [
     ('/', index_view),
-    ('/nutrition', nutrition_view),
-    ('/api/nutrition/list', nutrition_nlist_api, ['GET']),
-    ('/api/nutrition/detail', nutrition_ndetail_api, ['GET']),
-    ('/api/nutrition/pattern2', nutrition_pattern2_api, ['GET']),
-    ('/api/nutrition/factor/list', nutrition_flist_api, ['GET']),
-    ('/api/nutrition/factor/detail', nutrition_fdetail_api, ['GET'])
+    ('/nutrient', nutrient_view),
+    ('/api/nutrient/list', nutrient_list_api, ['GET']),
+    ('/api/nutrient/detail', nutrient_detail_api, ['GET']),
+    ('/api/nutrient/pattern2', nutrient_pattern2_api, ['GET']),
+    ('/api/nutrient/factor/list', factor_list_api, ['GET']),
+    ('/api/nutrient/factor/detail', factor_detail_api, ['GET'])
 ]

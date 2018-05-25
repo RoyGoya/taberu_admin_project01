@@ -1,7 +1,8 @@
-# Setuptools
-# http://flask.pocoo.org/docs/0.12/patterns/packages/
-# http://flask.pocoo.org/docs/0.12/patterns/distribute/
-
+"""
+    Setuptools
+    http://flask.pocoo.org/docs/0.12/patterns/packages/
+    http://flask.pocoo.org/docs/0.12/patterns/distribute/
+"""
 
 from setuptools import setup
 

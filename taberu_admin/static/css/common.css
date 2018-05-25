@@ -65,14 +65,17 @@ p#txt-footer {
 }
 .tb > header > div {
     display: table-cell;
-    min-width: 70px;
+    min-width: 50px;
     padding-bottom: 10px;
 }
 .tb > div.tr > div {
     display: table-cell;
 }
 .tb > div.tr:hover {
-    background-color: aliceblue;
+    background-color: aliceblue !important;
+}
+.tb > div.tr:active {
+    background-color: beige;
 }
 
 /* p Button */

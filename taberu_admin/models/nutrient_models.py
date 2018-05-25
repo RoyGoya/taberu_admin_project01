@@ -8,8 +8,8 @@ from ..database import Base
 from ..helpers.timezone_gen import utc_now
 
 
-class Nutrition(Base):
-    __tablename__ = 'nutrition'
+class Nutrient(Base):
+    __tablename__ = 'nutrient'
     dt_pattern = Column(CHAR(1), primary_key=True)
     pattern1 = Column(CHAR(1), primary_key=True)
     pattern2 = Column(CHAR(2), primary_key=True)
@@ -45,45 +45,45 @@ class Nutrition(Base):
         self.chn_name = chn_name
 
     def __repr__(self):
-        return '<Nutrition %r>' % (self.eng_name)
+        return '<Nutrient %r>' % (self.eng_name)
 
 
-class NutritionSet(Base):
-    __tablename__ = 'nutrition_set'
-    super_nutrition_dt_pattern = Column(CHAR(1), primary_key=True)
-    super_nutrition_pattern1 = Column(CHAR(1), primary_key=True)
-    super_nutrition_pattern2 = Column(CHAR(2), primary_key=True)
-    super_nutrition_serial = Column(Integer, primary_key=True)
-    sub_nutrition_dt_pattern = Column(CHAR(1), primary_key=True)
-    sub_nutrition_pattern1 = Column(CHAR(1), primary_key=True)
-    sub_nutrition_pattern2 = Column(CHAR(2), primary_key=True)
-    sub_nutrition_serial = Column(Integer, primary_key=True)
+class NutrientSet(Base):
+    __tablename__ = 'nutrient_set'
+    super_dt_pattern = Column(CHAR(1), primary_key=True)
+    super_pattern1 = Column(CHAR(1), primary_key=True)
+    super_pattern2 = Column(CHAR(2), primary_key=True)
+    super_serial = Column(Integer, primary_key=True)
+    sub_dt_pattern = Column(CHAR(1), primary_key=True)
+    sub_pattern1 = Column(CHAR(1), primary_key=True)
+    sub_pattern2 = Column(CHAR(2), primary_key=True)
+    sub_serial = Column(Integer, primary_key=True)
     is_active = Column(Boolean)
 
-    def __init__(self, super_nutrition_dt_pattern=None,
-                 super_nutrition_pattern1=None,
-                 super_nutrition_pattern2=None,
-                 super_nutrition_serial=None,
-                 sub_nutrition_dt_pattern=None,
-                 sub_nutrition_pattern1=None,
-                 sub_nutrition_pattern2=None,
-                 sub_nutrition_serial=None, is_active=None):
-        self.super_nutrition_dt_pattern = super_nutrition_dt_pattern
-        self.super_nutrition_pattern1 = super_nutrition_pattern1
-        self.super_nutrition_pattern2 = super_nutrition_pattern2
-        self.super_nutrition_serial = super_nutrition_serial
-        self.sub_nutrition_dt_pattern = sub_nutrition_dt_pattern
-        self.sub_nutrition_pattern1 = sub_nutrition_pattern1
-        self.sub_nutrition_pattern2 = sub_nutrition_pattern2
-        self.sub_nutrition_serial = sub_nutrition_serial
+    def __init__(self, super_dt_pattern=None,
+                 super_pattern1=None,
+                 super_pattern2=None,
+                 super_serial=None,
+                 sub_dt_pattern=None,
+                 sub_pattern1=None,
+                 sub_pattern2=None,
+                 sub_serial=None, is_active=None):
+        self.super_dt_pattern = super_dt_pattern
+        self.super_pattern1 = super_pattern1
+        self.super_pattern2 = super_pattern2
+        self.super_serial = super_serial
+        self.sub_dt_pattern = sub_dt_pattern
+        self.sub_pattern1 = sub_pattern1
+        self.sub_pattern2 = sub_pattern2
+        self.sub_serial = sub_serial
         self.is_active = is_active
 
     def __repr__(self):
-        return '<Nutrition Set>'
+        return '<Nutrient Set>'
 
 
-class NutritionFactor(Base):
-    __tablename__ = 'nutrition_factor'
+class Factor(Base):
+    __tablename__ = 'factor'
     pattern1 = Column(CHAR(1), primary_key=True)
     pattern2 = Column(CHAR(1), primary_key=True)
     pattern3 = Column(CHAR(1), primary_key=True)
@@ -110,47 +110,47 @@ class NutritionFactor(Base):
         self.chn_name = chn_name
 
     def __repr__(self):
-        return '<Nutrition Factor>'
+        return '<Factor>'
 
 
-class NutritionFactorSet(Base):
-    __tablename__ = 'nutrition_factor_set'
-    nutrition_dt_pattern = Column(CHAR(1), primary_key=True)
-    nutrition_pattern1 = Column(CHAR(1), primary_key=True)
-    nutrition_pattern2 = Column(CHAR(2), primary_key=True)
-    nutrition_serial = Column(Integer, primary_key=True)
-    nf_pattern1 = Column(CHAR(1), primary_key=True)
-    nf_pattern2 = Column(CHAR(1), primary_key=True)
-    nf_pattern3 = Column(CHAR(1), primary_key=True)
-    nf_pattern4 = Column(CHAR(1), primary_key=True)
+class FactorSet(Base):
+    __tablename__ = 'factor_set'
+    nutrient_dt_pattern = Column(CHAR(1), primary_key=True)
+    nutrient_pattern1 = Column(CHAR(1), primary_key=True)
+    nutrient_pattern2 = Column(CHAR(2), primary_key=True)
+    nutrient_serial = Column(Integer, primary_key=True)
+    factor_pattern1 = Column(CHAR(1), primary_key=True)
+    factor_pattern2 = Column(CHAR(1), primary_key=True)
+    factor_pattern3 = Column(CHAR(1), primary_key=True)
+    factor_pattern4 = Column(CHAR(1), primary_key=True)
     is_active = Column(Boolean)
     unit_code = Column(CHAR(4))
     quantity = Column(REAL)
 
-    def __init__(self, nutrition_dt_pattern=None,
-                 nutrition_pattern1=None,
-                 nutrition_pattern2=None, nutrition_serial=None,
-                 nf_pattern1=None, nf_pattern2=None, nf_pattern3=None,
-                 nf_pattern4=None, is_active=None, unit_code=None,
+    def __init__(self, nutrient_dt_pattern=None,
+                 nutrient_pattern1=None,
+                 nutrient_pattern2=None, nutrient_serial=None,
+                 factor_pattern1=None, factor_pattern2=None, factor_pattern3=None,
+                 factor_pattern4=None, is_active=None, unit_code=None,
                  quantity=None):
-        self.nutrition_dt_pattern = nutrition_dt_pattern
-        self.nutrition_pattern1 = nutrition_pattern1
-        self.nutrition_pattern2 = nutrition_pattern2
-        self.nutrition_serial = nutrition_serial
-        self.nf_pattern1 = nf_pattern1
-        self.nf_pattern2 = nf_pattern2
-        self.nf_pattern3 = nf_pattern3
-        self.nf_pattern4 = nf_pattern4
+        self.nutrient_dt_pattern = nutrient_dt_pattern
+        self.nutrient_pattern1 = nutrient_pattern1
+        self.nutrient_pattern2 = nutrient_pattern2
+        self.nutrient_serial = nutrient_serial
+        self.factor_pattern1 = factor_pattern1
+        self.factor_pattern2 = factor_pattern2
+        self.factor_pattern3 = factor_pattern3
+        self.factor_pattern4 = factor_pattern4
         self.is_active = is_active
         self.unit_code = unit_code
         self.quantity = quantity
 
     def __repr__(self):
-        return '<Nutrition Factor Set>'
+        return '<Factor Set>'
 
 
-class NutritionPattern(Base):
-    __tablename__ = 'nutrition_pattern'
+class NutrientPattern(Base):
+    __tablename__ = 'nutrient_pattern'
     pattern1 = Column(CHAR(1), primary_key=True)
     pattern2 = Column(CHAR(2), primary_key=True)
     is_active = Column(Boolean)
@@ -173,7 +173,7 @@ class NutritionPattern(Base):
         self.chn_name = chn_name
 
     def __repr__(self):
-        return '<Nutrition Pattern>'
+        return '<nutrient Pattern>'
 
 
 class DataPattern(Base):

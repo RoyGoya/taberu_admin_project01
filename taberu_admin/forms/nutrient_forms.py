@@ -5,7 +5,7 @@
 from wtforms import Form, BooleanField, StringField, PasswordField, \
     validators, SubmitField, RadioField
 
-from ..models.nutrition_models import NutritionPattern, DataPattern
+from ..models.nutrient_models import NutrientPattern, DataPattern
 
 
 def get_dt_pattern_choices():
@@ -17,31 +17,31 @@ def get_dt_pattern_choices():
     return choice_tuple_list
 
 
-def get_nutrition_pattern1_choices():
+def get_nutrient_pattern1_choices():
     choice_tuple_list = []
-    nutrition_patterns = NutritionPattern.query.filter_by(pattern2='00',
-                                                          is_active=True).all()
-    for nutrition_pattern in nutrition_patterns:
-        choice_tuple = (nutrition_pattern.pattern1, nutrition_pattern.eng_name)
+    nutrient_patterns = NutrientPattern.query.filter_by(pattern2='00',
+                                                         is_active=True).all()
+    for nutrient_pattern in nutrient_patterns:
+        choice_tuple = (nutrient_pattern.pattern1, nutrient_pattern.eng_name)
         choice_tuple_list += {choice_tuple}
     return choice_tuple_list
 
 
-def get_nutrition_pattern2_choices(pattern1):
+def get_nutrient_pattern2_choices(pattern1):
     choice_tuple_list = []
-    nutrition_patterns = NutritionPattern.query.filter(
-        NutritionPattern.pattern1 == pattern1,
-        NutritionPattern.pattern2 != '00',
-        NutritionPattern.is_active == True
+    nutrient_patterns = NutrientPattern.query.filter(
+        NutrientPattern.pattern1 == pattern1,
+        NutrientPattern.pattern2 != '00',
+        NutrientPattern.is_active == True
     ).all()
 
-    for nutrition_pattern in nutrition_patterns:
-        choice_tuple = (nutrition_pattern.pattern2, nutrition_pattern.eng_name)
+    for nutrient_pattern in nutrient_patterns:
+        choice_tuple = (nutrient_pattern.pattern2, nutrient_pattern.eng_name)
         choice_tuple_list += {choice_tuple}
     return choice_tuple_list
 
 
-class CreateNutritionForm(Form):
+class CreateNutrientForm(Form):
 
     """Field Class's Parameters
     (self, label=None, validators=None, filters=tuple(),
@@ -53,7 +53,7 @@ class CreateNutritionForm(Form):
     dt_pattern = RadioField(label="DataType", choices=dt_pattern_choices,
                             default=dt_pattern_choices[0][0])
     pattern1 = RadioField(label="Pattern1",
-                             choices=get_nutrition_pattern1_choices())
+                          choices=get_nutrient_pattern1_choices())
     pattern2 = RadioField(label="Pattern2", choices=[])
     has_sub = RadioField(label="Has Sub?", choices=[
         (True, 'True'), (False, 'False')
