@@ -122,7 +122,8 @@ $(document).ready(function () {
             }
         });
 
-    $( "div#box-flist" ).on("click", "div.tr-flist, li#bt-reset",
+    $( "div#box-flist" ).on("click", "div.tr-flist, li#flist-reset," +
+        "li#flist-reset",
         function ( e ) {
            var _currentEle = $( this );
 
@@ -136,31 +137,34 @@ $(document).ready(function () {
                });
                _nutrient.toggleListOfEls(_currentEle, _paramData);
                if ( _currentEle.is(".sub") ) {
-                   var _markedEle = $( "div#selected-factor" ).empty(),
-                       _wrapBtEle = $( "ul#flist-wrap-bt" ),
+                   var _markedEle = $( "div#opted-factor" ).empty(),
+                       _addEle = $( "li#flist-add" ),
                        _liBt = $( "<li>" ).addClass("bt bt-add");
                    _nutrient.replaceTemplate(_url.factor.select, _markedEle,
                        _paramData);
-                   if (_wrapBtEle.is(".off")) {
-                       _wrapBtEle.append(_liBt.text("ADD"));
-                       _wrapBtEle.removeClass("off");
-                       _wrapBtEle.addClass("on");
+                   if (_addEle.is(".off")) {
+                       _addEle.show().removeClass("off").addClass("on");
                    }
                }
-           } else if ( _currentEle.is("li#bt-reset")) {
+           } else if ( _currentEle.is("li#flist-reset")) {
                 var _flistEle = $( "div#box-flist" ),
-                    _wrapBtEle = $( "ul#flist-wrap-bt" ),
-                    _paramData = $.param({
-                        type: 'initial'
-                    });
+                    _addEle = $( "li#flist-add" ),
+                    _paramData = $.param( { type: 'initial' } );
                 _nutrient.loadTemplate(_url.factor.list,
                     _flistEle, _paramData);
-                if (_wrapBtEle.is(".on")) {
-                    _wrapBtEle.find(".bt-add").remove();
-                    _wrapBtEle.removeClass("on");
-                    _wrapBtEle.addClass("off");
+                if (_addEle.is(".on")) {
+                    _addEle.hide().removeClass("on").addClass("off");
                 }
+           } else if ( _currentEle.is( "li#flist-reset" ) ) {
+               var _optedEle = $( "div#opted-factor" ),
+                   _paramData = $.param({
+                       pattern1: _optedEle.data("pattern1"),
+                       pattern2: _optedEle.data("pattern2"),
+                       pattern3: _optedEle.data("pattern3"),
+                       pattern4: _optedEle.data("pattern4"),
+                       // unit_code:
+                   })
            }
-
         });
+
 });

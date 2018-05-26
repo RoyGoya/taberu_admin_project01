@@ -1,7 +1,10 @@
 <p>
     <div class="title" >Factor List</div><br/>
-    <div id="selected-factor"></div>
-    <ul class="wrap-bt off" id="flist-wrap-bt"><li class="bt" id="bt-reset">RESET</li></ul>
+    <div id="opted-factor"></div>
+    <ul class="wrap-bt" id="flist-wrap-bt">
+        <li class="bt" id="flist-reset">RESET</li>
+        <li class="bt off" id="flist-add" style="display: none">ADD</li>
+    </ul>
 </p>
 
 <section class="tb" id="tb-flist">
@@ -15,5 +18,5 @@
         <div>JpnName</div>
         <div>ChnName</div>
     </header>
-{% include 'nutrient/table_ft.html' %}
+{% include 'nutrient/table_factor.html' %}
 </section>

@@ -190,7 +190,7 @@ class FactorList(MethodView):
                                factors_cnt=factors_len)
 
 
-class OptFactor(MethodView):
+class SelectAFactor(MethodView):
     def __init__(self, template_name):
         self.template_name = template_name
 

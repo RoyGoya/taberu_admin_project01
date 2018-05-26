@@ -18,12 +18,12 @@ div.ndetail-ul > ul {
 }
 
 /* Content > Factor List */
-div#selected-factor {
+div#opted-factor {
     margin : auto;
     text-align: center;
     font-size: 13px;
 }
-div#selected-factor > div {
+div#opted-factor > div {
     display : inline;
     margin-right: 10px;
     color: magenta;

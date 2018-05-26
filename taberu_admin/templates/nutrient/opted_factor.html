@@ -1,4 +1,4 @@
-<div id="selected-factor"
+<div id="opted-factor"
         data-pattern1="{{ factor.pattern1|e }}"
         data-pattern2="{{ factor.pattern2|e }}"
         data-pattern3="{{ factor.pattern3|e }}"
@@ -8,11 +8,11 @@
     <div>{{ factor.eng_name }}</div>
     <div>{{ factor.kor_name }}</div>
     <div>
-        <select>
+        <select id="factor-unit">
         {% for unit in units %}
             <option
-                    data-serial="{{ unit.serial }}"
                     data-pattern="{{ unit.pattern }}"
+                    data-serial="{{ unit.serial }}"
             >
                 {{ unit.symbol }}
             </option>
