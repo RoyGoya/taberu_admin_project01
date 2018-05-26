@@ -26,14 +26,19 @@ $(document).ready(function () {
                     _paramData);
                 if ( _fdetailEle.is(".off")) {
                     _fdetailEle.show();
+                    _fdetailEle.removeClass("off").addClass("on");
                 }
             }
         });
 
     $( "div#box-ndetail" ).on("click", "ul#dt_pattern > li > input, " +
-        "ul#pattern1 > li > input, ul#pattern2 > li > input",
+        "ul#pattern1 > li > input, ul#pattern2 > li > input, li#n-send, " +
+        "li#n-reset, li#n-new",
         function ( e) {
             var _currentEle = $( this ),
+                _ndetailEle = $( "div#box-ndetail" ),
+                _fdetailEle = $( "div#box-fdetail" ),
+                _flistEle = $( "div#box-flist" ),
                 _dtPatternEle = $( "ul#dt_pattern" ),
                 _pattern1Ele = $( "ul#pattern1" ),
                 _pattern2Ele = $( "ul#pattern2" ),
@@ -68,6 +73,34 @@ $(document).ready(function () {
             } else if ( _currentEle.is( "ul#pattern2 > li > input" ) ) {
                 console.log("pattern2");
 
+            } else if ( _currentEle.is( "li#n-send" ) ) {
+                console.log("n-send");
+            } else if ( _currentEle.is( "li#n-reset" ) ) {
+                if ( _currentEle.is( ".new" ) ) {
+                    _nutrient.loadTemplate(_url.nutrient.detail,
+                        _ndetailEle);
+                } else if ( _currentEle.is( ".selected" ) ) {
+                    var _selectedItemEle = $( "div#selected-nutrient" ),
+                        _paramData = $.param({
+                            dt_pattern: _selectedItemEle.data("dtPattern"),
+                            pattern1: _selectedItemEle.data("pattern1"),
+                            pattern2: _selectedItemEle.data("pattern2"),
+                            serial: _selectedItemEle.data("serial")
+                        });
+                    _nutrient.loadTemplate(_url.nutrient.detail,
+                        _ndetailEle, _paramData);
+                }
+            } else if ( _currentEle.is( "li#n-new" ) ) {
+                _nutrient.loadTemplate(_url.nutrient.detail,
+                        _ndetailEle);
+                if ( _fdetailEle.is(".on") ) {
+                    _fdetailEle.removeClass("on").addClass("off");
+                    _fdetailEle.hide();
+                }
+                if ( _flistEle.is(".on") ) {
+                    _flistEle.removeClass("on").addClass("off");
+                    _flistEle.hide();
+                }
             }
         });
 
@@ -84,6 +117,7 @@ $(document).ready(function () {
                     _flistEle, _paramData);
                 if ( _flistEle.is(".off") ) {
                     _flistEle.show();
+                    _flistEle.removeClass("off").addClass("on");
                 }
             }
         });

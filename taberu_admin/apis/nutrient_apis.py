@@ -1,9 +1,8 @@
-from flask import request, Response, jsonify, render_template
+from flask import request, jsonify, render_template
 from flask.views import MethodView
 
 from sqlalchemy import and_
 
-from ..database import Base
 from ..forms.nutrient_forms import CreateNutrientForm, \
     get_nutrient_pattern2_choices
 from ..models.nutrient_models import Nutrient, NutrientPattern,\
@@ -13,6 +12,9 @@ from ..models.unit_models import Unit
 
 class NutrientList(MethodView):
 
+    def __init__(self, template_name):
+        self.template_name = template_name
+
     def get(self) -> object:
         dt_pattern = request.args.get('dt_pattern')
         pattern1 = request.args.get('pattern1')
@@ -20,20 +22,19 @@ class NutrientList(MethodView):
         if dt_pattern is None:
             pass
         elif pattern1 is None:
-            nutrient_list = Nutrient.query.filter(
+            nutrients = Nutrient.query.filter(
                 Nutrient.dt_pattern == dt_pattern,
                 Nutrient.is_active == True
             ).all()
         else:
-            nutrient_list = Nutrient.query.filter(
+            nutrients = Nutrient.query.filter(
                 Nutrient.dt_pattern == dt_pattern,
                 Nutrient.pattern1 == pattern1,
                 Nutrient.is_active == True
             ).all()
-        nutrient_list_len = len(list_data)
-        return render_template('nutrient/nutrient_list.html',
-                               nutrients=nutrient_list,
-                               nutrients_cnt=nutrient_list_len)
+        nutrients_len = len(list_data)
+        return render_template(self.template_name, nutrients=nutrients,
+                               nutrients_cnt=nutrients_len)
 
 
 class NutrientPattern2(MethodView):
@@ -57,39 +58,49 @@ class NutrientPattern2(MethodView):
 
 class NutrientDetail(MethodView):
 
+    def __init__(self, template_name):
+        self.template_name = template_name
+
     def get(self) -> object:
+        form = CreateNutrientForm(request.form)
         requests = request.args
         dt_pattern = requests.get('dt_pattern')
         pattern1 = requests.get('pattern1')
         pattern2 = requests.get('pattern2')
         serial = requests.get('serial')
 
-        nutrient = Nutrient.query.filter(
-            Nutrient.dt_pattern == dt_pattern,
-            Nutrient.pattern1 == pattern1,
-            Nutrient.pattern2 == pattern2,
-            Nutrient.serial == serial
-        ).first()
-        pattern2_choices = get_nutrient_pattern2_choices(pattern1)
-        form = CreateNutrientForm(request.form)
-        form.pattern2.choices = pattern2_choices
+        if dt_pattern is None:
+            return render_template(self.template_name, form=form)
+        else:
+            nutrient = Nutrient.query.filter(
+                Nutrient.dt_pattern == dt_pattern,
+                Nutrient.pattern1 == pattern1,
+                Nutrient.pattern2 == pattern2,
+                Nutrient.serial == serial
+            ).first()
+            pattern2_choices = get_nutrient_pattern2_choices(pattern1)
 
-        form.dt_pattern.data = nutrient.dt_pattern
-        form.pattern1.data = nutrient.pattern1
-        form.pattern2.data = nutrient.pattern2
-        form.has_sub.data = str(nutrient.has_sub)
-        form.is_active.data = str(nutrient.is_active)
-        form.eng_name.data = nutrient.eng_name
-        form.eng_plural.data = nutrient.eng_plural
-        form.kor_name.data = nutrient.kor_name
-        form.jpn_name.data = nutrient.jpn_name
-        form.chn_name.data = nutrient.chn_name
-        return render_template('nutrient/nutrient_detail.html', form=form,
-                               nutrient=nutrient)
+            form.pattern2.choices = pattern2_choices
+
+            form.dt_pattern.data = nutrient.dt_pattern
+            form.pattern1.data = nutrient.pattern1
+            form.pattern2.data = nutrient.pattern2
+            form.has_sub.data = str(nutrient.has_sub)
+            form.is_active.data = str(nutrient.is_active)
+            form.eng_name.data = nutrient.eng_name
+            form.eng_plural.data = nutrient.eng_plural
+            form.kor_name.data = nutrient.kor_name
+            form.jpn_name.data = nutrient.jpn_name
+            form.chn_name.data = nutrient.chn_name
+            return render_template(self.template_name, form=form,
+                                   nutrient=nutrient)
 
 
 class FactorDetail(MethodView):
 
+    def __init__(self, template_name):
+        self.template_name = template_name
+
     def get(self) -> object:
         requests = request.args
         dt_pattern = requests.get('dt_pattern')
@@ -97,7 +108,7 @@ class FactorDetail(MethodView):
         pattern2 = requests.get('pattern2')
         serial = requests.get('serial')
 
-        # Get Selected nutrient's Factors
+        # Get Selected Nutrient's Factors.
         fset_suq = FactorSet.query.filter(
             FactorSet.nutrient_dt_pattern == dt_pattern,
             FactorSet.nutrient_pattern1 == pattern1,
@@ -111,7 +122,7 @@ class FactorDetail(MethodView):
             fset_suq.c.factor_pattern4 == Factor.pattern4
             )).all()
 
-        # Get Selected nutrient Info
+        # Get A Selected Nutrient Info.
         nutrient = Nutrient.query.filter(
             Nutrient.dt_pattern == dt_pattern,
             Nutrient.pattern1 == pattern1,
@@ -119,17 +130,20 @@ class FactorDetail(MethodView):
             Nutrient.serial == serial
         ).first()
         factors_len = len(factors)
-        return render_template('nutrient/factor_detail.html',
-                               factors=factors, factors_cnt=factors_len,
-                               nutrient=nutrient)
+        return render_template(self.template_name, factors=factors,
+                               factors_cnt=factors_len, nutrient=nutrient)
 
 
 class FactorList(MethodView):
 
+    def __init__(self, list_ft_template, table_ft_template):
+        self.list_ft_template = list_ft_template
+        self.table_ft_template = table_ft_template
+
     def get(self) -> object:
         requests = request.args
         factors = []
-        template = ''
+        template_name = ''
         request_type = requests.get('type')
         pattern1 = requests.get('pattern1')
         pattern2 = requests.get('pattern2')
@@ -164,19 +178,21 @@ class FactorList(MethodView):
                     Factor.pattern3 == pattern3,
                     Factor.pattern4 == pattern4
                 ).all()
-            template = 'nutrient/factor_list_part.html'
+            template_name = self.table_ft_template
         elif request_type == 'initial':
             factors = Factor.query.filter(
                 Factor.pattern2 == '0',
             ).all()
-            template = 'nutrient/factor_list.html'
+            template_name = self.list_ft_template
 
         factors_len = len(factors)
-        return render_template(template, factors=factors,
+        return render_template(template_name, factors=factors,
                                factors_cnt=factors_len)
 
 
-class FactorSelect(MethodView):
+class OptFactor(MethodView):
+    def __init__(self, template_name):
+        self.template_name = template_name
 
     def get(self) -> object:
         requests = request.args
@@ -195,5 +211,5 @@ class FactorSelect(MethodView):
             Unit.pattern == 'ma'
         ).all()
 
-        return render_template('nutrient/factor_selected.html',
-                               factor=factor, units=units)
+        return render_template(self.template_name, factor=factor,
+                               units=units)

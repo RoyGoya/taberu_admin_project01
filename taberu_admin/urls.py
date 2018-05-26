@@ -4,7 +4,7 @@ from .views.index_views import IndexView
 from .views.tag_views import TagListView, TagDetailView
 from .views.nutrient_views import NutritionView
 from .apis.nutrient_apis import NutrientList, NutrientPattern2, \
-    NutrientDetail, FactorDetail, FactorList, FactorSelect
+    NutrientDetail, FactorDetail, FactorList, OptFactor
 
 # Decorate Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -33,15 +33,21 @@ detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
 nutrient_view = NutritionView.as_view(
-    'nutrition_page', template_name='nutrient/nutrient_base.html'
+    'nutrition_page', template_name='nutrient/base_nt.html'
 )
 
-nutrient_list_api = NutrientList.as_view('nutrient_list_api')
+nutrient_list_api = NutrientList.as_view(
+    'nutrient_list_api', template_name='nutrient/list_nt.html')
 nutrient_pattern2_api = NutrientPattern2.as_view('nutrient_pattern2_api')
-nutrient_detail_api = NutrientDetail.as_view('nutrient_detail_api')
-factor_detail_api = FactorDetail.as_view('factor_detail_api')
-factor_list_api = FactorList.as_view('factor_list_api')
-factor_select_api = FactorSelect.as_view('factor_select_api')
+nutrient_detail_api = NutrientDetail.as_view(
+    'nutrient_detail_api', template_name='nutrient/info_nt.html')
+factor_detail_api = FactorDetail.as_view(
+    'factor_detail_api', template_name='nutrient/info_ft.html')
+factor_list_api = FactorList.as_view(
+    'factor_list_api', list_ft_template='nutrient/list_ft.html',
+    table_ft_template='nutrient/table_ft.html')
+opt_factor_api = OptFactor.as_view(
+    'factor_select_api', template_name='nutrient/opted_ft.html')
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -52,7 +58,7 @@ factor_select_api = FactorSelect.as_view('factor_select_api')
 # app.add_url_rule('/profile', view_func=profile_view)
 # app.add_url_rule('/tags', view_func=list_tag_view)
 # app.add_url_rule('/tags/detail', view_func=detail_tag_view)
-
+# TODO: Change Names
 url_patterns = [
     ('/', index_view),
     ('/nutrient', nutrient_view),
@@ -61,5 +67,5 @@ url_patterns = [
     ('/api/nutrient/pattern2', nutrient_pattern2_api, ['GET']),
     ('/api/factor/list', factor_list_api, ['GET']),
     ('/api/factor/detail', factor_detail_api, ['GET']),
-    ('/api/factor/select', factor_select_api, ['GET'])
+    ('/api/factor/select', opt_factor_api, ['GET'])
 ]
