@@ -1,0 +1,23 @@
+<div id="selected-factor"
+        data-pattern1="{{ factor.pattern1|e }}"
+        data-pattern2="{{ factor.pattern2|e }}"
+        data-pattern3="{{ factor.pattern3|e }}"
+        data-pattern4="{{ factor.pattern4|e }}"
+>
+    <div>{{ factor.pattern1 }}{{ factor.pattern2 }}{{ factor.pattern3 }}{{ factor.pattern4 }}</div>
+    <div>{{ factor.eng_name }}</div>
+    <div>{{ factor.kor_name }}</div>
+    <div>
+        <select>
+        {% for unit in units %}
+            <option
+                    data-serial="{{ unit.serial }}"
+                    data-pattern="{{ unit.pattern }}"
+            >
+                {{ unit.symbol }}
+            </option>
+        {% endfor %}
+        </select>
+    </div>
+    <div><input type="text" id="selected-txt"></div>
+</div>

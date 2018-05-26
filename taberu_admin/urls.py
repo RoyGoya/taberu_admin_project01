@@ -2,10 +2,9 @@
 from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
-from .views.nutrient_views import NutritionView, DetailNutritionView, \
-    CreateNutritionView
-from .apis.nutrient_apis import NutrientListTemplate, NutrientPattern2, \
-    NutrientDetailTemplate, NutrientFactorDetail, NutrientFactorList
+from .views.nutrient_views import NutritionView
+from .apis.nutrient_apis import NutrientList, NutrientPattern2, \
+    NutrientDetail, FactorDetail, FactorList, FactorSelect
 
 # Decorate Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -37,17 +36,12 @@ nutrient_view = NutritionView.as_view(
     'nutrition_page', template_name='nutrient/nutrient_base.html'
 )
 
-nutrient_list_api = NutrientListTemplate.as_view(
-    'nutrition_list_api')
-nutrient_pattern2_api = NutrientPattern2.as_view(
-    'nutrition_pattern2_api')
-nutrient_detail_api = NutrientDetailTemplate.as_view(
-    'nutrition_detail_api')
-factor_detail_api = NutrientFactorDetail.as_view(
-    'nutrition_factor_detail_api')
-factor_list_api = NutrientFactorList.as_view(
-    'nutrition_factor_list_api'
-)
+nutrient_list_api = NutrientList.as_view('nutrient_list_api')
+nutrient_pattern2_api = NutrientPattern2.as_view('nutrient_pattern2_api')
+nutrient_detail_api = NutrientDetail.as_view('nutrient_detail_api')
+factor_detail_api = FactorDetail.as_view('factor_detail_api')
+factor_list_api = FactorList.as_view('factor_list_api')
+factor_select_api = FactorSelect.as_view('factor_select_api')
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -59,13 +53,13 @@ factor_list_api = NutrientFactorList.as_view(
 # app.add_url_rule('/tags', view_func=list_tag_view)
 # app.add_url_rule('/tags/detail', view_func=detail_tag_view)
 
-
 url_patterns = [
     ('/', index_view),
     ('/nutrient', nutrient_view),
     ('/api/nutrient/list', nutrient_list_api, ['GET']),
     ('/api/nutrient/detail', nutrient_detail_api, ['GET']),
     ('/api/nutrient/pattern2', nutrient_pattern2_api, ['GET']),
-    ('/api/nutrient/factor/list', factor_list_api, ['GET']),
-    ('/api/nutrient/factor/detail', factor_detail_api, ['GET'])
+    ('/api/factor/list', factor_list_api, ['GET']),
+    ('/api/factor/detail', factor_detail_api, ['GET']),
+    ('/api/factor/select', factor_select_api, ['GET'])
 ]

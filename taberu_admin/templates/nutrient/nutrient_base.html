@@ -7,21 +7,15 @@
     <script src="{{ url_for('static', filename='js/nutrient.js') }}"></script>
 {% endblock %}
 {% block content %}
-    <ul id="wrap-nt">
-        <li id="box-ndetail">
-            {% include 'nutrient/nutrient_detail.html' %}
-        </li>
-        <li id="box-nlist">
+    <section id="wrap-nt">
+        <div class="box" id="box-nlist">
             {% include 'nutrient/nutrient_list.html' %}
-        </li>
-        <li id="box-fdetail">
-            Factor Detail
-        </li>
-        <li id="box-flist">
-            Factor List
-        </li>
-        <li id="box-logs">
-            Modified Logs
-        </li>
-    </ul>
+        </div>
+        <div class="box" id="box-ndetail">
+            {% include 'nutrient/nutrient_detail.html' %}
+        </div>
+        <div class="box off" id="box-fdetail" style="display: none;"></div>
+        <div class="box off" id="box-flist" style="display: none;"></div>
+        <div class="box off" id="box-logs" style="display: none;"></div>
+    </section>
 {% endblock %}

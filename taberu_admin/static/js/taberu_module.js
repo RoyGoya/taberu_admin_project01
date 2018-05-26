@@ -5,11 +5,13 @@ $( document ).ready(function () {
             nutrient: {
                 detail: "/api/nutrient/detail",
                 list: "/api/nutrient/list",
-                pattern2: "/api/nutrient/pattern2",
-                factor: {
-                    detail: "/api/nutrient/factor/detail",
-                    list: "/api/nutrient/factor/list"
-                }
+                pattern2: "/api/nutrient/pattern2"
+
+            },
+            factor: {
+                detail: "/api/factor/detail",
+                list: "/api/factor/list",
+                select: "/api/factor/select"
             },
             tag: {
 
@@ -30,7 +32,7 @@ $( document ).ready(function () {
                         var subElsSuperCode = subEle.data("code"),
                             subSubEle = subEle.nextAll( "." + subElsSuperCode);
                         _foldSubElesReculsively(subSubEle);
-                        subEle.find("div.bullet").text("➥");
+                        subEle.find("div.bullet").text("➤");
                         subEle.removeClass( "on" ).addClass( "off" );
                     } else {
                         return true;
@@ -47,16 +49,16 @@ $( document ).ready(function () {
                         if ( targetEle.is( ".hadCalled" )) {
                             targetEle.nextAll( "." + _superCode ).show();
                         } else {
-                            _getTemplateAfter(_urlDict.nutrient.factor.list,
+                            _getTemplateAfter(_urlDict.factor.list,
                                 targetEle, paramData, _superCode, subElesColor);
                             targetEle.addClass("hadCalled");
                         }
-                        targetEle.find("div.bullet").text("⇩");
+                        targetEle.find("div.bullet").text("∇");
                         targetEle.removeClass( "off" ).addClass( "on" );
                     } else if ( targetEle.is( ".on" )){
                         var _subEls = targetEle.nextAll( "." + _superCode );
                         _foldSubElesReculsively(_subEls);
-                        targetEle.find("div.bullet").text("➥");
+                        targetEle.find("div.bullet").text("➤");
                         targetEle.removeClass( "on" ).addClass( "off" );
                     }
                 } else {
@@ -67,6 +69,12 @@ $( document ).ready(function () {
             var _loadTemplate = function (url, targetEle, paramData) {
                 targetEle.load(url, paramData, function () {
                         console.log("Load Templete Complete.");
+                });
+            };
+
+            var _replaceTemplate = function (url, targetEle, paramData) {
+                $.get(url, paramData, function (template) {
+                    targetEle.replaceWith(template);
                 });
             };
             
@@ -114,6 +122,7 @@ $( document ).ready(function () {
 
             return {
                 loadTemplate: _loadTemplate,
+                replaceTemplate: _replaceTemplate,
                 getTemplateAfter: _getTemplateAfter,
                 clearCheckedInputEls: _clearCheckedInputEls,
                 getNutrientPattern2: _getNutrientPattern2,

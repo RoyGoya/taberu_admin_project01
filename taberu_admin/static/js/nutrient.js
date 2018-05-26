@@ -7,14 +7,37 @@ $(document).ready(function () {
 
     // Jquery Custom Events
     // https://learn.jquery.com/events/introduction-to-custom-events/
-    $( "li#box-ndetail" ).on("click", "ul#dt_pattern > li > input, " +
+    $( "div#box-nlist" ).on("click", "div.tr-nlist",
+        function ( e ) {
+            var _currentEle = $( this ),
+                _ndetailEle = $( "div#box-ndetail" ),
+                _fdetailEle = $( "div#box-fdetail" );
+
+            if ( _currentEle.is( "div.tr-nlist" )) {
+                var _paramData = $.param({
+                        dt_pattern: _currentEle.data("dtPattern"),
+                        pattern1: _currentEle.data("pattern1"),
+                        pattern2: _currentEle.data("pattern2"),
+                        serial: _currentEle.data("serial")
+                    });
+                _nutrient.loadTemplate(_url.nutrient.detail, _ndetailEle,
+                    _paramData);
+                _nutrient.loadTemplate(_url.factor.detail, _fdetailEle,
+                    _paramData);
+                if ( _fdetailEle.is(".off")) {
+                    _fdetailEle.show();
+                }
+            }
+        });
+
+    $( "div#box-ndetail" ).on("click", "ul#dt_pattern > li > input, " +
         "ul#pattern1 > li > input, ul#pattern2 > li > input",
         function ( e) {
             var _currentEle = $( this ),
                 _dtPatternEle = $( "ul#dt_pattern" ),
                 _pattern1Ele = $( "ul#pattern1" ),
                 _pattern2Ele = $( "ul#pattern2" ),
-                _nlistEle = $( "li#box-nlist" );
+                _nlistEle = $( "div#box-nlist" );
 
             if ( _currentEle.is( "ul#dt_pattern > li > input" ) ) {
                 var _paramData = $.param({ dt_pattern: _currentEle.val()});
@@ -48,41 +71,24 @@ $(document).ready(function () {
             }
         });
 
-    $( "li#box-nlist" ).on("click", "div.tr-nlist",
+    $( "div#box-fdetail" ).on("click", "li#get-flist",
         function ( e ) {
             var _currentEle = $( this ),
-                _ndetailEle = $( "li#box-ndetail" ),
-                _fdetailEle = $( "li#box-fdetail" );
+                _flistEle = $( "div#box-flist" );
 
-            if ( _currentEle.is( "div.tr-nlist" )) {
-                var _paramData = $.param({
-                        dt_pattern: _currentEle.data("dtPattern"),
-                        pattern1: _currentEle.data("pattern1"),
-                        pattern2: _currentEle.data("pattern2"),
-                        serial: _currentEle.data("serial")
-                    });
-                _nutrient.loadTemplate(_url.nutrient.detail,
-                    _ndetailEle, _paramData);
-                _nutrient.loadTemplate(_url.nutrient.factor.detail,
-                    _fdetailEle, _paramData);
-            }
-        });
-
-    $( "li#box-fdetail" ).on("click", "p#bt-get-flist",
-        function ( e ) {
-            var _currentEle = $( this ),
-                _flistEle = $( "li#box-flist" );
-
-            if ( _currentEle.is( "p#bt-get-flist" )) {
+            if ( _currentEle.is( "li#get-flist" )) {
                 var _paramData = $.param({
                     type: 'initial'
                 });
-                _nutrient.loadTemplate(_url.nutrient.factor.list,
+                _nutrient.loadTemplate(_url.factor.list,
                     _flistEle, _paramData);
+                if ( _flistEle.is(".off") ) {
+                    _flistEle.show();
+                }
             }
         });
 
-    $( "li#box-flist" ).on("click", "div.tr-flist, li#bt-reset",
+    $( "div#box-flist" ).on("click", "div.tr-flist, li#bt-reset",
         function ( e ) {
            var _currentEle = $( this );
 
@@ -96,35 +102,24 @@ $(document).ready(function () {
                });
                _nutrient.toggleListOfEls(_currentEle, _paramData);
                if ( _currentEle.is(".sub") ) {
-                   var _markedEle = $( "ul#selected-factor" ).empty(),
-                       _wrapBtEle = $( "ul#wrap-bt" ),
-                       _liBt = $( "<li>" ).addClass("bt bt-add"),
-                       _vals = [_currentEle.data("code"),
-                                _currentEle.data("engName"),
-                                _currentEle.data("korName")];
-                   _vals.forEach(function (val, idx) {
-                       var _li = $('<li>').text(val);
-                       _markedEle.append( _li );
-                   });
-                   // TODO: Add Selected Factor.
-                   _markedEle.append($("<select>")
-                       .append($("<option>").attr("value", "test")
-                           .text("test")));
-                   _markedEle.append($("<input>").attr("type", "text"));
+                   var _markedEle = $( "div#selected-factor" ).empty(),
+                       _wrapBtEle = $( "ul#flist-wrap-bt" ),
+                       _liBt = $( "<li>" ).addClass("bt bt-add");
+                   _nutrient.replaceTemplate(_url.factor.select, _markedEle,
+                       _paramData);
                    if (_wrapBtEle.is(".off")) {
                        _wrapBtEle.append(_liBt.text("ADD"));
                        _wrapBtEle.removeClass("off");
                        _wrapBtEle.addClass("on");
                    }
-
                }
            } else if ( _currentEle.is("li#bt-reset")) {
-                var _flistEle = $( "li#box-flist" ),
-                    _wrapBtEle = $( "ul#wrap-bt" ),
+                var _flistEle = $( "div#box-flist" ),
+                    _wrapBtEle = $( "ul#flist-wrap-bt" ),
                     _paramData = $.param({
                         type: 'initial'
                     });
-                _nutrient.loadTemplate(_url.nutrient.factor.list,
+                _nutrient.loadTemplate(_url.factor.list,
                     _flistEle, _paramData);
                 if (_wrapBtEle.is(".on")) {
                     _wrapBtEle.find(".bt-add").remove();

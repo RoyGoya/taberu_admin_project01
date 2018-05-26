@@ -8,9 +8,10 @@ from ..forms.nutrient_forms import CreateNutrientForm, \
     get_nutrient_pattern2_choices
 from ..models.nutrient_models import Nutrient, NutrientPattern,\
     FactorSet, Factor
+from ..models.unit_models import Unit
 
 
-class NutrientListTemplate(MethodView):
+class NutrientList(MethodView):
 
     def get(self) -> object:
         dt_pattern = request.args.get('dt_pattern')
@@ -54,7 +55,7 @@ class NutrientPattern2(MethodView):
             return json_data
 
 
-class NutrientDetailTemplate(MethodView):
+class NutrientDetail(MethodView):
 
     def get(self) -> object:
         requests = request.args
@@ -87,7 +88,7 @@ class NutrientDetailTemplate(MethodView):
                                nutrient=nutrient)
 
 
-class NutrientFactorDetail(MethodView):
+class FactorDetail(MethodView):
 
     def get(self) -> object:
         requests = request.args
@@ -123,7 +124,7 @@ class NutrientFactorDetail(MethodView):
                                nutrient=nutrient)
 
 
-class NutrientFactorList(MethodView):
+class FactorList(MethodView):
 
     def get(self) -> object:
         requests = request.args
@@ -173,3 +174,26 @@ class NutrientFactorList(MethodView):
         factors_len = len(factors)
         return render_template(template, factors=factors,
                                factors_cnt=factors_len)
+
+
+class FactorSelect(MethodView):
+
+    def get(self) -> object:
+        requests = request.args
+        pattern1 = requests.get('pattern1')
+        pattern2 = requests.get('pattern2')
+        pattern3 = requests.get('pattern3')
+        pattern4 = requests.get('pattern4')
+
+        factor = Factor.query.filter(
+            Factor.pattern1 == pattern1,
+            Factor.pattern2 == pattern2,
+            Factor.pattern3 == pattern3,
+            Factor.pattern4 == pattern4
+        ).first()
+        units = Unit.query.filter(
+            Unit.pattern == 'ma'
+        ).all()
+
+        return render_template('nutrient/factor_selected.html',
+                               factor=factor, units=units)
