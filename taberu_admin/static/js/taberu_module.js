@@ -5,6 +5,7 @@ $( document ).ready(function () {
             api: {
                 nutrients: "api/nutrients",
                 nutrientPattern2: "api/nutrient-pattern2",
+                nutrientForm: "api/nutrient-form",
                 factors: "/api/factors",
                 factorSet: "/api/factor-set",
                 tags: "/api/tags"
@@ -63,7 +64,7 @@ $( document ).ready(function () {
             };
             
             var _loadTemplate = function (url, targetEle, json) {
-                if (json === null) {
+                if (json === undefined) {
                     targetEle.load(url, function () {
                         console.log("Load Templete Complete.");
                     });

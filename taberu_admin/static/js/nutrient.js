@@ -40,7 +40,7 @@ $(document).ready(function () {
                 _nutrient.clearCheckedInputs($( "ul#pattern1" )
                     .find( "input" ));
                 $( "ul#pattern2" ).empty();
-                _nutrient.loadTemplate(_url.nutrients, _nListEle, _json);
+                _nutrient.loadTemplate(_url.api.nutrients, _nListEle, _json);
 
             } else if ( _currentEle.is( "ul#pattern1 > li > input" ) ) {
                 var _nListEle = $( "div#box-nlist" ),
@@ -53,8 +53,8 @@ $(document).ready(function () {
                         pattern1: _pattern1Vla};
                 _nutrient.clearCheckedInputs(_pattern1Inputs);
                 _currentEle.prop("checked", true);
-                _nutrient.loadTemplate(_url.nutrients, _nListEle, _json);
-                _nutrient.loadTemplate(_url.nutrientPattern2, _nPattern2Ele,
+                _nutrient.loadTemplate(_url.api.nutrients, _nListEle, _json);
+                _nutrient.loadTemplate(_url.api.nutrientPattern2, _nPattern2Ele,
                     { pattern1: _pattern1Vla });
 
             } else if ( _currentEle.is( "ul#pattern2 > li > input" ) ) {
@@ -66,7 +66,7 @@ $(document).ready(function () {
             } else if ( _currentEle.is( "li#n-reset" ) ) {
                 var _nDetailEle = $( "div#box-ndetail" );
                 if ( _currentEle.is( ".new" ) ) {
-                    _nutrient.loadTemplate(_url.nutrients, _nDetailEle);
+                    _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
                 } else if ( _currentEle.is( ".selected" ) ) {
                     var _selectedItemEle = $( "div#selected-nutrient" ),
                         _json = {
@@ -75,7 +75,7 @@ $(document).ready(function () {
                             pattern2: _selectedItemEle.data("pattern2"),
                             serial: _selectedItemEle.data("serial")
                         };
-                    _nutrient.loadTemplate(_url.nutrients, _nDetailEle,
+                    _nutrient.loadTemplate(_url.api.nutrients, _nDetailEle,
                         _json);
                 }
 
@@ -83,7 +83,7 @@ $(document).ready(function () {
                 var _nDetailEle = $( "div#box-ndetail" ),
                     _fDetailEle = $( "div#box-fdetail" ),
                     _fListEle = $( "div#box-flist" );
-                _nutrient.loadTemplate(_url.nutrients, _nDetailEle);
+                _nutrient.loadTemplate(_url.api.nutrients, _nDetailEle);
                 if ( _fDetailEle.is(".on") ) {
                     _fDetailEle.removeClass("on").addClass("off");
                     _fDetailEle.hide();

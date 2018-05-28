@@ -23,7 +23,6 @@ setup(
         'itsdangerous>=0.24',
         'psycopg2>=2.7.4',
         'pytz>=2018.4',
-        'raven>=6.8.0',
         'setuptools>=39.1.0',
         'six>=1.11.0',
         'wheel>=0.31.0'

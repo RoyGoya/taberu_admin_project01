@@ -50,10 +50,13 @@ def shutdown_session(exception=None):
 # Set-up URLs
 for pattern in url_patterns:
     pattern_len = len(pattern)
-    if pattern_len > 2:
+    if pattern_len == 2:
+        app.add_url_rule(pattern[0], view_func=pattern[1])
+    elif pattern_len == 3:
         app.add_url_rule(pattern[0], view_func=pattern[1], methods=pattern[2])
     else:
-        app.add_url_rule(pattern[0], view_func=pattern[1])
+        app.add_url_rule(pattern[0], view_func=pattern[1], methods=pattern[2],
+                         defaults=pattern[3])
 
-# Register Errorhandlers
+# Register Error handlers
 app.register_error_handler(InvalidUsage, handle_invalid_usage)

@@ -66,6 +66,16 @@ class NutrientAPI(MethodView):
                                        nutrient=nutrient)
 
 
+class NutrientFormAPI(MethodView):
+    def __init__(self, template):
+        self.template = template
+
+    def get(self):
+        # TODO: Additionally Return Nutrient Obj.
+        form = CreateNutrientForm(request.form)
+        return render_template(self.template, form=form)
+
+
 class NutrientPattern2API(MethodView):
     def __init__(self, template):
         self.template = template
@@ -80,7 +90,8 @@ class NutrientPattern2API(MethodView):
                 NutrientPattern.pattern2 != '00',
                 NutrientPattern.is_active == True
             ).all()
-            return render_template(self.template, objs=patterns)
+            option = {'input_type': 'radio', 'input_name': 'pattern2'}
+            return render_template(self.template, patterns=patterns, option=option)
 
 
 class FactorSetAPI(MethodView):
