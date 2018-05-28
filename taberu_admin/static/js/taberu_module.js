@@ -2,26 +2,22 @@ $( document ).ready(function () {
 
     $.taberu = (function() {
         var _urlDict = {
-            nutrient: {
-                detail: "/api/nutrient/detail",
-                list: "/api/nutrient/list",
-                pattern2: "/api/nutrient/pattern2"
-
+            api: {
+                nutrients: "api/nutrients",
+                nutrientPattern2: "api/nutrient-pattern2",
+                factors: "/api/factors",
+                factorSet: "/api/factor-set",
+                tags: "/api/tags"
             },
-            factor: {
-                detail: "/api/factor/detail",
-                list: "/api/factor/list",
-                select: "/api/factor/select"
-            },
-            tag: {
+            view: {
 
             }
         };
 
         var _nutrient = (function() {
-            var _clearCheckedInputEls = function (inputEls) {
-                inputEls.each(function (idx) {
-                    inputEls.eq(idx).prop("checked", false);
+            var _clearCheckedInputs = function (elements) {
+                elements.each(function (idx) {
+                    elements.eq(idx).prop("checked", false);
                 });
             };
 
@@ -41,7 +37,7 @@ $( document ).ready(function () {
                 targetEle.hide();
             };
 
-            var _toggleListOfEls = function (targetEle, paramData, subElesColor) {
+            var _toggleListOfEls = function (targetEle, json, subElesColor) {
                 subElesColor = subElesColor || "beige";
                 if ( targetEle.data("hasSub")==="True") {
                     var _superCode = targetEle.data("code");
@@ -49,8 +45,8 @@ $( document ).ready(function () {
                         if ( targetEle.is( ".hadCalled" )) {
                             targetEle.nextAll( "." + _superCode ).show();
                         } else {
-                            _getTemplateAfter(_urlDict.factor.list,
-                                targetEle, paramData, _superCode, subElesColor);
+                            _getTemplateAfter(_urlDict.factors, targetEle,
+                                json, _superCode, subElesColor);
                             targetEle.addClass("hadCalled");
                         }
                         targetEle.find("div.bullet").text("∇");
@@ -66,21 +62,30 @@ $( document ).ready(function () {
                 }
             };
             
-            var _loadTemplate = function (url, targetEle, paramData) {
-                targetEle.load(url, paramData, function () {
+            var _loadTemplate = function (url, targetEle, json) {
+                if (json === null) {
+                    targetEle.load(url, function () {
                         console.log("Load Templete Complete.");
-                });
+                    });
+                } else {
+                    var _queryStr = $.param( json );
+                    targetEle.load(url, _queryStr, function () {
+                        console.log("Load Templete Complete.");
+                    });
+                }
             };
 
-            var _replaceTemplate = function (url, targetEle, paramData) {
-                $.get(url, paramData, function (template) {
+            var _replaceTemplate = function (url, targetEle, json) {
+                var _queryStr = $.param( json );
+                $.get(url, _queryStr, function (template) {
                     targetEle.replaceWith(template);
                 });
             };
             
-            var _getTemplateAfter = function (url, targetEle, paramData,
+            var _getTemplateAfter = function (url, targetEle, json,
                                           super_code, subElesColor) {
-                $.get(url, paramData, function ( template ) {
+                var _queryStr = $.param( json );
+                $.get(url, _queryStr, function ( template ) {
                     var subEles = $( template ).addClass(super_code);
                     subEles.addClass( "sub" );
                     subEles.css( "background-color", subElesColor );
@@ -88,44 +93,12 @@ $( document ).ready(function () {
                     console.log( "LoadAfter Complete." );
                 });
             };
-            
-            var _getNutrientPattern2 = function(url, pattern1Val) {
-                $.ajax({
-                    url: url,
-                    data: {
-                        pattern1: pattern1Val
-                    },
-                    type: "GET",
-                    dataType: "json"
-                })
-                    .done(function ( jsonDataSet ) {
-                        var targetEl = $("ul#pattern2").empty();
-
-                        for (idx in jsonDataSet) {
-                            var li = $('<li>'),
-                                input = $('<input>').attr({
-                                    name: "pattern2", type: "radio",
-                                    value: jsonDataSet[idx]}),
-                                label = $('<label>').text(idx);
-
-                            targetEl.append(li.append(input).append(label))
-                        }
-                        console.log( "Nutrient-Type2 is Successfully Loaded!" );
-                    })
-                    .fail(function( xhr, status, errorThrown ) {
-                        alert( "Sorry, there was a problem!" );
-                        console.log( "Error: " + errorThrown );
-                        console.log( "Status: " + status );
-                        console.dir( xhr );
-                    });
-            };
 
             return {
                 loadTemplate: _loadTemplate,
                 replaceTemplate: _replaceTemplate,
                 getTemplateAfter: _getTemplateAfter,
-                clearCheckedInputEls: _clearCheckedInputEls,
-                getNutrientPattern2: _getNutrientPattern2,
+                clearCheckedInputs: _clearCheckedInputs,
                 toggleListOfEls: _toggleListOfEls
             };
         })();

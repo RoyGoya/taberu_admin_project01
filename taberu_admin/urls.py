@@ -3,8 +3,8 @@ from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
 from .views.nutrient_views import NutritionView
-from .apis.nutrient_apis import NutrientList, NutrientPattern2, \
-    NutrientDetail, FactorDetail, FactorList, SelectAFactor
+from .apis.nutrient_apis import NutrientAPI, NutrientPattern2API, \
+    FactorSetAPI, FactorAPI
 
 # Decorate Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -36,18 +36,16 @@ nutrient_view = NutritionView.as_view(
     'nutrition_page', template_name='nutrient/base_nutrient.html'
 )
 
-nutrient_list_api = NutrientList.as_view(
-    'nutrient_list_api', template_name='nutrient/list_nutrient.html')
-nutrient_pattern2_api = NutrientPattern2.as_view('nutrient_pattern2_api')
-nutrient_detail_api = NutrientDetail.as_view(
-    'nutrient_detail_api', template_name='nutrient/detail_nutrient.html')
-factor_detail_api = FactorDetail.as_view(
-    'factor_detail_api', template_name='nutrient/detail_factor.html')
-factor_list_api = FactorList.as_view(
-    'factor_list_api', list_ft_template='nutrient/list_factor.html',
-    table_ft_template='nutrient/table_factor.html')
-opt_factor_api = SelectAFactor.as_view(
-    'factor_select_api', template_name='nutrient/opted_factor.html')
+nutrient_api = NutrientAPI.as_view(
+    'nutrient_list_api', template='nutrient/list_nutrient.html')
+nutrient_pattern2_api = NutrientPattern2API.as_view(
+    'nutrient_pattern2_api', template='nutrient/inputs.html')
+factor_set_api = FactorSetAPI.as_view(
+    'factor_detail_api', template='nutrient/detail_factor.html')
+factor_api = FactorAPI.as_view(
+    'factor_select_api', templates={'initial': 'nutrient/list_factor.html',
+                                    'table': 'nutrient/table_factor.html',
+                                    'opted': 'nutrient/opted_factor.html'})
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -62,10 +60,11 @@ opt_factor_api = SelectAFactor.as_view(
 url_patterns = [
     ('/', index_view),
     ('/nutrient', nutrient_view),
-    ('/api/nutrient/list', nutrient_list_api, ['GET']),
-    ('/api/nutrient/detail', nutrient_detail_api, ['GET']),
-    ('/api/nutrient/pattern2', nutrient_pattern2_api, ['GET']),
-    ('/api/factor/list', factor_list_api, ['GET']),
-    ('/api/factor/detail', factor_detail_api, ['GET']),
-    ('/api/factor/select', opt_factor_api, ['GET'])
+    ('/api/nutrients', nutrient_api, ['GET']),
+    ('/api/nutrients/<string:nutrient_code>', nutrient_api, ['GET']),
+    ('/api/nutrient-pattern2', nutrient_pattern2_api, ['GET']),
+    ('/api/factor-set/<string:nutrient_code>', factor_set_api, ['GET']),
+    ('/api/factors', factor_api, ['GET']),
+    ('/api/factors/<string:factor_code>', factor_api, ['GET']),
+    ('/api/factors/create', factor_api, ['POST'])
 ]

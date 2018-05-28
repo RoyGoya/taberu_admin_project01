@@ -1,8 +1,6 @@
+<form>
 <div id="opted-factor"
-        data-pattern1="{{ factor.pattern1|e }}"
-        data-pattern2="{{ factor.pattern2|e }}"
-        data-pattern3="{{ factor.pattern3|e }}"
-        data-pattern4="{{ factor.pattern4|e }}"
+     data-factor-code="{{ factor.pattern1|e }}-{{ factor.pattern2|e }}-{{ factor.pattern3|e }}-{{ factor.pattern4|e }}"
 >
     <div>{{ factor.pattern1 }}{{ factor.pattern2 }}{{ factor.pattern3 }}{{ factor.pattern4 }}</div>
     <div>{{ factor.eng_name }}</div>
@@ -11,8 +9,8 @@
         <select id="factor-unit">
         {% for unit in units %}
             <option
-                    data-pattern="{{ unit.pattern }}"
-                    data-serial="{{ unit.serial }}"
+                    data-pattern1="{{ unit.pattern1 }}"
+                    data-pattern2="{{ unit.pattern2 }}"
             >
                 {{ unit.symbol }}
             </option>
@@ -20,4 +18,6 @@
         </select>
     </div>
     <div><input type="text" id="selected-txt"></div>
+    <div><input type="reset" value="Reset"/></div>
 </div>
+</form>

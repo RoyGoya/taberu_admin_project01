@@ -1,0 +1,7 @@
+{% for obj in objs %}
+    <li>
+        <input type={{ option.input_type }} name="{{ option.input_name }}" value="{{ obj.value }}">
+        <label>{{ obj.key }}</label>
+    </li>
+{% endfor %}
+

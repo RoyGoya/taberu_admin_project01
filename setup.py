@@ -11,21 +11,21 @@ setup(
     name='taberu_admin',
     packages=['taberu_admin'],
     install_requires=[
-        'flask>=0.12.2',
+        'flask>=1.0.2',
         'flask-login>=0.4.1',
-        'flask-sqlalchemy>=2.3.2',
         'flask-wtf>=0.14.2',
         'jinja2>=2.10',
         'MarkupSafe>=1.0',
-        'SQLAlchemy>=1.1.15',
+        'SQLAlchemy>=1.2.7',
         'WTForms>=2.1',
-        'Werkzeug>=0.13',
+        'Werkzeug>=0.14.1',
         'click>=6.7',
         'itsdangerous>=0.24',
-        'pip>=9.0.1',
-        'psycopg2>=2.7.3.2',
-        'setuptools>=38.2.4',
-        'wheel>=0.30.0',
-        'pytz>=2018.3'
+        'psycopg2>=2.7.4',
+        'pytz>=2018.4',
+        'raven>=6.8.0',
+        'setuptools>=39.1.0',
+        'six>=1.11.0',
+        'wheel>=0.31.0'
     ]
 )

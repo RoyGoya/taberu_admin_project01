@@ -17,7 +17,7 @@ def get_dt_pattern_choices():
     return choice_tuple_list
 
 
-def get_nutrient_pattern1_choices():
+def get_n_pattern1_choices():
     choice_tuple_list = []
     nutrient_patterns = NutrientPattern.query.filter_by(pattern2='00',
                                                          is_active=True).all()
@@ -27,7 +27,7 @@ def get_nutrient_pattern1_choices():
     return choice_tuple_list
 
 
-def get_nutrient_pattern2_choices(pattern1):
+def get_n_pattern2_choices(pattern1):
     choice_tuple_list = []
     nutrient_patterns = NutrientPattern.query.filter(
         NutrientPattern.pattern1 == pattern1,
@@ -53,7 +53,7 @@ class CreateNutrientForm(Form):
     dt_pattern = RadioField(label="DataType", choices=dt_pattern_choices,
                             default=dt_pattern_choices[0][0])
     pattern1 = RadioField(label="Pattern1",
-                          choices=get_nutrient_pattern1_choices())
+                          choices=get_n_pattern1_choices())
     pattern2 = RadioField(label="Pattern2", choices=[])
     has_sub = RadioField(label="Has Sub?", choices=[
         (True, 'True'), (False, 'False')

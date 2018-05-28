@@ -5,10 +5,11 @@
 from flask import Flask
 
 from flask_login import LoginManager, login_required
+from raven.contrib.flask import Sentry
 
 from .database import db_session
 from .urls import url_patterns
-
+from .errors import InvalidUsage, handle_invalid_usage
 # from .models.users_model import User
 
 
@@ -19,6 +20,9 @@ app = Flask('taberu_admin')
 app.config.from_object('taberu_admin.config.DevelopmentConfig')
 app.config.from_pyfile('settings.cfg')
 # app.config.from_envvar('TABERU_ADMIN_SETTINGS')
+
+# Set-up Raven Sentry
+sentry = Sentry(app, dsn='https://42db0d82433d4346b828266f9f1961d8:263209988e554541b91c79fefbfb0904@sentry.io/1214614')
 
 # Flask-Login
 # https://flask-login.readthedocs.io/en/latest/
@@ -43,9 +47,13 @@ def shutdown_session(exception=None):
     db_session.remove()
 
 
+# Set-up URLs
 for pattern in url_patterns:
     pattern_len = len(pattern)
     if pattern_len > 2:
         app.add_url_rule(pattern[0], view_func=pattern[1], methods=pattern[2])
     else:
         app.add_url_rule(pattern[0], view_func=pattern[1])
+
+# Register Errorhandlers
+app.register_error_handler(InvalidUsage, handle_invalid_usage)

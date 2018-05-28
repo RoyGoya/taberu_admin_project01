@@ -16,10 +16,7 @@
 {% for nutrient in nutrients %}
     <div
             class="tr tr-nlist"
-            data-dt-pattern="{{ nutrient.dt_pattern|e }}"
-            data-pattern1="{{ nutrient.pattern1|e }}"
-            data-pattern2="{{ nutrient.pattern2|e }}"
-            data-serial="{{ nutrient.serial|e }}"
+            data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
     >
         <div>
             {{ nutrient.dt_pattern|e}}{{ nutrient.pattern1|e }}{{ nutrient.pattern2|e }}{{ nutrient.serial|e }}
