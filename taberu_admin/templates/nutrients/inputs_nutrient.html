@@ -1,0 +1,7 @@
+{% for pattern in patterns %}
+    <li>
+        <input id="pattern2-{{ loop.index }}" type={{ option.input_type }} name="{{ option.input_name }}" value="{{ pattern.pattern2 }}">
+        <label for="pattern2-{{ loop.index }}">{{ pattern.eng_name }}</label>
+    </li>
+{% endfor %}
+

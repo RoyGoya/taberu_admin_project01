@@ -22,6 +22,7 @@ def inint_db():
     # you will have to import them first before calling init_db()
     from taberu_admin.models.tag_models import Tag, TagSet
     from taberu_admin.models.nutrient_models import Nutrient,\
-        NutrientSet, Factor, FactorSet, NutrientPattern, DataPattern
-    from taberu_admin.models.unit_models import UnitCommon, UnitUSCS
+        NutrientSet, NutrientPattern, DataPattern
+    from taberu_admin.models.factor_models import Factor, FactorSet
+    from taberu_admin.models.unit_models import UnitCommon, UnitUscs
     Base.metadata.create_all(bind=engine)

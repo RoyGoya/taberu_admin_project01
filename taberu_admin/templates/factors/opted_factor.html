@@ -9,8 +9,7 @@
         <select id="factor-unit">
         {% for unit in units %}
             <option
-                    data-pattern1="{{ unit.pattern1 }}"
-                    data-pattern2="{{ unit.pattern2 }}"
+                    data-unit-code="{{ unit.pattern1 }}-{{ unit.pattern2 }}"
             >
                 {{ unit.symbol }}
             </option>

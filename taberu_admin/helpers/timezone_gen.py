@@ -1,5 +1,5 @@
 import datetime, pytz
 
 
-def utc_now():
+def get_utc_datetime():
     return datetime.datetime.now(tz=pytz.utc)

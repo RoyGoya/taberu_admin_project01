@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 from taberu_admin.database import Base
-from taberu_admin.helpers.timezone_gen import utc_now
+from taberu_admin.helpers.timezone_gen import get_utc_datetime
 
 
 class User(Base, UserMixin):
@@ -25,8 +25,8 @@ class User(Base, UserMixin):
     last_name = Column(VARCHAR(100))
 
     def __init__(self, email=None, is_active=True,
-                 last_login_datetime=utc_now().isoformat(),
-                 created_datetime=utc_now().isoformat(),
+                 last_login_datetime=get_utc_datetime().isoformat(),
+                 created_datetime=get_utc_datetime().isoformat(),
                  password=None, first_name=None, last_name=None):
         self.email = email
         self.is_active = is_active

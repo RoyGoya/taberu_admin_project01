@@ -4,9 +4,10 @@ $( document ).ready(function () {
         var _urlDict = {
             api: {
                 nutrients: "api/nutrients",
-                nutrientPattern2: "api/nutrient-pattern2",
-                nutrientForm: "api/nutrient-form",
+                nutrientPattern2: "api/nutrients-pattern2",
+                nutrientForm: "api/nutrients-form",
                 factors: "/api/factors",
+                factorList: "/api/factor-list",
                 factorSet: "/api/factor-set",
                 tags: "/api/tags"
             },
@@ -22,13 +23,13 @@ $( document ).ready(function () {
                 });
             };
 
-            var _foldSubElesReculsively = function ( targetEle ) {
+            var _foldSubRowsReculsively = function ( targetEle ) {
                 $.each(targetEle, function (i, subEle) {
                     subEle = $(subEle);
                     if ( subEle.is( ".on" )) {
                         var subElsSuperCode = subEle.data("code"),
                             subSubEle = subEle.nextAll( "." + subElsSuperCode);
-                        _foldSubElesReculsively(subSubEle);
+                        _foldSubRowsReculsively(subSubEle);
                         subEle.find("div.bullet").text("➤");
                         subEle.removeClass( "on" ).addClass( "off" );
                     } else {
@@ -38,7 +39,7 @@ $( document ).ready(function () {
                 targetEle.hide();
             };
 
-            var _toggleListOfEls = function (targetEle, json, subElesColor) {
+            var _toggleTableOfRows = function (url, targetEle, subElesColor) {
                 subElesColor = subElesColor || "beige";
                 if ( targetEle.data("hasSub")==="True") {
                     var _superCode = targetEle.data("code");
@@ -46,15 +47,15 @@ $( document ).ready(function () {
                         if ( targetEle.is( ".hadCalled" )) {
                             targetEle.nextAll( "." + _superCode ).show();
                         } else {
-                            _getTemplateAfter(_urlDict.factors, targetEle,
-                                json, _superCode, subElesColor);
+                            _getTemplateAfter(url, targetEle, _superCode,
+                                subElesColor);
                             targetEle.addClass("hadCalled");
                         }
                         targetEle.find("div.bullet").text("∇");
                         targetEle.removeClass( "off" ).addClass( "on" );
                     } else if ( targetEle.is( ".on" )){
                         var _subEls = targetEle.nextAll( "." + _superCode );
-                        _foldSubElesReculsively(_subEls);
+                        _foldSubRowsReculsively(_subEls);
                         targetEle.find("div.bullet").text("➤");
                         targetEle.removeClass( "on" ).addClass( "off" );
                     }
@@ -76,17 +77,15 @@ $( document ).ready(function () {
                 }
             };
 
-            var _replaceTemplate = function (url, targetEle, json) {
-                var _queryStr = $.param( json );
-                $.get(url, _queryStr, function (template) {
+            var _replaceTemplate = function (url, targetEle) {
+                $.get(url, function (template) {
                     targetEle.replaceWith(template);
                 });
             };
             
-            var _getTemplateAfter = function (url, targetEle, json,
+            var _getTemplateAfter = function (url, targetEle,
                                           super_code, subElesColor) {
-                var _queryStr = $.param( json );
-                $.get(url, _queryStr, function ( template ) {
+                $.get(url, function ( template ) {
                     var subEles = $( template ).addClass(super_code);
                     subEles.addClass( "sub" );
                     subEles.css( "background-color", subElesColor );
@@ -100,7 +99,7 @@ $( document ).ready(function () {
                 replaceTemplate: _replaceTemplate,
                 getTemplateAfter: _getTemplateAfter,
                 clearCheckedInputs: _clearCheckedInputs,
-                toggleListOfEls: _toggleListOfEls
+                toggleTableOfRows: _toggleTableOfRows
             };
         })();
 

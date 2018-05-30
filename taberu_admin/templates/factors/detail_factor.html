@@ -1,0 +1,47 @@
+<p>
+    <div class="title" >Factor Detail</div><br/>
+    <div class="opted-item" id="opted-nutrient" style="color:dodgerblue"
+         data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
+    >
+        ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})
+    </div>
+    <div class="cnt">{{ factors_cnt|e }}</div>
+</p>
+<section class="tb" id="tb-fdetail">
+    <header>
+        <div>Code</div>
+        <div>EngName</div>
+        <div>Quantity</div>
+        <div>IsActive</div>
+        <div>HasSub</div>
+        <div>KorName</div>
+        <div>JpnName</div>
+        <div>ChnName</div>
+    </header>
+{% for factor_set in set_of_facotrs %}
+    <div
+            class="tr tr-fdetail"
+            data-factor-code="{{ factor_set.factor.pattern1|e }}-{{ factor_set.factor.pattern2|e }}-{{ factor_set.factor.pattern3|e }}-{{ factor_set.factor.pattern4|e }}"
+    >
+        <div>
+            {{ factor_set.factor.pattern1|e }}{{ factor_set.factor.pattern2|e }}{{ factor_set.factor.pattern3|e }}{{ factor_set.factor.pattern4|e }}
+        </div>
+        <div>{{ factor_set.factor.eng_name|e }}</div>
+        <div>{{ factor_set.quantity }} {{ factor_set.unit_common.symbol }}</div>
+        {% if factor_set.factor.is_active %}
+            <div style="color: dodgerblue">{{ factor_set.factor.is_active }}</div>
+        {% else%}
+            <div style="color: lightblue">{{ factor_set.factor.is_active }}</div>
+        {% endif %}
+        {% if factor_set.factor.has_sub %}
+            <div style="color: green">{{ factor_set.factor.has_sub }}</div>
+        {% else%}
+            <div style="color: lightblue">{{ factor_set.factor.has_sub }}</div>
+        {% endif %}
+        <div>{{ factor_set.factor.kor_name|e }}</div>
+        <div>{{ factor_set.factor.jpn_name|e }}</div>
+        <div>{{ factor_set.factor.chn_name|e }}</div>
+    </div>
+{% endfor %}
+</section>
+<ul class="wrap-bt off"><li class="bt" id="get-flist">GET</li></ul>

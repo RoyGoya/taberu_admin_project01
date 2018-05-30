@@ -12,15 +12,16 @@ $(document).ready(function () {
             var _currentEle = $( this );
 
             if ( _currentEle.is( "div.tr-nlist" )) {
-                var _ndetailEle = $( "div#box-ndetail" ),
-                    _fdetailEle = $( "div#box-fdetail" ),
+                var _nDetailEle = $( "div#box-ndetail" ),
+                    _fDetailEle = $( "div#box-fdetail" ),
                     _pk = _currentEle.data("nutrientCode");
-                _nutrient.loadTemplate(_url.api.nutrients + "/" + _pk,
-                    _ndetailEle);
-                _nutrient.loadTemplate(_url.api.factorSet, _fdetailEle);
-                if ( _fdetailEle.is(".off")) {
-                    _fdetailEle.show();
-                    _fdetailEle.removeClass("off").addClass("on");
+                _nutrient.loadTemplate(_url.api.nutrientForm + "/" + _pk,
+                    _nDetailEle);
+                _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
+                    _fDetailEle);
+                if ( _fDetailEle.is(".off")) {
+                    _fDetailEle.show();
+                    _fDetailEle.removeClass("off").addClass("on");
                 }
             }
         });
@@ -64,11 +65,14 @@ $(document).ready(function () {
                 console.log("n-send");
 
             } else if ( _currentEle.is( "li#n-reset" ) ) {
-                var _nDetailEle = $( "div#box-ndetail" );
+                var _nDetailEle = $( "div#box-ndetail" ),
+                    _nListEle = $( "div#box-nlist" );
                 if ( _currentEle.is( ".new" ) ) {
                     _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
+                    _nutrient.loadTemplate(_url.api.nutrients, _nListEle,
+                        { dt_pattern: 's'});
                 } else if ( _currentEle.is( ".selected" ) ) {
-                    var _selectedItemEle = $( "div#selected-nutrient" ),
+                    var _selectedItemEle = $( "div#selected-nutrients" ),
                         _json = {
                             dt_pattern: _selectedItemEle.data("dtPattern"),
                             pattern1: _selectedItemEle.data("pattern1"),
@@ -101,8 +105,7 @@ $(document).ready(function () {
 
             if ( _currentEle.is( "li#get-flist" )) {
                 var _fListEle = $( "div#box-flist" );
-                _nutrient.loadTemplate(_url.factors, _fListEle,
-                    { type: 'initial' });
+                _nutrient.loadTemplate(_url.api.factors, _fListEle);
                 if ( _fListEle.is(".off") ) {
                     _fListEle.show();
                     _fListEle.removeClass("off").addClass("on");
@@ -116,18 +119,14 @@ $(document).ready(function () {
            var _currentEle = $( this );
 
            if( _currentEle.is("div.tr-flist") ) {
-               var _json = {
-                   request_type: 'addition',
-                   pattern1: _currentEle.data("pattern1"),
-                   pattern2: _currentEle.data("pattern2"),
-                   pattern3: _currentEle.data("pattern3"),
-                   pattern4: _currentEle.data("pattern4")
-               };
-               _nutrient.toggleListOfEls(_currentEle, _json);
+               var _pk = _currentEle.data("code");
+               _nutrient.toggleTableOfRows(_url.api.factorList + "/" + _pk,
+                   _currentEle);
                if ( _currentEle.is(".sub") ) {
                    var _markedEle = $( "div#opted-factor" ).empty(),
                        _addEle = $( "li#flist-add" );
-                   _nutrient.replaceTemplate(_url.factors, _markedEle, _json);
+                   _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
+                       _markedEle);
                    if (_addEle.is(".off")) {
                        _addEle.show().removeClass("off").addClass("on");
                    }
@@ -135,7 +134,7 @@ $(document).ready(function () {
            } else if ( _currentEle.is("li#flist-reset")) {
                 var _flistEle = $( "div#box-flist" ),
                     _addEle = $( "li#flist-add" );
-                _nutrient.loadTemplate(_url.factors, _flistEle, { type: 'initial' });
+                _nutrient.loadTemplate(_url.factorList, _flistEle, { type: 'initial' });
                 if (_addEle.is(".on")) {
                     _addEle.hide().removeClass("on").addClass("off");
                 }
@@ -143,10 +142,16 @@ $(document).ready(function () {
                var _optedFactor = $( "div#opted-factor" ),
                    _optedNutrient = $( "div#opted-nutrient" ),
                    _selectedUnit = $( "select#factor-unit > option:checked" ),
+                   _inputVal = $( "input#selected-txt" ).val(),
                    _json = {
                        factor_code: _optedFactor.data("factorCode"),
-                       nutrient_code: _optedNutrient.data("nutrientCode")
+                       nutrient_code: _optedNutrient.data("nutrientCode"),
+                       unit_code: _selectedUnit.data("unitCode"),
+                       quantity: _inputVal
                    };
+               $.post( _url.api.factorSet, _json, function () {
+                   console.log("Post test.")
+               })
            }
         });
 

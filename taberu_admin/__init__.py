@@ -54,7 +54,7 @@ for pattern in url_patterns:
         app.add_url_rule(pattern[0], view_func=pattern[1])
     elif pattern_len == 3:
         app.add_url_rule(pattern[0], view_func=pattern[1], methods=pattern[2])
-    else:
+    elif pattern_len == 4:
         app.add_url_rule(pattern[0], view_func=pattern[1], methods=pattern[2],
                          defaults=pattern[3])
 
