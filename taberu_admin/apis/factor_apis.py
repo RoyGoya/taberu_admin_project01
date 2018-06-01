@@ -1,4 +1,4 @@
-from flask import request, render_template
+from flask import request, render_template, flash
 from flask.views import MethodView
 
 from sqlalchemy import and_
@@ -9,6 +9,18 @@ from ..errors import InvalidUsage
 from ..models.nutrient_models import Nutrient
 from ..models.factor_models import Factor, FactorSet
 from ..models.unit_models import UnitCommon
+from ..forms.factor_forms import UpdateFactorForm
+
+
+def get_unit_choices():
+    choice_tuple_list = []
+    units = UnitCommon.query.filter(
+        UnitCommon.pattern1 == 'ma'
+    ).all()
+    for unit in units:
+        choice_tuple = ((unit.pattern1+'-'+unit.pattern2), unit.symbol)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
 
 
 class FactorAPI(MethodView):
@@ -50,7 +62,7 @@ class FactorListAPI(MethodView):
         if factor_code is None:
             raise InvalidUsage('Invalid Request.', status_code=410)
 
-        # Gives a factor-list.
+        # Gives A factor-list.
         else:
             pattern1, pattern2, pattern3, pattern4 = factor_code.split('-')
             if pattern2 == '0':
@@ -92,7 +104,7 @@ class FactorSetAPI(MethodView):
         if nutrient_code is None:
             raise InvalidUsage('Invalid Request.', status_code=410)
 
-        # Gives a set of factors.
+        # GET: Gives A factor-set.
         else:
             dt_pattern, pattern1, pattern2, serial = nutrient_code.split('-')
             # Get Selected Nutrient's Factors.
@@ -105,10 +117,18 @@ class FactorSetAPI(MethodView):
             set_of_facotrs_len = len(set_of_facotrs)
 
             # Get A Selected Nutrient Info.
-            nutrient = set_of_facotrs[0].nutrient
+            if set_of_facotrs_len <= 0:
+                nutrient = Nutrient.query.filter(
+                    Nutrient.dt_pattern == dt_pattern,
+                    Nutrient.pattern1 == pattern1,
+                    Nutrient.pattern2 == pattern2,
+                    Nutrient.serial == serial
+                ).first()
+            else:
+                nutrient = set_of_facotrs[0].nutrient
 
             return render_template(self.template, set_of_facotrs=set_of_facotrs,
-                                   set_of_facotrs_len=set_of_facotrs_len,
+                                   set_of_facotrs_cnt=set_of_facotrs_len,
                                    nutrient=nutrient)
 
     # CREATE: Add a new set of factor.
@@ -122,9 +142,61 @@ class FactorSetAPI(MethodView):
         n_dt_pattern, n_pattern1, n_pattern2, n_serial = \
             nutrient_code.split('-')
         unit_pattern1, unit_pattern2 = unit_code.split('-')
-        factor_set = FactorSet(n_dt_pattern, n_pattern1, n_pattern2, n_serial,
-                               f_pattern1, f_pattern2, f_pattern3, f_pattern4,
-                               True, unit_pattern1, unit_pattern2, quantity)
-        db_session.add(factor_set)
-        db_session.commit()
-        return True
+        factor_set = FactorSet.query.filter(
+            FactorSet.nutrient_dt_pattern == n_dt_pattern,
+            FactorSet.nutrient_pattern1 == n_pattern1,
+            FactorSet.nutrient_pattern2 == n_pattern2,
+            FactorSet.nutrient_serial == n_serial,
+            FactorSet.factor_pattern1 == f_pattern1,
+            FactorSet.factor_pattern2 == f_pattern2,
+            FactorSet.factor_pattern3 == f_pattern3,
+            FactorSet.factor_pattern4 == f_pattern4,).first()
+        if factor_set is None:
+            factor_set = FactorSet(nutrient_dt_pattern=n_dt_pattern,
+                                   nutrient_pattern1=n_pattern1,
+                                   nutrient_pattern2=n_pattern2,
+                                   nutrient_serial=n_serial,
+                                   is_active=True,
+                                   factor_pattern1=f_pattern1,
+                                   factor_pattern2=f_pattern2,
+                                   factor_pattern3=f_pattern3,
+                                   factor_pattern4=f_pattern4,
+                                   quantity=quantity,
+                                   unit_pattern1=unit_pattern1,
+                                   unit_pattern2=unit_pattern2)
+            db_session.add(factor_set)
+            db_session.commit()
+            flash('Factor code %r Successfully Inserted.' % factor_code)
+            message = 'Success.'
+            return message
+        else:
+            flash('Factor code %r Already taken.' % factor_code)
+            message = 'Fail.'
+            return message
+
+
+class SetOfAFactorAPI(MethodView):
+    def __init__(self, template):
+        self.template = template
+
+    def get(self, factor_set_code):
+        if factor_set_code is None:
+            raise InvalidUsage('Invalid Request.', status_code=410)
+        else:
+            n_dt_pattern, n_pattern1, n_pattern2, n_serial, f_pattern1, f_pattern2, \
+            f_pattern3, f_pattern4 = factor_set_code.split('-')
+            factor_set = FactorSet.query.filter(
+                FactorSet.nutrient_dt_pattern == n_dt_pattern,
+                FactorSet.nutrient_pattern1 == n_pattern1,
+                FactorSet.nutrient_pattern2 == n_pattern2,
+                FactorSet.nutrient_serial == n_serial,
+                FactorSet.factor_pattern1 == f_pattern1,
+                FactorSet.factor_pattern2 == f_pattern2,
+                FactorSet.factor_pattern3 == f_pattern3,
+                FactorSet.factor_pattern4 == f_pattern4, ).first()
+
+            form = UpdateFactorForm(request.form)
+            form.unit.choices = get_unit_choices()
+            unit = factor_set.unit
+            form.unit.data = (unit.pattern1 + '-' + unit.pattern2)
+            return render_template(self.template, form=form, factor_set=factor_set)

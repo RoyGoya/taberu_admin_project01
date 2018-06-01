@@ -1,5 +1,5 @@
 <p>
-    <div class="title">Nutrient Detail</div><br/>
+    <div class="title">Nutrient Detail</div>
     {% if nutrient %}
         <div class="opted-item" id="selected-nutrient" style="color: dodgerblue"
              data-dt-pattern="{{ nutrient.dt_pattern }}"
@@ -10,7 +10,7 @@
             ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})</div>
     {% else %}
         <div class="opted-item" style="color: lightblue">Create New</div>
-    {% endif %}
+    {% endif %}<br/>
     <ul class="wrap-bt off">
         {% if nutrient %}
             <li class="bt" id="n-send">UPDATE</li>

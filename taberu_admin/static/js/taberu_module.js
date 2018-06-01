@@ -39,6 +39,17 @@ $( document ).ready(function () {
                 targetEle.hide();
             };
 
+            var _getTemplateAfter = function (url, targetEle,
+                                          super_code, subElesColor) {
+                $.get(url, function ( template ) {
+                    var subEles = $( template ).addClass(super_code);
+                    subEles.addClass( "sub" );
+                    subEles.css( "background-color", subElesColor );
+                    targetEle.after( subEles );
+                    console.log( "LoadAfter Complete." );
+                });
+            };
+
             var _toggleTableOfRows = function (url, targetEle, subElesColor) {
                 subElesColor = subElesColor || "beige";
                 if ( targetEle.data("hasSub")==="True") {
@@ -83,20 +94,14 @@ $( document ).ready(function () {
                 });
             };
             
-            var _getTemplateAfter = function (url, targetEle,
-                                          super_code, subElesColor) {
-                $.get(url, function ( template ) {
-                    var subEles = $( template ).addClass(super_code);
-                    subEles.addClass( "sub" );
-                    subEles.css( "background-color", subElesColor );
-                    targetEle.after( subEles );
-                    console.log( "LoadAfter Complete." );
-                });
+            var _postSetOfAFactor = function (url, json, doneFunc) {
+                $.post( url, json, doneFunc());
             };
 
             return {
                 loadTemplate: _loadTemplate,
                 replaceTemplate: _replaceTemplate,
+                postSetOfAFactor: _postSetOfAFactor,
                 getTemplateAfter: _getTemplateAfter,
                 clearCheckedInputs: _clearCheckedInputs,
                 toggleTableOfRows: _toggleTableOfRows

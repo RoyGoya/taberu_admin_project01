@@ -99,11 +99,32 @@ $(document).ready(function () {
             }
         });
 
-    $( "div#box-fdetail" ).on("click", "li#get-flist",
+    $( "div#box-fdetail" ).on("click", "div.tr-fdetail, li#get-flist",
         function ( e ) {
             var _currentEle = $( this );
 
-            if ( _currentEle.is( "li#get-flist" )) {
+            if ( _currentEle.is( "div.tr-fdetail" ) ) {
+                var _markedEle = $( "div#box-fdetail" ).find( "div.opted-factor" ).empty(),
+                    _wrapBt = $( "ul#fdtail-wrap-bt" ),
+                    _pk = _currentEle.data("factorCode");
+                _currentEle.prevAll(".opted").removeClass("opted")
+                    .css("background-color", "white");
+                _currentEle.nextAll(".opted").removeClass("opted")
+                    .css("background-color", "white");
+                if (_currentEle.not(".opted")) {
+                    _currentEle.addClass( "opted" );
+                    _currentEle.css( "background-color", "beige" );
+                }
+                _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
+                       _markedEle);
+
+                if ( _wrapBt.is(".off") ) {
+                    var _btDelete = $( "<li class='bt'>" ).text("DELETE"),
+                        _btUpdate = $( "<li class='bt'>" ).text("UPDATE");
+                    _wrapBt.append(_btDelete).append(_btUpdate);
+                    _wrapBt.removeClass("off").addClass("on")
+                }
+            } else if ( _currentEle.is( "li#get-flist" )) {
                 var _fListEle = $( "div#box-flist" );
                 _nutrient.loadTemplate(_url.api.factors, _fListEle);
                 if ( _fListEle.is(".off") ) {
@@ -118,12 +139,12 @@ $(document).ready(function () {
         function ( e ) {
            var _currentEle = $( this );
 
-           if( _currentEle.is("div.tr-flist") ) {
+           if( _currentEle.is( "div.tr-flist" ) ) {
                var _pk = _currentEle.data("code");
                _nutrient.toggleTableOfRows(_url.api.factorList + "/" + _pk,
                    _currentEle);
                if ( _currentEle.is(".sub") ) {
-                   var _markedEle = $( "div#opted-factor" ).empty(),
+                   var _markedEle = $( "div#box-flist" ).find( "div.opted-factor" ).empty(),
                        _addEle = $( "li#flist-add" );
                    _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
                        _markedEle);
@@ -131,7 +152,7 @@ $(document).ready(function () {
                        _addEle.show().removeClass("off").addClass("on");
                    }
                }
-           } else if ( _currentEle.is("li#flist-reset")) {
+           } else if ( _currentEle.is( "li#flist-reset" ) ) {
                 var _flistEle = $( "div#box-flist" ),
                     _addEle = $( "li#flist-add" );
                 _nutrient.loadTemplate(_url.factorList, _flistEle, { type: 'initial' });
@@ -139,19 +160,23 @@ $(document).ready(function () {
                     _addEle.hide().removeClass("on").addClass("off");
                 }
            } else if ( _currentEle.is( "li#flist-add" ) ) {
-               var _optedFactor = $( "div#opted-factor" ),
-                   _optedNutrient = $( "div#opted-nutrient" ),
-                   _selectedUnit = $( "select#factor-unit > option:checked" ),
-                   _inputVal = $( "input#selected-txt" ).val(),
-                   _json = {
-                       factor_code: _optedFactor.data("factorCode"),
-                       nutrient_code: _optedNutrient.data("nutrientCode"),
-                       unit_code: _selectedUnit.data("unitCode"),
-                       quantity: _inputVal
-                   };
-               $.post( _url.api.factorSet, _json, function () {
-                   console.log("Post test.")
-               })
+                var _optedFactor = $( "div#opted-factor" ),
+                    _optedNutrient = $( "div#opted-nutrient" ),
+                    _selectedUnit = $( "select#factor-unit > option:checked" ),
+                    _inputVal = $( "input#selected-txt" ).val(),
+                    _json = {
+                        factor_code: _optedFactor.data("factorCode"),
+                        nutrient_code: _optedNutrient.data("nutrientCode"),
+                        unit_code: _selectedUnit.data("unitCode"),
+                        quantity: _inputVal
+                    },
+                    _doneFunc = function () {
+                        var _fDetailEle = $( "div#box-fdetail" ),
+                            _pk = _optedNutrient.data("nutrientCode");
+                        _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
+                            _fDetailEle);
+                    };
+                _nutrient.postSetOfAFactor(_url.api.factorSet, _json, _doneFunc);
            }
         });
 

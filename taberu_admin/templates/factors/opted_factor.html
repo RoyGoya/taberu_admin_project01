@@ -1,22 +1,27 @@
 <form>
-<div id="opted-factor"
+<div class="opted-factor"
      data-factor-code="{{ factor.pattern1|e }}-{{ factor.pattern2|e }}-{{ factor.pattern3|e }}-{{ factor.pattern4|e }}"
 >
     <div>{{ factor.pattern1 }}{{ factor.pattern2 }}{{ factor.pattern3 }}{{ factor.pattern4 }}</div>
     <div>{{ factor.eng_name }}</div>
     <div>{{ factor.kor_name }}</div>
-    <div>
-        <select id="factor-unit">
-        {% for unit in units %}
-            <option
-                    data-unit-code="{{ unit.pattern1 }}-{{ unit.pattern2 }}"
-            >
-                {{ unit.symbol }}
-            </option>
-        {% endfor %}
-        </select>
-    </div>
-    <div><input type="text" id="selected-txt"></div>
+    {% if form %}
+        <div>{{ form.unit }}</div>
+        <div>{{ form.quantity }}</div>
+    {% elif %}
+        <div>
+            <select id="factor-unit">
+            {% for unit in units %}
+                <option
+                        data-unit-code="{{ unit.pattern1 }}-{{ unit.pattern2 }}"
+                >
+                    {{ unit.symbol }}
+                </option>
+            {% endfor %}
+            </select>
+        </div>
+        <div><input type="text" id="selected-txt"></div>
+    {% endif %}
     <div><input type="reset" value="Reset"/></div>
 </div>
 </form>

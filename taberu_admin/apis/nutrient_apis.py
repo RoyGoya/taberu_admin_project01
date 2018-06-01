@@ -2,8 +2,41 @@ from flask import request, render_template
 from flask.views import MethodView
 
 from ..errors import InvalidUsage
-from ..forms.nutrient_forms import CreateNutrientForm, get_n_pattern2_choices
-from ..models.nutrient_models import Nutrient, NutrientPattern
+from ..forms.nutrient_forms import CreateNutrientForm
+from ..models.nutrient_models import Nutrient, NutrientPattern, DataPattern
+
+
+def get_dt_pattern_choices():
+    choice_tuple_list = []
+    data_patterns = DataPattern.query.filter_by(is_active=True).all()
+    for data_pattern in data_patterns:
+        choice_tuple = (data_pattern.pattern, data_pattern.name)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
+
+
+def get_n_pattern1_choices():
+    choice_tuple_list = []
+    nutrient_patterns = NutrientPattern.query.filter_by(pattern2='00',
+                                                         is_active=True).all()
+    for nutrient_pattern in nutrient_patterns:
+        choice_tuple = (nutrient_pattern.pattern1, nutrient_pattern.eng_name)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
+
+
+def get_n_pattern2_choices(pattern1):
+    choice_tuple_list = []
+    nutrient_patterns = NutrientPattern.query.filter(
+        NutrientPattern.pattern1 == pattern1,
+        NutrientPattern.pattern2 != '00',
+        NutrientPattern.is_active == True
+    ).all()
+
+    for nutrient_pattern in nutrient_patterns:
+        choice_tuple = (nutrient_pattern.pattern2, nutrient_pattern.eng_name)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
 
 
 class NutrientAPI(MethodView):
@@ -46,6 +79,8 @@ class NutrientFormAPI(MethodView):
             dt_pattern, pattern1, pattern2, serial = nutrient_code\
                 .split('-')
             form = CreateNutrientForm(request.form)
+            form.dt_pattern.choices = get_dt_pattern_choices()
+            form.pattern1.choices = get_n_pattern1_choices()
             if dt_pattern is None:
                 return render_template(self.template, form=form)
             else:
