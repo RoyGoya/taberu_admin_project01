@@ -12,18 +12,24 @@ $(document).ready(function () {
     // https://learn.jquery.com/events/introduction-to-custom-events/
     _nListEle.on("click", "div.tr-nlist",
         function ( e ) {
-            var _currentEle = $( this );
+            var _currentEle = $( this ),
+                _done = function () {
+                $("ul#dt_pattern").find("input").prop("disabled", true);
+                $("ul#pattern1").find("input").prop("disabled", true);
+                $("ul#pattern2").find("input").prop("disabled", true);
+            };
 
             if ( _currentEle.is( "div.tr-nlist" )) {
                 var _pk = _currentEle.data("nutrientCode");
                 _nutrient.loadTemplate(_url.api.nutrientForm + "/" + _pk,
-                    _nDetailEle);
+                    _nDetailEle, _done);
                 _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
                     _fDetailEle);
                 if ( _fDetailEle.is(".off")) {
                     _fDetailEle.show();
                     _fDetailEle.removeClass("off").addClass("on");
                 }
+
 
             }
         });
@@ -65,10 +71,17 @@ $(document).ready(function () {
                     _nListEle);
 
             } else if ( _currentEle.is( "li#n-create" ) ) {
-                console.log("n-create");
+                var _form = $( "form#ndetail-form" );
+                _form.attr("action", _url.api.nutrients).attr("method", "post")
+                    .submit();
 
             } else if ( _currentEle.is( "li#n-update" ) ) {
-                console.log("n-update");
+                // TODO: change this form submit into $.put
+                var _form = $( "form#ndetail-form" ),
+                    _nutrientCode = $("div#ndetail-opted-nutrient")
+                        .data("nutrientCode");
+                _form.attr("action", _url.api.nutrients + "/" + _nutrientCode)
+                    .attr("method", "put").submit();
 
             } else if ( _currentEle.is( "li#n-reset" ) ) {
                 var _dtPattern = "s";
@@ -78,13 +91,21 @@ $(document).ready(function () {
                         _nListEle);
                 } else if ( _currentEle.is( ".selected" ) ) {
                     var _nutrientCode = $("div#ndetail-opted-nutrient")
-                        .data("nutrientCode");
+                        .data("nutrientCode"),
+                        _done = function () {
+                            $("ul#dt_pattern").find("input").prop("disabled", true);
+                            $("ul#pattern1").find("input").prop("disabled", true);
+                            $("ul#pattern2").find("input").prop("disabled", true);
+                        };
                     _nutrient.loadTemplate(_url.api.nutrientForm + "/"
-                        + _nutrientCode, _nDetailEle);
+                        + _nutrientCode, _nDetailEle, _done);
                 }
 
             } else if ( _currentEle.is( "li#n-new" ) ) {
+                var _dtPattern = "s";
                 _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
+                _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern,
+                        _nListEle);
                 if ( _fDetailEle.is(".on") ) {
                     _fDetailEle.removeClass("on").addClass("off");
                     _fDetailEle.hide();
@@ -136,7 +157,8 @@ $(document).ready(function () {
                     _factorCode = _fDetailEle.find( "div.opted-factor" )
                         .data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
-                $.delete(_url.api.factorSet + "/" + _pk, function () {
+
+                $.delete(_url.api.factorSet + "/" + _pk, function ( data ) {
                     _nutrient.loadTemplate(_url.api.factorSet + "/"
                         + _nutrientCode, _fDetailEle);
                 });
@@ -151,7 +173,7 @@ $(document).ready(function () {
                     _inputVal = _fDetailEle.find( "input#quantity" ).val(),
                     _pk = _nutrientCode + "-" + _factorCode + "-"
                         + _selectedUnit + "-" + _inputVal;
-                $.put(_url.api.factorSet + "/" + _pk, function () {
+                $.put(_url.api.factorSet + "/" + _pk, function ( data ) {
                     _nutrient.loadTemplate(_url.api.factorSet + "/"
                         + _nutrientCode, _fDetailEle);
                 });
@@ -184,15 +206,21 @@ $(document).ready(function () {
            } else if ( _currentEle.is( "li#flist-add" ) ) {
                 var _optedFactor = $( "div#box-flist" ).find( "div.opted-factor" ),
                     _optedNutrient = $( "div#opted-nutrient" ),
-                    _selectedUnit = $( "select#factor-unit > option:checked" ),
-                    _inputVal = $( "input#factor-quantity" ).val(),
+                    _selectedUnit = _fListEle.find("select#unit > option:checked" ),
+                    _inputVal = _fListEle.find( "input#quantity" ).val(),
                     _json = {
                         factor_code: _optedFactor.data("factorCode"),
                         nutrient_code: _optedNutrient.data("nutrientCode"),
                         unit_code: _selectedUnit.data("unitCode"),
                         quantity: _inputVal
                     };
-                _nutrient.postSetOfAFactor(_url.api.factorSet, _json);
+                $.post( _url.api.factorSet, _json, function ( data ) {
+                    var _fDetailEle = $( "div#box-fdetail" ),
+                        _pk = $( "div#opted-nutrient" ).data("nutrientCode");
+                    _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
+                        _fDetailEle);
+                    $( "div#message-flist" ).text(data);
+                });
 
            }
         });

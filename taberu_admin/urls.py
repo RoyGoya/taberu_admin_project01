@@ -34,7 +34,7 @@ detail_tag_view = TagDetailView.as_view(
     'detail_tag_page', template_name='tags/detail_tag.html'
 )
 nutrient_view = NutritionView.as_view(
-    'nutrition_page', template_name='base_nutrient.html'
+    'nutrient_page', template_name='base_nutrient.html'
 )
 
 nutrient_api = NutrientAPI.as_view(
@@ -66,7 +66,9 @@ url_patterns = [
     ('/', index_view),
     ('/nutrients', nutrient_view),
     ('/api/nutrients', nutrient_api, ['GET'], {'nutrient_code': None}),
-    ('/api/nutrients/<string:nutrient_code>', nutrient_api, ['GET']),
+    ('/api/nutrients', nutrient_api, ['POST']),
+    ('/api/nutrients/<string:nutrient_code>',
+     nutrient_api, ['GET', 'PUT', 'DELETE']),
     ('/api/nutrients-form', nutrient_form_api, ['GET'], {'nutrient_code': None}),
     ('/api/nutrients-form/<string:nutrient_code>',
      nutrient_form_api, ['GET', 'POST']),

@@ -74,6 +74,7 @@ $( document ).ready(function () {
 
             var _toggleTableOfRows = function (url, targetEle, subElesColor) {
                 subElesColor = subElesColor || "beige";
+                targetEle.css( "background-color", "paleturquoise");
                 if ( targetEle.data("hasSub")==="True") {
                     var _superCode = targetEle.data("code");
                     if ( targetEle.is( ".off" )) {
@@ -97,17 +98,13 @@ $( document ).ready(function () {
                 }
             };
             
-            var _loadTemplate = function (url, targetEle, json) {
-                if (json === undefined) {
-                    targetEle.load(url, function () {
-                        console.log("Load Templete Complete.");
-                    });
-                } else {
-                    var _queryStr = $.param( json );
-                    targetEle.load(url, _queryStr, function () {
-                        console.log("Load Templete Complete.");
-                    });
-                }
+            var _loadTemplate = function (url, targetEle, done) {
+                targetEle.load(url, function () {
+                    if ($.isFunction( done )) {
+                        done();
+                    }
+                    console.log( "Load Templete Complete." );
+                });
             };
 
             var _replaceTemplate = function (url, targetEle) {
@@ -115,21 +112,10 @@ $( document ).ready(function () {
                     targetEle.replaceWith(template);
                 });
             };
-            
-            var _postSetOfAFactor = function (url, json, doneFunc) {
-                $.post( url, json, function ( data ) {
-                        var _fDetailEle = $( "div#box-fdetail" ),
-                            _pk = $( "div#opted-nutrient" ).data("nutrientCode");
-                        _loadTemplate(_urlDict.api.factorSet + "/" + _pk,
-                            _fDetailEle);
-                        $( "div#message-flist" ).text(data);
-                    });
-            };
 
             return {
                 loadTemplate: _loadTemplate,
                 replaceTemplate: _replaceTemplate,
-                postSetOfAFactor: _postSetOfAFactor,
                 getTemplateAfter: _getTemplateAfter,
                 clearCheckedInputs: _clearCheckedInputs,
                 toggleTableOfRows: _toggleTableOfRows

@@ -188,11 +188,10 @@ class FactorSetAPI(MethodView):
                                    unit_pattern2=unit_pattern2)
             db_session.add(factor_set)
             db_session.commit()
-            flash('Factor code %r Successfully Inserted.' % factor_code)
-            message = 'Success.'
+            message = '%r Successfully Created.' % factor_code
             return message
         else:
-            message = 'Factor code %r is Already taken.' % factor_code
+            message = '%r is Already taken.' % factor_code
             return message
 
     # Delete set of a single factor.
@@ -210,7 +209,7 @@ class FactorSetAPI(MethodView):
             FactorSet.factor_pattern4 == f_pattern4,).first()
         db_session.delete(factor_set)
         db_session.commit()
-        message = 'Success.'
+        message = 'Successfully Deleted.'
         return message
 
     # Update set of a single factor.
@@ -230,7 +229,6 @@ class FactorSetAPI(MethodView):
         factor_set.unit_pattern1 = unit_pattern1
         factor_set.unit_pattern2 = unit_pattern2
         factor_set.quantity = quantity
-        # db_session.update(factor_set)
         db_session.commit()
-        message = 'Success.'
+        message = 'Successfully Updated.'
         return message
