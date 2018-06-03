@@ -8,7 +8,7 @@
     {% if form %}
         <div>{{ form.unit }}</div>
         <div>{{ form.quantity }}</div>
-    {% elif %}
+    {% else %}
         <div>
             <select id="factor-unit">
             {% for unit in units %}
@@ -20,7 +20,7 @@
             {% endfor %}
             </select>
         </div>
-        <div><input type="text" id="selected-txt"></div>
+        <div><input type="text" id="factor-quantity"></div>
     {% endif %}
     <div><input type="reset" value="Reset"/></div>
 </div>

@@ -4,7 +4,7 @@ from .views.index_views import IndexView
 from .views.tag_views import TagListView, TagDetailView
 from .views.nutrient_views import NutritionView
 from .apis.nutrient_apis import NutrientAPI, NutrientPattern2API, NutrientFormAPI
-from .apis.factor_apis import FactorAPI, FactorListAPI, FactorSetAPI, SetOfAFactorAPI
+from .apis.factor_apis import FactorAPI, FactorListAPI, FactorSetAPI
 
 
 # Decorate Views
@@ -49,9 +49,8 @@ factor_api = FactorAPI.as_view(
 factor_list_api = FactorListAPI.as_view(
     'factor_list_api', template='factors/table_factor.html')
 factor_set_api = FactorSetAPI.as_view(
-    'factor_set_api', template='factors/detail_factor.html')
-set_of_a_factor_api = SetOfAFactorAPI.as_view(
-    'set_of_a_factor_api', template='factors/opted_factor.html')
+    'factor_set_api', templates={'detail': 'factors/detail_factor.html',
+                                 'opted': 'factors/opted_factor.html'})
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -69,14 +68,16 @@ url_patterns = [
     ('/api/nutrients', nutrient_api, ['GET'], {'nutrient_code': None}),
     ('/api/nutrients/<string:nutrient_code>', nutrient_api, ['GET']),
     ('/api/nutrients-form', nutrient_form_api, ['GET'], {'nutrient_code': None}),
-    ('/api/nutrients-form/<string:nutrient_code>', nutrient_form_api, ['GET', 'POST']),
-    ('/api/nutrients-pattern2', nutrient_pattern2_api, ['GET']),
-    ('/api/factor-set', factor_set_api, ['GET'], {'nutrient_code': None}),
+    ('/api/nutrients-form/<string:nutrient_code>',
+     nutrient_form_api, ['GET', 'POST']),
+    ('/api/nutrients-pattern2/<string:pattern1_code>',
+     nutrient_pattern2_api, ['GET']),
+    ('/api/factor-set', factor_set_api, ['GET'], {'factor_set_code': None}),
     ('/api/factor-set', factor_set_api, ['POST']),
-    ('/api/factor-set/<string:nutrient_code>', factor_set_api, ['GET']),
+    ('/api/factor-set/<string:factor_set_code>',
+     factor_set_api, ['GET', 'PUT', 'DELETE']),
     ('/api/factors', factor_api, ['GET'], {'factor_code': None}),
     ('/api/factors/<string:factor_code>', factor_api, ['GET']),
     ('/api/factor-list', factor_list_api, ['GET'], {'factor_code': None}),
     ('/api/factor-list/<string:factor_code>', factor_list_api, ['GET']),
-    ('/api/set-of-a-factor/<string:factor_set_code>',set_of_a_factor_api , ['GET'])
 ]

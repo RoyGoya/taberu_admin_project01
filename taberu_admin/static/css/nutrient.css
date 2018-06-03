@@ -28,6 +28,11 @@ div.opted-factor > div {
     margin-right: 10px;
     color: magenta;
 }
+div.message {
+    text-align: center;
+    color: orangered;
+    font-size: 13px;
+}
 
 
 

@@ -1,5 +1,26 @@
 $( document ).ready(function () {
 
+    // Extend jQuery: make shortcuts for PUT and DELETE
+    $.each( ["put", "delete" ], function ( i, method ) {
+        $[ method ] = function ( url, data, callback, type ) {
+            if ( $.isFunction( data ) ) {
+                type = type || callback;
+                callback = data;
+                data = undefined;
+            }
+
+            return $.ajax({
+                url: url,
+                type: method,
+                dataType: type,
+                data: data,
+                success: callback
+            });
+        };
+    });
+
+    // Module Pattern
+    // https://learn.jquery.com/code-organization/concepts/
     $.taberu = (function() {
         var _urlDict = {
             api: {
@@ -9,6 +30,7 @@ $( document ).ready(function () {
                 factors: "/api/factors",
                 factorList: "/api/factor-list",
                 factorSet: "/api/factor-set",
+                setOfAFactor: "/api/set-of-a-factor",
                 tags: "/api/tags"
             },
             view: {
@@ -95,7 +117,13 @@ $( document ).ready(function () {
             };
             
             var _postSetOfAFactor = function (url, json, doneFunc) {
-                $.post( url, json, doneFunc());
+                $.post( url, json, function ( data ) {
+                        var _fDetailEle = $( "div#box-fdetail" ),
+                            _pk = $( "div#opted-nutrient" ).data("nutrientCode");
+                        _loadTemplate(_urlDict.api.factorSet + "/" + _pk,
+                            _fDetailEle);
+                        $( "div#message-flist" ).text(data);
+                    });
             };
 
             return {

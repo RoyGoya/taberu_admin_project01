@@ -1,11 +1,8 @@
 <p>
     <div class="title">Nutrient Detail</div>
     {% if nutrient %}
-        <div class="opted-item" id="selected-nutrient" style="color: dodgerblue"
-             data-dt-pattern="{{ nutrient.dt_pattern }}"
-             data-pattern1="{{ nutrient.pattern1 }}"
-             data-pattern2="{{ nutrient.pattern2 }}"
-             data-serial="{{ nutrient.serial }}"
+        <div class="opted-item" id="ndetail-opted-nutrient" style="color: dodgerblue"
+             data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
         >
             ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})</div>
     {% else %}
@@ -13,11 +10,11 @@
     {% endif %}<br/>
     <ul class="wrap-bt off">
         {% if nutrient %}
-            <li class="bt" id="n-send">UPDATE</li>
+            <li class="bt" id="n-update">UPDATE</li>
             <li class="bt selected" id="n-reset">RESET</li>
             <li class="bt" id="n-new">NEW</li>
         {% else %}
-            <li class="bt" id="n-send">CREATE</li>
+            <li class="bt" id="n-create">CREATE</li>
             <li class="bt new" id="n-reset">RESET</li>
         {% endif %}
     </ul>

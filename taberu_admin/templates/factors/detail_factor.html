@@ -6,7 +6,12 @@
         ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})
     </div><br/>
     <div class="opted-factor"></div>
-    <ul class="wrap-bt off" id="fdtail-wrap-bt"><li class="cnt">{{ set_of_facotrs_cnt|e }}</li><li class="bt" id="get-flist">GET</li></ul>
+    <ul class="wrap-bt off" id="fdtail-wrap-bt">
+        <li class="cnt">{{ set_of_facotrs_cnt|e }}</li>
+        <li class="bt" id="get-flist">GET</li></li>
+        <li class="bt" id="delete-flist" style="display: none">DELETE</li>
+        <li class="bt" id="update-flist" style="display: none">UPDATE</li>
+    </ul>
 </p>
 <section class="tb" id="tb-fdetail">
     <header>

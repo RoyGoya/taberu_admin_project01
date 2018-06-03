@@ -7,6 +7,7 @@ from flask.views import View
 
 from ..forms.nutrient_forms import CreateNutrientForm
 from ..models.nutrient_models import Nutrient
+from ..apis.nutrient_apis import get_dt_pattern_choices, get_n_pattern1_choices
 
 
 class NutritionView(View):
@@ -19,6 +20,9 @@ class NutritionView(View):
         form = CreateNutrientForm(request.form)
         nutrients = Nutrient.query.filter(Nutrient.dt_pattern == 's',
                                           Nutrient.is_active == True).all()
+        form.dt_pattern.choices = get_dt_pattern_choices()
+        form.pattern1.choices = get_n_pattern1_choices()
+        form.dt_pattern.data = 's'
         nutrient_len = len(nutrients)
         return render_template(self.template_name, form=form,
                                nutrients=nutrients,

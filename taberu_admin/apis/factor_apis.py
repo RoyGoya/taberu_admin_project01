@@ -30,7 +30,7 @@ class FactorAPI(MethodView):
 
     def get(self, factor_code) -> object:
 
-        # Give all factors.
+        # Return a list of factors.
         if factor_code is None:
             factors = Factor.query.filter(
                 Factor.pattern2 == '0',
@@ -39,7 +39,7 @@ class FactorAPI(MethodView):
             return render_template(self.list_tpl, factors=factors,
                                    factors_cnt=factors_len)
 
-        # Shows a single factor.
+        # Return a single factor.
         else:
             pattern1, pattern2, pattern3, pattern4 = factor_code.split('-')
             factor = Factor.query.filter(
@@ -62,14 +62,14 @@ class FactorListAPI(MethodView):
         if factor_code is None:
             raise InvalidUsage('Invalid Request.', status_code=410)
 
-        # Gives A factor-list.
+        # Return a factor-list.
         else:
             pattern1, pattern2, pattern3, pattern4 = factor_code.split('-')
             if pattern2 == '0':
                 factors = Factor.query.filter(
                     Factor.pattern1 == pattern1,
                     Factor.pattern2 != '0',
-                    Factor.pattern3 == '00',
+                    Factor.pattern3 == '00'
                 ).all()
             elif pattern3 == '00':
                 factors = Factor.query.filter(
@@ -97,51 +97,73 @@ class FactorListAPI(MethodView):
 
 class FactorSetAPI(MethodView):
 
-    def __init__(self, template):
-        self.template = template
+    def __init__(self, templates):
+        self.detail_tpl = templates['detail']
+        self.opted_tpl = templates['opted']
 
-    def get(self, nutrient_code) -> object:
-        if nutrient_code is None:
+    def get(self, factor_set_code) -> object:
+        if factor_set_code is None:
             raise InvalidUsage('Invalid Request.', status_code=410)
 
-        # GET: Gives A factor-set.
         else:
-            dt_pattern, pattern1, pattern2, serial = nutrient_code.split('-')
-            # Get Selected Nutrient's Factors.
-            set_of_facotrs = FactorSet.query.filter(
-                FactorSet.nutrient_dt_pattern == dt_pattern,
-                FactorSet.nutrient_pattern1 == pattern1,
-                FactorSet.nutrient_pattern2 == pattern2,
-                FactorSet.nutrient_serial == serial
-            ).all()
-            set_of_facotrs_len = len(set_of_facotrs)
+            code_len = len(factor_set_code.split('-'))
 
-            # Get A Selected Nutrient Info.
-            if set_of_facotrs_len <= 0:
-                nutrient = Nutrient.query.filter(
-                    Nutrient.dt_pattern == dt_pattern,
-                    Nutrient.pattern1 == pattern1,
-                    Nutrient.pattern2 == pattern2,
-                    Nutrient.serial == serial
-                ).first()
-            else:
-                nutrient = set_of_facotrs[0].nutrient
+            # Return set of factors.
+            if code_len == 4:
+                [dt_pattern, pattern1, pattern2, serial] = factor_set_code.\
+                    split('-')
+                set_of_facotrs = FactorSet.query.filter(
+                    FactorSet.nutrient_dt_pattern == dt_pattern,
+                    FactorSet.nutrient_pattern1 == pattern1,
+                    FactorSet.nutrient_pattern2 == pattern2,
+                    FactorSet.nutrient_serial == serial
+                ).all()
+                set_of_facotrs_len = len(set_of_facotrs)
+                if set_of_facotrs_len <= 0:
+                    nutrient = Nutrient.query.filter(
+                        Nutrient.dt_pattern == dt_pattern,
+                        Nutrient.pattern1 == pattern1,
+                        Nutrient.pattern2 == pattern2,
+                        Nutrient.serial == serial
+                    ).first()
+                else:
+                    nutrient = set_of_facotrs[0].nutrient
+                return render_template(self.detail_tpl, set_of_facotrs=set_of_facotrs,
+                                       set_of_facotrs_cnt=set_of_facotrs_len,
+                                       nutrient=nutrient)
 
-            return render_template(self.template, set_of_facotrs=set_of_facotrs,
-                                   set_of_facotrs_cnt=set_of_facotrs_len,
-                                   nutrient=nutrient)
+            # Return set of a single factor.
+            elif code_len == 8:
+                [n_dt_pattern, n_pattern1, n_pattern2, n_serial, f_pattern1,
+                 f_pattern2, f_pattern3, f_pattern4] = factor_set_code.split('-')
+                factor_set = FactorSet.query.filter(
+                    FactorSet.nutrient_dt_pattern == n_dt_pattern,
+                    FactorSet.nutrient_pattern1 == n_pattern1,
+                    FactorSet.nutrient_pattern2 == n_pattern2,
+                    FactorSet.nutrient_serial == n_serial,
+                    FactorSet.factor_pattern1 == f_pattern1,
+                    FactorSet.factor_pattern2 == f_pattern2,
+                    FactorSet.factor_pattern3 == f_pattern3,
+                    FactorSet.factor_pattern4 == f_pattern4).first()
+                factor = factor_set.factor
+                form = UpdateFactorForm(request.form)
+                form.unit.choices = get_unit_choices()
+                unit = factor_set.unit_common
+                form.unit.data = (unit.pattern1 + '-' + unit.pattern2)
+                form.quantity.data = factor_set.quantity
+                return render_template(self.opted_tpl, form=form, factor=factor)
 
-    # CREATE: Add a new set of factor.
+    # Create set of a new single factor.
     def post(self):
         factor_code = request.values.get("factor_code")
         nutrient_code = request.values.get("nutrient_code")
         unit_code = request.values.get("unit_code")
         quantity = request.values.get("quantity")
-        f_pattern1, f_pattern2, f_pattern3, f_pattern4 = \
-            factor_code.split('-')
-        n_dt_pattern, n_pattern1, n_pattern2, n_serial = \
-            nutrient_code.split('-')
-        unit_pattern1, unit_pattern2 = unit_code.split('-')
+        [f_pattern1, f_pattern2, f_pattern3, f_pattern4] = factor_code.\
+            split('-')
+        [n_dt_pattern, n_pattern1, n_pattern2, n_serial] = nutrient_code.\
+            split('-')
+        [unit_pattern1, unit_pattern2] = unit_code.split('-')
         factor_set = FactorSet.query.filter(
             FactorSet.nutrient_dt_pattern == n_dt_pattern,
             FactorSet.nutrient_pattern1 == n_pattern1,
@@ -170,33 +192,45 @@ class FactorSetAPI(MethodView):
             message = 'Success.'
             return message
         else:
-            flash('Factor code %r Already taken.' % factor_code)
-            message = 'Fail.'
+            message = 'Factor code %r is Already taken.' % factor_code
             return message
 
+    # Delete set of a single factor.
+    def delete(self, factor_set_code):
+        [n_dt_pattern, n_pattern1, n_pattern2, n_serial, f_pattern1,
+         f_pattern2, f_pattern3, f_pattern4] = factor_set_code.split('-')
+        factor_set = FactorSet.query.filter(
+            FactorSet.nutrient_dt_pattern == n_dt_pattern,
+            FactorSet.nutrient_pattern1 == n_pattern1,
+            FactorSet.nutrient_pattern2 == n_pattern2,
+            FactorSet.nutrient_serial == n_serial,
+            FactorSet.factor_pattern1 == f_pattern1,
+            FactorSet.factor_pattern2 == f_pattern2,
+            FactorSet.factor_pattern3 == f_pattern3,
+            FactorSet.factor_pattern4 == f_pattern4,).first()
+        db_session.delete(factor_set)
+        db_session.commit()
+        message = 'Success.'
+        return message
 
-class SetOfAFactorAPI(MethodView):
-    def __init__(self, template):
-        self.template = template
-
-    def get(self, factor_set_code):
-        if factor_set_code is None:
-            raise InvalidUsage('Invalid Request.', status_code=410)
-        else:
-            n_dt_pattern, n_pattern1, n_pattern2, n_serial, f_pattern1, f_pattern2, \
-            f_pattern3, f_pattern4 = factor_set_code.split('-')
-            factor_set = FactorSet.query.filter(
-                FactorSet.nutrient_dt_pattern == n_dt_pattern,
-                FactorSet.nutrient_pattern1 == n_pattern1,
-                FactorSet.nutrient_pattern2 == n_pattern2,
-                FactorSet.nutrient_serial == n_serial,
-                FactorSet.factor_pattern1 == f_pattern1,
-                FactorSet.factor_pattern2 == f_pattern2,
-                FactorSet.factor_pattern3 == f_pattern3,
-                FactorSet.factor_pattern4 == f_pattern4, ).first()
-
-            form = UpdateFactorForm(request.form)
-            form.unit.choices = get_unit_choices()
-            unit = factor_set.unit
-            form.unit.data = (unit.pattern1 + '-' + unit.pattern2)
-            return render_template(self.template, form=form, factor_set=factor_set)
+    # Update set of a single factor.
+    def put(self, factor_set_code):
+        [n_dt_pattern, n_pattern1, n_pattern2, n_serial, f_pattern1,
+         f_pattern2, f_pattern3, f_pattern4, unit_pattern1, unit_pattern2,
+         quantity] = factor_set_code.split('-')
+        factor_set = FactorSet.query.filter(
+            FactorSet.nutrient_dt_pattern == n_dt_pattern,
+            FactorSet.nutrient_pattern1 == n_pattern1,
+            FactorSet.nutrient_pattern2 == n_pattern2,
+            FactorSet.nutrient_serial == n_serial,
+            FactorSet.factor_pattern1 == f_pattern1,
+            FactorSet.factor_pattern2 == f_pattern2,
+            FactorSet.factor_pattern3 == f_pattern3,
+            FactorSet.factor_pattern4 == f_pattern4,).first()
+        factor_set.unit_pattern1 = unit_pattern1
+        factor_set.unit_pattern2 = unit_pattern2
+        factor_set.quantity = quantity
+        # db_session.update(factor_set)
+        db_session.commit()
+        message = 'Success.'
+        return message

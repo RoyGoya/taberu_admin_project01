@@ -17,8 +17,9 @@ def get_dt_pattern_choices():
 
 def get_n_pattern1_choices():
     choice_tuple_list = []
-    nutrient_patterns = NutrientPattern.query.filter_by(pattern2='00',
-                                                         is_active=True).all()
+    nutrient_patterns = NutrientPattern.query.filter(
+        NutrientPattern.pattern2 == '00',
+        NutrientPattern.is_active == True).all()
     for nutrient_pattern in nutrient_patterns:
         choice_tuple = (nutrient_pattern.pattern1, nutrient_pattern.eng_name)
         choice_tuple_list += {choice_tuple}
@@ -46,23 +47,32 @@ class NutrientAPI(MethodView):
 
     def get(self, nutrient_code) -> object:
         if nutrient_code is None:
-            dt_pattern = request.values.get('dt_pattern')
-            pattern1 = request.values.get('pattern1')
-            list_data = []
-            if dt_pattern is None:
-                raise InvalidUsage('There is no dt_pattern.', status_code=410)
-            elif pattern1 is None:
+            raise InvalidUsage('There is no dt_pattern.', status_code=410)
+        else:
+            code_len = len(nutrient_code.split('-'));
+            if code_len == 1:
+                dt_pattern = nutrient_code
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.is_active == True
                 ).all()
-            else:
+            elif code_len == 2:
+                [dt_pattern, pattern1] = nutrient_code.split('-')
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
                     Nutrient.is_active == True
                 ).all()
-            nutrients_len = len(list_data)
+            elif code_len == 3:
+                [dt_pattern, pattern1, pattern2] = nutrient_code.split('-')
+                nutrients = Nutrient.query.filter(
+                    Nutrient.dt_pattern == dt_pattern,
+                    Nutrient.pattern1 == pattern1,
+                    Nutrient.pattern2 == pattern2,
+                    Nutrient.is_active == True
+                ).all()
+
+            nutrients_len = len(nutrients)
             return render_template(self.template, nutrients=nutrients,
                                    nutrients_cnt=nutrients_len)
 
@@ -74,10 +84,12 @@ class NutrientFormAPI(MethodView):
     def get(self, nutrient_code):
         if nutrient_code is None:
             form = CreateNutrientForm(request.form)
+            form.dt_pattern.choices = get_dt_pattern_choices()
+            form.pattern1.choices = get_n_pattern1_choices()
+            form.dt_pattern.data = 's'
             return render_template(self.template, form=form)
         else:
-            dt_pattern, pattern1, pattern2, serial = nutrient_code\
-                .split('-')
+            [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
             form = CreateNutrientForm(request.form)
             form.dt_pattern.choices = get_dt_pattern_choices()
             form.pattern1.choices = get_n_pattern1_choices()
@@ -109,16 +121,20 @@ class NutrientPattern2API(MethodView):
     def __init__(self, template):
         self.template = template
 
-    def get(self) -> object:
-        pattern1 = request.values.get('pattern1')
-        if pattern1 is None:
-            raise InvalidUsage('There is no pattern1.', status_code=410)
+    def get(self, pattern1_code):
+        if pattern1_code is None:
+            pass
         else:
-            patterns = NutrientPattern.query.filter(
-                NutrientPattern.pattern1 == pattern1,
-                NutrientPattern.pattern2 != '00',
-                NutrientPattern.is_active == True
-            ).all()
-            option = {'input_type': 'radio', 'input_name': 'pattern2'}
-            return render_template(self.template, patterns=patterns, option=option)
+            pattern1 = pattern1_code
+            if pattern1 is None:
+                raise InvalidUsage('There is no pattern1.', status_code=410)
+            else:
+                patterns = NutrientPattern.query.filter(
+                    NutrientPattern.pattern1 == pattern1,
+                    NutrientPattern.pattern2 != '00',
+                    NutrientPattern.is_active == True
+                ).all()
+                option = {'input_type': 'radio', 'input_name': 'pattern2'}
+                return render_template(self.template, patterns=patterns,
+                                       option=option)
 
