@@ -10,11 +10,11 @@ from taberu_admin.models.user_models import User
 
 class RegistrationForm(Form):
     first_name = StringField('First name', [
-        validators.DataRequired("Please enter your first name."),
+        validators.DataRequired(message="Please enter your first name."),
         validators.Length(min=2, max=30)
     ])
     last_name = StringField('Last name', [
-        validators.DataRequired("Please enter your last name."),
+        validators.DataRequired(message="Please enter your last name."),
         validators.Length(min=2, max=30)
     ])
     email = StringField('Email Address', [validators.Email()])

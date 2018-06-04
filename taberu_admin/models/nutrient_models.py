@@ -1,5 +1,6 @@
 # coding: utf-8
-from sqlalchemy import Boolean, CHAR, Column, DateTime, ForeignKeyConstraint, Index, Integer, String
+from sqlalchemy import Boolean, CHAR, Column, DateTime, ForeignKeyConstraint, \
+    Index, Integer, String, Float
 from sqlalchemy.orm import relationship
 
 from ..database import Base
@@ -50,8 +51,10 @@ class NutrientSet(Base):
     __table_args__ = (
         ForeignKeyConstraint(['sub_dt_pattern', 'sub_pattern1', 'sub_pattern2', 'sub_serial'], ['nutrient.dt_pattern', 'nutrient.pattern1', 'nutrient.pattern2', 'nutrient.serial']),
         ForeignKeyConstraint(['super_dt_pattern', 'super_pattern1', 'super_pattern2', 'super_serial'], ['nutrient.dt_pattern', 'nutrient.pattern1', 'nutrient.pattern2', 'nutrient.serial']),
-        Index('idx_nutrient_set_sub_dt_pattern', 'sub_dt_pattern', 'sub_pattern1', 'sub_pattern2', 'sub_serial'),
-        Index('idx_nutrient_set_super_dt_pattern', 'super_dt_pattern', 'super_pattern1', 'super_pattern2', 'super_serial')
+        ForeignKeyConstraint(['unit_pattern1', 'unit_pattern2'], ['unit_common.pattern1', 'unit_common.pattern2']),
+        Index('idx_nutrient_set_super_dt_pattern', 'super_dt_pattern', 'super_pattern1', 'super_pattern2', 'super_serial'),
+        Index('idx_nutrient_set_unit_pattern1', 'unit_pattern1', 'unit_pattern2'),
+        Index('idx_nutrient_set_sub_dt_pattern', 'sub_dt_pattern', 'sub_pattern1', 'sub_pattern2', 'sub_serial')
     )
 
     super_dt_pattern = Column(CHAR(1), primary_key=True, nullable=False)
@@ -63,6 +66,10 @@ class NutrientSet(Base):
     sub_pattern1 = Column(CHAR(1), primary_key=True, nullable=False)
     sub_pattern2 = Column(CHAR(2), primary_key=True, nullable=False)
     sub_serial = Column(Integer, primary_key=True, nullable=False)
+    unit_pattern1 = Column(CHAR(2), nullable=False)
+    unit_pattern2 = Column(CHAR(2), nullable=False)
+    quantity = Column(Float, nullable=False)
 
     nutrient = relationship('Nutrient', primaryjoin='NutrientSet.sub_dt_pattern == Nutrient.dt_pattern')
     nutrient1 = relationship('Nutrient', primaryjoin='NutrientSet.super_dt_pattern == Nutrient.dt_pattern')
+    unit_common = relationship('UnitCommon')

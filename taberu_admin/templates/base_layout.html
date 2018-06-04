@@ -2,6 +2,7 @@
 <html>
   <head>
     {% block head %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic" rel="stylesheet">
         <link rel="stylesheet" href=
             "{{ url_for('static', filename='css/common.css') }}">
@@ -16,7 +17,7 @@
     <div id="navbar">
         <ul id="navbar-list">
             <li><a href="/">TABERU</a></li>
-            <li><a href="/nutrients">NUTRIENTS</a></li>
+            <li><a id="navbar-nutrients" href="/nutrients">NUTRIENTS</a></li>
             <li><a href="/medications">MEDICATIONS</a></li>
             <li><a href="/conditions">CONDITIONS</a></li>
             <li><a href="/exercises">EXERCISES</a></li>

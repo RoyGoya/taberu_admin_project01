@@ -18,8 +18,7 @@ class NutritionView(View):
 
     def dispatch_request(self):
         form = CreateNutrientForm(request.form)
-        nutrients = Nutrient.query.filter(Nutrient.dt_pattern == 's',
-                                          Nutrient.is_active == True).all()
+        nutrients = Nutrient.query.filter(Nutrient.dt_pattern == 's').all()
         form.dt_pattern.choices = get_dt_pattern_choices()
         form.pattern1.choices = get_n_pattern1_choices()
         form.dt_pattern.data = 's'

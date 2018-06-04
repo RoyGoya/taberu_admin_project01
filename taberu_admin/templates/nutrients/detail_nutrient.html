@@ -7,15 +7,17 @@
             ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})</div>
     {% else %}
         <div class="opted-item" style="color: lightblue">Create New</div>
-    {% endif %}<br/>
+    {% endif %}
+    <div class="message" id="message-flist">{{ message }}</div><br/>
     <ul class="wrap-bt off">
         {% if nutrient %}
-            <li class="bt" id="n-update">UPDATE</li>
             <li class="bt selected" id="n-reset">RESET</li>
             <li class="bt" id="n-new">NEW</li>
+            <li class="bt" id="n-delete">DELETE</li>
+            <li class="bt" id="n-update">UPDATE</li>
         {% else %}
-            <li class="bt" id="n-create">CREATE</li>
             <li class="bt new" id="n-reset">RESET</li>
+            <li class="bt" id="n-create">CREATE</li>
         {% endif %}
     </ul>
 </p>

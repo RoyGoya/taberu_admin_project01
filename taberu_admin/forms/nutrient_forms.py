@@ -14,15 +14,24 @@ class CreateNutrientForm(Form):
     render_kw=None, _form=None, _name=None, _prefix='',
     _translations=None, _meta=None):
     """
-    dt_pattern = RadioField(label="DataType", choices=[])
-    pattern1 = RadioField(label="Pattern1", choices=[])
-    pattern2 = RadioField(label="Pattern2", choices=[])
+    dt_pattern = RadioField(label="DataType", choices=[], validators=[
+        validators.DataRequired('Please Select DTPattern'),
+        validators.Length(min=1, max=1)
+    ])
+    pattern1 = RadioField(label="Pattern1", choices=[], validators=[
+        validators.DataRequired('Please Select Pattern1'),
+        validators.Length(min=1, max=1)
+    ])
+    pattern2 = RadioField(label="Pattern2", choices=[], validators=[
+        validators.DataRequired('Please Select Pattern2'),
+        validators.Length(min=2, max=2)
+    ])
     has_sub = RadioField(label="Has Sub?", choices=[
         (True, 'True'), (False, 'False')
-    ])
+    ], validators=[validators.DataRequired()])
     is_active = RadioField(label="Is Active?", choices=[
         (True, 'True'), (False, 'False')
-    ])
+    ], validators=[validators.DataRequired()])
     eng_name = StringField(label="English Name", validators=[
         validators.DataRequired("Please Enter A English Name."),
         validators.Length(min=2, max=100)

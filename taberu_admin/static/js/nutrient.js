@@ -8,8 +8,9 @@ $(document).ready(function () {
         _fDetailEle = $( "div#box-fdetail" ),
         _fListEle = $( "div#box-flist" );
 
-    // Jquery Custom Events
-    // https://learn.jquery.com/events/introduction-to-custom-events/
+    // Title: Jquery Custom Events
+    // Author: roy1goya@gmail.com
+    // Refer: https://learn.jquery.com/events/introduction-to-custom-events/
     _nListEle.on("click", "div.tr-nlist",
         function ( e ) {
             var _currentEle = $( this ),
@@ -29,14 +30,12 @@ $(document).ready(function () {
                     _fDetailEle.show();
                     _fDetailEle.removeClass("off").addClass("on");
                 }
-
-
             }
         });
 
     _nDetailEle.on("click", "ul#dt_pattern > li > input, " +
         "ul#pattern1 > li > input, ul#pattern2 > li > input, li#n-create, " +
-        "li#n-update, li#n-reset, li#n-new",
+        "li#n-update, li#n-reset, li#n-new, li#n-delete",
         function ( e ) {
             var _currentEle = $( this );
 
@@ -76,12 +75,23 @@ $(document).ready(function () {
                     .submit();
 
             } else if ( _currentEle.is( "li#n-update" ) ) {
-                // TODO: change this form submit into $.put
-                var _form = $( "form#ndetail-form" ),
-                    _nutrientCode = $("div#ndetail-opted-nutrient")
-                        .data("nutrientCode");
-                _form.attr("action", _url.api.nutrients + "/" + _nutrientCode)
-                    .attr("method", "put").submit();
+                var _nutrientCode = $("div#ndetail-opted-nutrient").data(
+                        "nutrientCode"),
+                    _json = {
+                        has_sub: $("ul#has_sub").find("input:checked")
+                            .val(),
+                        is_active: $("ul#is_active").find("input:checked")
+                            .val(),
+                        eng_name: $("input#eng_name").val(),
+                        eng_plural: $("input#eng_plural").val(),
+                        kor_name: $("input#kor_name").val(),
+                        jpn_name: $("input#jpn_name").val(),
+                        chn_name: $("input#chn_name").val()
+                    };
+                $.put(_url.api.nutrients + "/" + _nutrientCode, _json,
+                    function () {
+                        location.reload();
+                    });
 
             } else if ( _currentEle.is( "li#n-reset" ) ) {
                 var _dtPattern = "s";
@@ -114,6 +124,14 @@ $(document).ready(function () {
                     _fListEle.removeClass("on").addClass("off");
                     _fListEle.hide();
                 }
+
+            } else if ( _currentEle.is( "li#n-delete" ) ) {
+                var _nutrientCode = $("div#ndetail-opted-nutrient")
+                        .data("nutrientCode");
+                $.delete(_url.api.nutrients + "/" + _nutrientCode, function () {
+                    location.reload();
+                });
+
             }
         });
 

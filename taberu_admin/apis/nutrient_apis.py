@@ -56,14 +56,12 @@ class NutrientAPI(MethodView):
                 dt_pattern = nutrient_code
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
-                    Nutrient.is_active == True
                 ).all()
             elif code_len == 2:
                 [dt_pattern, pattern1] = nutrient_code.split('-')
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
-                    Nutrient.is_active == True
                 ).all()
             elif code_len == 3:
                 [dt_pattern, pattern1, pattern2] = nutrient_code.split('-')
@@ -71,7 +69,6 @@ class NutrientAPI(MethodView):
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
                     Nutrient.pattern2 == pattern2,
-                    Nutrient.is_active == True
                 ).all()
 
             nutrients_len = len(nutrients)
@@ -114,14 +111,22 @@ class NutrientAPI(MethodView):
 
     def delete(self, nutrient_code):
         # Delete a single nutrient.
-        pass
+        [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
+        nutrient = Nutrient.query.filter(
+            Nutrient.dt_pattern == dt_pattern,
+            Nutrient.pattern1 == pattern1,
+            Nutrient.pattern2 == pattern2,
+            Nutrient.serial == serial
+        ).first()
+        db_session.delete(nutrient)
+        db_session.commit()
+        message = 'Successfully Deleted.'
+        return message
 
     def put(self, nutrient_code):
-        # TODO: Refactor this
         # Update a single nutrient.
         [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
         form = CreateNutrientForm(request.form)
-
         if form.has_sub.data == 'True':
             has_sub = True
         else:
@@ -136,7 +141,7 @@ class NutrientAPI(MethodView):
             Nutrient.pattern1 == pattern1,
             Nutrient.pattern2 == pattern2,
             Nutrient.serial == serial
-        )
+        ).first()
         nutrient.has_sub = has_sub
         nutrient.is_active = is_active
         nutrient.eng_name = form.eng_name.data
@@ -144,6 +149,7 @@ class NutrientAPI(MethodView):
         nutrient.kor_name = form.kor_name.data
         nutrient.jpn_name = form.jpn_name.data
         nutrient.chn_name = form.chn_name.data
+        db_session.commit()
         message = 'Successfully Updated.'
         return message
 
@@ -208,3 +214,11 @@ class NutrientPattern2API(MethodView):
                 option = {'input_type': 'radio', 'input_name': 'pattern2'}
                 return render_template(self.template, patterns=patterns,
                                        option=option)
+
+
+class NutrientSet(MethodView):
+    def __init__(self, template):
+        self.template = template
+
+    def get(self, pattern1_code):
+        pass
