@@ -25,12 +25,11 @@ $( document ).ready(function () {
         var _urlDict = {
             api: {
                 nutrients: "api/nutrients",
+                nutrientSet: "api/nutrient-set",
                 nutrientPattern2: "api/nutrients-pattern2",
                 nutrientForm: "api/nutrients-form",
                 factors: "/api/factors",
-                factorList: "/api/factor-list",
                 factorSet: "/api/factor-set",
-                setOfAFactor: "/api/set-of-a-factor",
                 tags: "/api/tags"
             },
             view: {
@@ -61,18 +60,7 @@ $( document ).ready(function () {
                 targetEle.hide();
             };
 
-            var _getTemplateAfter = function (url, targetEle,
-                                          super_code, subElesColor) {
-                $.get(url, function ( template ) {
-                    var subEles = $( template ).addClass(super_code);
-                    subEles.addClass( "sub" );
-                    subEles.css( "background-color", subElesColor );
-                    targetEle.after( subEles );
-                    console.log( "LoadAfter Complete." );
-                });
-            };
-
-            var _toggleTableOfRows = function (url, targetEle, subElesColor) {
+            var _toggleTableOfRows = function (url, json, targetEle, subElesColor) {
                 subElesColor = subElesColor || "beige";
                 targetEle.css( "background-color", "paleturquoise");
                 if ( targetEle.data("hasSub")==="True") {
@@ -81,8 +69,13 @@ $( document ).ready(function () {
                         if ( targetEle.is( ".hadCalled" )) {
                             targetEle.nextAll( "." + _superCode ).show();
                         } else {
-                            _getTemplateAfter(url, targetEle, _superCode,
-                                subElesColor);
+                            $.get(url, json, function ( template ) {
+                                var subEles = $( template ).addClass(_superCode);
+                                subEles.addClass( "sub" );
+                                subEles.css( "background-color", subElesColor );
+                                targetEle.after( subEles );
+                                console.log( "LoadAfter Complete." );
+                            });
                             targetEle.addClass("hadCalled");
                         }
                         targetEle.find("div.bullet").text("∇");
@@ -116,7 +109,6 @@ $( document ).ready(function () {
             return {
                 loadTemplate: _loadTemplate,
                 replaceTemplate: _replaceTemplate,
-                getTemplateAfter: _getTemplateAfter,
                 clearCheckedInputs: _clearCheckedInputs,
                 toggleTableOfRows: _toggleTableOfRows
             };

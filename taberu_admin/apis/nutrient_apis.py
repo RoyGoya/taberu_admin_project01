@@ -4,7 +4,8 @@ from flask.views import MethodView
 from ..database import db_session
 from ..errors import InvalidUsage
 from ..forms.nutrient_forms import CreateNutrientForm
-from ..models.nutrient_models import Nutrient, NutrientPattern, DataPattern
+from ..models.nutrient_models import Nutrient, NutrientPattern, DataPattern, \
+    NutrientSet
 
 
 def get_dt_pattern_choices():
@@ -216,9 +217,48 @@ class NutrientPattern2API(MethodView):
                                        option=option)
 
 
-class NutrientSet(MethodView):
+class NutrientSetAPI(MethodView):
     def __init__(self, template):
         self.template = template
 
-    def get(self, pattern1_code):
+    def get(self, nutrient_set_code):
+        if nutrient_set_code is None:
+            # Return a set of nutrients.
+            nutrient_code = request.values.get('nutrient_code')
+            [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
+            set_of_nutrients = NutrientSet.query.filter(
+                NutrientSet.super_dt_pattern == dt_pattern,
+                NutrientSet.super_pattern1 == pattern1,
+                NutrientSet.super_pattern2 == pattern2,
+                NutrientSet.super_serial == serial
+            ).all()
+
+            set_of_nutrients_len = len(set_of_nutrients)
+
+            if set_of_nutrients_len <= 0:
+                nutrient = Nutrient.query.filter(
+                    Nutrient.dt_pattern == dt_pattern,
+                    Nutrient.pattern1 == pattern1,
+                    Nutrient.pattern2 == pattern2,
+                    Nutrient.serial == serial
+                ).first()
+            else:
+                nutrient = set_of_nutrients[0].nutrient
+            return render_template(self.template, set_of_nutrients=set_of_nutrients,
+                                   nutrients_cnt=set_of_nutrients_len,
+                                   nutrient=nutrient)
+        else:
+            # Return a set of a single nutrient.
+            pass
+
+    def post(self):
+        # Create a set of new nutrient.
+        pass
+
+    def delete(self, nutrient_set_code):
+        # Delete a set of a single nutrient.
+        pass
+
+    def put(self, nutrient_set_code):
+        # Update a set of a single nutrient.
         pass

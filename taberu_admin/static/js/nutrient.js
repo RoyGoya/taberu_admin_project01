@@ -5,12 +5,13 @@ $(document).ready(function () {
         _url = $.taberu.url,
         _nListEle = $( "div#box-nlist" ),
         _nDetailEle = $( "div#box-ndetail" ),
+        _nSubEle = $( "div#box-nsub"),
+        _nGetEle = $( "div#box-nget"),
         _fDetailEle = $( "div#box-fdetail" ),
         _fListEle = $( "div#box-flist" );
 
-    // Title: Jquery Custom Events
-    // Author: roy1goya@gmail.com
-    // Refer: https://learn.jquery.com/events/introduction-to-custom-events/
+    // Jquery Custom Events
+    // https://learn.jquery.com/events/introduction-to-custom-events/
     _nListEle.on("click", "div.tr-nlist",
         function ( e ) {
             var _currentEle = $( this ),
@@ -21,11 +22,28 @@ $(document).ready(function () {
             };
 
             if ( _currentEle.is( "div.tr-nlist" )) {
-                var _pk = _currentEle.data("nutrientCode");
+                var _hasSub = _currentEle.data("hasSub"),
+                    _pk = _currentEle.data("nutrientCode"),
+                    _param = $.param({ nutrient_code: _pk});
                 _nutrient.loadTemplate(_url.api.nutrientForm + "/" + _pk,
                     _nDetailEle, _done);
-                _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
-                    _fDetailEle);
+                _fDetailEle.load(_url.api.factorSet, _param, function () {
+                    console.log("Load set of factors complete.");
+                });
+                if ( _hasSub === "True" ) {
+                    _nSubEle.load(_url.api.nutrientSet, _param, function () {
+                        console.log("Load set of nutrients complete.");
+                    });
+                    if ( _nSubEle.is(".off")) {
+                        _nSubEle.show();
+                        _nSubEle.removeClass("off").addClass("on");
+                    }
+                } else {
+                    if ( _nSubEle.is(".on")) {
+                        _nSubEle.removeClass("on").addClass("off");
+                        _nSubEle.hide();
+                    }
+                }
                 if ( _fDetailEle.is(".off")) {
                     _fDetailEle.show();
                     _fDetailEle.removeClass("off").addClass("on");
@@ -52,7 +70,8 @@ $(document).ready(function () {
             } else if ( _currentEle.is( "ul#pattern1 > li > input" ) ) {
                 var _nPattern2Ele = $("ul#pattern2"),
                     _pattern1Inputs = $( "ul#pattern1" ).find( "input" ),
-                    _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" ).val(),
+                    _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" )
+                        .val(),
                     _pattern1 = _currentEle.val();
                 _nutrient.clearCheckedInputs(_pattern1Inputs);
                 _currentEle.prop("checked", true);
@@ -62,8 +81,10 @@ $(document).ready(function () {
                     + _pattern1, _nPattern2Ele);
 
             } else if ( _currentEle.is( "ul#pattern2 > li > input" ) ) {
-                var _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" ).val(),
-                    _pattern1 = $( "ul#pattern1" ).find( "input:checked" ).val(),
+                var _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" )
+                        .val(),
+                    _pattern1 = $( "ul#pattern1" ).find( "input:checked" )
+                        .val(),
                     _pattern2 = _currentEle.val(),
                     _pk = _dtPattern + "-" + _pattern1 + "-" + _pattern2;
                 _nutrient.loadTemplate(_url.api.nutrients + "/" + _pk,
@@ -103,9 +124,12 @@ $(document).ready(function () {
                     var _nutrientCode = $("div#ndetail-opted-nutrient")
                         .data("nutrientCode"),
                         _done = function () {
-                            $("ul#dt_pattern").find("input").prop("disabled", true);
-                            $("ul#pattern1").find("input").prop("disabled", true);
-                            $("ul#pattern2").find("input").prop("disabled", true);
+                            $("ul#dt_pattern").find("input").prop("disabled",
+                                true);
+                            $("ul#pattern1").find("input").prop("disabled",
+                                true);
+                            $("ul#pattern2").find("input").prop("disabled",
+                                true);
                         };
                     _nutrient.loadTemplate(_url.api.nutrientForm + "/"
                         + _nutrientCode, _nDetailEle, _done);
@@ -116,6 +140,14 @@ $(document).ready(function () {
                 _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
                 _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern,
                         _nListEle);
+                if ( _nSubEle.is(".on")) {
+                    _nSubEle.removeClass("on").addClass("off");
+                    _nSubEle.hide();
+                }
+                if ( _nGetEle.is(".on")) {
+                    _nGetEle.removeClass("on").addClass("off");
+                    _nGetEle.hide();
+                }
                 if ( _fDetailEle.is(".on") ) {
                     _fDetailEle.removeClass("on").addClass("off");
                     _fDetailEle.hide();
@@ -135,8 +167,20 @@ $(document).ready(function () {
             }
         });
 
-    _fDetailEle.on("click", "div.tr-fdetail, li#get-flist, " +
-        "li#delete-flist, li#update-flist",
+    _nSubEle.on("click", "li#nsub-get",
+        function ( e ) {
+            var _currentEle = $( this );
+
+            if ( _currentEle.is( "li#nsub-get" ) ) {
+                if ( _nGetEle.is(".off")) {
+                    _nGetEle.show();
+                    _nGetEle.removeClass("off").addClass("on");
+                }
+            }
+        });
+
+    _fDetailEle.on("click", "div.tr-fdetail, li#get-flist, li#delete-flist, " +
+        "li#update-flist",
         function ( e ) {
             var _currentEle = $( this );
 
@@ -199,29 +243,29 @@ $(document).ready(function () {
             }
         });
 
-    _fListEle.on("click", "div.tr-flist, li#flist-reset," +
-        "li#flist-add",
+    _fListEle.on("click", "div.tr-flist, li#flist-reset, li#flist-add",
         function ( e ) {
-           var _currentEle = $( this );
+            var _currentEle = $( this );
 
-           if( _currentEle.is( "div.tr-flist" ) ) {
-               var _pk = _currentEle.data("code");
-               _nutrient.toggleTableOfRows(_url.api.factorList + "/" + _pk,
-                   _currentEle);
-               if ( _currentEle.is(".sub") ) {
-                   var _markedEle = _fListEle.find( "div.opted-factor" ),
-                       _addEle = $( "li#flist-add" );
-                   _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
-                       _markedEle);
-                   if (_addEle.is(".off")) {
-                       _addEle.show().removeClass("off").addClass("on");
-                   }
-               }
+            if( _currentEle.is( "div.tr-flist" ) ) {
+                var _pk = _currentEle.data("code"),
+                    _json = $.param({factor_code: _pk});
+                _nutrient.toggleTableOfRows(_url.api.factors, _json,
+                    _currentEle);
+                if ( _currentEle.is(".sub") ) {
+                    var _markedEle = _fListEle.find( "div.opted-factor" ),
+                        _addEle = $( "li#flist-add" );
+                    _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
+                        _markedEle);
+                    if (_addEle.is(".off")) {
+                        _addEle.show().removeClass("off").addClass("on");
+                    }
+                }
 
-           } else if ( _currentEle.is( "li#flist-reset" ) ) {
+            } else if ( _currentEle.is( "li#flist-reset" ) ) {
                 $( "li#get-flist" ).trigger("click");
 
-           } else if ( _currentEle.is( "li#flist-add" ) ) {
+            } else if ( _currentEle.is( "li#flist-add" ) ) {
                 var _optedFactor = $( "div#box-flist" ).find( "div.opted-factor" ),
                     _optedNutrient = $( "div#opted-nutrient" ),
                     _selectedUnit = _fListEle.find("select#unit > option:checked" ),
@@ -240,7 +284,7 @@ $(document).ready(function () {
                     $( "div#message-flist" ).text(data);
                 });
 
-           }
+            }
         });
 
 });

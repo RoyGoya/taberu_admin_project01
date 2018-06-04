@@ -1,11 +1,24 @@
 <p>
-<div class="title">Nutrient List</div>
-<div class="cnt"id="cnt-nlist">{{ nutrients_cnt|e }}</div>
+    <div class="title">Set of Nutrients</div>
+    <div class="opted-item" id="opted-nutrient" style="color:dodgerblue"
+         data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
+    >
+        ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})
+    </div><br/>
+    <div class="opted-factor"></div>
+    <div class="message" id="message-fdetail"></div>
+    <ul class="wrap-bt off" id="nsub-wrap-bt">
+        <li class="cnt">{{ nutrients_cnt|e }}</li>
+        <li class="bt" id="nsub-get">GET</li></li>
+        <li class="bt" id="nsub-delete" style="display: none">DELETE</li>
+        <li class="bt" id="nsub-update" style="display: none">UPDATE</li>
+    </ul>
 </p>
-<section class="tb" id="tb-nlist">
+<section class="tb" id="tb-nsub">
     <header>
         <div>Code</div>
         <div>EngName</div>
+        <div>Quantity</div>
         <div>IsActive</div>
         <div>HasSub</div>
         <div>EngPlural</div>
@@ -13,16 +26,16 @@
         <div>JpnName</div>
         <div>ChnName</div>
     </header>
-{% for nutrient in nutrients %}
+{% for set_of_nutrient in nutrient_set %}
     <div
-            class="tr tr-nlist"
+            class="tr tr-nsub"
             data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
-            data-has-sub="{{ nutrient.has_sub }}"
     >
         <div>
             {{ nutrient.dt_pattern|e}}{{ nutrient.pattern1|e }}{{ nutrient.pattern2|e }}{{ nutrient.serial|e }}
         </div>
         <div>{{ nutrient.eng_name|e }}</div>
+        <div>{{ nutrient.quantity }} {{ nutrient.unit_common.symbol }}</div>
         {% if nutrient.is_active %}
             <div style="color: dodgerblue">{{ nutrient.is_active }}</div>
         {% else%}

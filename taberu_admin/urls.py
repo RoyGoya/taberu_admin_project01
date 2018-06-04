@@ -3,8 +3,9 @@ from .views.index_views import IndexView
 # from .views.users_view import RegisterView, ProfileView, LoginView, LogoutView
 from .views.tag_views import TagListView, TagDetailView
 from .views.nutrient_views import NutritionView
-from .apis.nutrient_apis import NutrientAPI, NutrientPattern2API, NutrientFormAPI
-from .apis.factor_apis import FactorAPI, FactorListAPI, FactorSetAPI
+from .apis.nutrient_apis import NutrientAPI, NutrientPattern2API, \
+    NutrientFormAPI, NutrientSetAPI
+from .apis.factor_apis import FactorAPI, FactorSetAPI
 
 
 # Decorate Views
@@ -36,21 +37,27 @@ detail_tag_view = TagDetailView.as_view(
 nutrient_view = NutritionView.as_view(
     'nutrient_page', template_name='base_nutrient.html'
 )
-
 nutrient_api = NutrientAPI.as_view(
-    'nutrient_api', template='nutrients/list_nutrient.html')
+    'nutrient_api', template='nutrients/list_nutrient.html'
+)
+nutrient_set_api = NutrientSetAPI.as_view(
+    'nutrient_set_api', template='nutrients/set_nutrient.html'
+)
 nutrient_form_api = NutrientFormAPI.as_view(
-    'nutrient_form_api', template='nutrients/detail_nutrient.html')
+    'nutrient_form_api', template='nutrients/detail_nutrient.html'
+)
 nutrient_pattern2_api = NutrientPattern2API.as_view(
-    'nutrient_pattern2_api', template='nutrients/inputs_nutrient.html')
+    'nutrient_pattern2_api', template='nutrients/inputs_nutrient.html'
+)
 factor_api = FactorAPI.as_view(
     'factor_api', templates={'list': 'factors/list_factor.html',
-                             'opted': 'factors/opted_factor.html'})
-factor_list_api = FactorListAPI.as_view(
-    'factor_list_api', template='factors/table_factor.html')
+                             'table': 'factors/table_factor.html',
+                             'opted': 'factors/opted_factor.html'}
+)
 factor_set_api = FactorSetAPI.as_view(
     'factor_set_api', templates={'detail': 'factors/detail_factor.html',
-                                 'opted': 'factors/opted_factor.html'})
+                                 'opted': 'factors/opted_factor.html'}
+)
 
 # Pluggable Views
 # http://flask.pocoo.org/docs/0.12/views/
@@ -67,19 +74,16 @@ url_patterns = [
     ('/nutrients', nutrient_view),
     ('/api/nutrients', nutrient_api, ['GET'], {'nutrient_code': None}),
     ('/api/nutrients', nutrient_api, ['POST']),
-    ('/api/nutrients/<string:nutrient_code>',
-     nutrient_api, ['GET', 'PUT', 'DELETE']),
+    ('/api/nutrients/<string:nutrient_code>',nutrient_api, ['GET', 'PUT', 'DELETE']),
+    ('/api/nutrient-set', nutrient_set_api, ['GET'], {'nutrient_set_code': None}),
+    ('/api/nutrient-set', nutrient_set_api, ['POST']),
+    ('/api/nutrient-set/<string:nutrient_set_code>', nutrient_set_api, ['GET', 'PUT', 'DELETE']),
     ('/api/nutrients-form', nutrient_form_api, ['GET'], {'nutrient_code': None}),
-    ('/api/nutrients-form/<string:nutrient_code>',
-     nutrient_form_api, ['GET', 'POST']),
-    ('/api/nutrients-pattern2/<string:pattern1_code>',
-     nutrient_pattern2_api, ['GET']),
+    ('/api/nutrients-form/<string:nutrient_code>', nutrient_form_api, ['GET']),
+    ('/api/nutrients-pattern2/<string:pattern1_code>', nutrient_pattern2_api, ['GET']),
     ('/api/factor-set', factor_set_api, ['GET'], {'factor_set_code': None}),
+    ('/api/factor-set/<string:factor_set_code>', factor_set_api, ['GET', 'PUT', 'DELETE']),
     ('/api/factor-set', factor_set_api, ['POST']),
-    ('/api/factor-set/<string:factor_set_code>',
-     factor_set_api, ['GET', 'PUT', 'DELETE']),
     ('/api/factors', factor_api, ['GET'], {'factor_code': None}),
-    ('/api/factors/<string:factor_code>', factor_api, ['GET']),
-    ('/api/factor-list', factor_list_api, ['GET'], {'factor_code': None}),
-    ('/api/factor-list/<string:factor_code>', factor_list_api, ['GET']),
+    ('/api/factors/<string:factor_code>', factor_api, ['GET'])
 ]
