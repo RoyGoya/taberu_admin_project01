@@ -3,7 +3,8 @@ from flask.views import MethodView
 
 from ..database import db_session
 from ..errors import InvalidUsage
-from ..forms.nutrient_forms import CreateNutrientForm
+from ..forms.nutrient_forms import CreateNutrientForm, NutrientOptionForm, \
+    NutrientPattern2Form
 from ..models.nutrient_models import Nutrient, NutrientPattern, DataPattern, \
     NutrientSet
 
@@ -44,37 +45,51 @@ def get_n_pattern2_choices(pattern1):
 
 class NutrientAPI(MethodView):
 
-    def __init__(self, template):
-        self.template = template
+    def __init__(self, templates):
+        self.list_tpl = templates['list']
+        self.get_tpl = templates['get']
+        self.opted_tpl = templates['opted']
+        self.table_tpl = templates['table']
 
     def get(self, nutrient_code) -> object:
+        # Return a list of nutrients.
         if nutrient_code is None:
-            raise InvalidUsage('There is no dt_pattern.', status_code=410)
-        else:
-            # Return a list of nutrients.
-            code_len = len(nutrient_code.split('-'))
-            if code_len == 1:
+            dt_pattern = request.values.get('dt_pattern')
+            pattern1 = request.values.get('pattern1')
+            pattern2 = request.values.get('pattern2')
+            serial = request.values.get('serial')
+            if dt_pattern is None:
+                nutrients = Nutrient.query.filter(
+                    Nutrient.dt_pattern == 's',
+                ).all()
+            elif pattern1 is None:
                 dt_pattern = nutrient_code
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                 ).all()
-            elif code_len == 2:
-                [dt_pattern, pattern1] = nutrient_code.split('-')
+            elif pattern2 is None:
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
                 ).all()
-            elif code_len == 3:
-                [dt_pattern, pattern1, pattern2] = nutrient_code.split('-')
+            elif serial is None:
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
                     Nutrient.pattern2 == pattern2,
                 ).all()
+            return render_template(self.table_tpl, nutrients=nutrients)
 
-            nutrients_len = len(nutrients)
-            return render_template(self.template, nutrients=nutrients,
-                                   nutrients_cnt=nutrients_len)
+        else:
+            # Return a single nutrient.
+            [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
+            nutrient = Nutrient.query.filter(
+                Nutrient.dt_pattern == dt_pattern,
+                Nutrient.pattern1 == pattern1,
+                Nutrient.pattern2 == pattern2,
+                Nutrient.serial == serial
+            ).first()
+            return render_template(self.opted_tpl, nutrient=nutrient)
 
     def post(self):
         # Create a new nutrient.
@@ -164,6 +179,7 @@ class NutrientFormAPI(MethodView):
             form = CreateNutrientForm(request.form)
             form.dt_pattern.choices = get_dt_pattern_choices()
             form.pattern1.choices = get_n_pattern1_choices()
+            form.pattern2.choices = []
             form.dt_pattern.data = 's'
             return render_template(self.template, form=form)
         else:
@@ -203,18 +219,14 @@ class NutrientPattern2API(MethodView):
         if pattern1_code is None:
             pass
         else:
-            pattern1 = pattern1_code
-            if pattern1 is None:
-                raise InvalidUsage('There is no pattern1.', status_code=410)
-            else:
-                patterns = NutrientPattern.query.filter(
-                    NutrientPattern.pattern1 == pattern1,
-                    NutrientPattern.pattern2 != '00',
-                    NutrientPattern.is_active == True
-                ).all()
-                option = {'input_type': 'radio', 'input_name': 'pattern2'}
-                return render_template(self.template, patterns=patterns,
-                                       option=option)
+            patterns = NutrientPattern.query.filter(
+                NutrientPattern.pattern1 == pattern1_code,
+                NutrientPattern.pattern2 != '00',
+                NutrientPattern.is_active == True
+            ).all()
+            option = {'input_type': 'radio', 'input_name': 'pattern2'}
+            return render_template(self.template, patterns=patterns,
+                                   option=option)
 
 
 class NutrientSetAPI(MethodView):
@@ -244,7 +256,8 @@ class NutrientSetAPI(MethodView):
                 ).first()
             else:
                 nutrient = set_of_nutrients[0].nutrient
-            return render_template(self.template, set_of_nutrients=set_of_nutrients,
+            return render_template(self.template,
+                                   set_of_nutrients=set_of_nutrients,
                                    nutrients_cnt=set_of_nutrients_len,
                                    nutrient=nutrient)
         else:
@@ -262,3 +275,23 @@ class NutrientSetAPI(MethodView):
     def put(self, nutrient_set_code):
         # Update a set of a single nutrient.
         pass
+
+
+class NutrientOptionFormAPI(MethodView):
+    def __init__(self, templates):
+        self.option_tpl = templates['option']
+        self.pattern2_tpl = templates['pattern2']
+
+    def get(self, pattern1_code):
+        if pattern1_code is None:
+            form = NutrientOptionForm()
+            form.dt_pattern.choices = get_dt_pattern_choices()
+            form.dt_pattern.data = 's'
+            form.pattern1.choices = get_n_pattern1_choices()
+            form.pattern1.data = 'r'
+            form.pattern2.choices = get_n_pattern2_choices('r')
+            return render_template(self.option_tpl, form=form)
+        else:
+            form = NutrientPattern2Form()
+            form.pattern2.choices = get_n_pattern2_choices(pattern1_code)
+            return render_template(self.pattern2_tpl, form=form)

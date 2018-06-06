@@ -26,8 +26,9 @@ $( document ).ready(function () {
             api: {
                 nutrients: "api/nutrients",
                 nutrientSet: "api/nutrient-set",
-                nutrientPattern2: "api/nutrients-pattern2",
-                nutrientForm: "api/nutrients-form",
+                nutrientPattern2: "api/nutrient-pattern2",
+                nutrientForm: "api/nutrient-form",
+                nutrientOption: "api/nutrient-option",
                 factors: "/api/factors",
                 factorSet: "/api/factor-set",
                 tags: "/api/tags"
@@ -38,12 +39,6 @@ $( document ).ready(function () {
         };
 
         var _nutrient = (function() {
-            var _clearCheckedInputs = function (elements) {
-                elements.each(function (idx) {
-                    elements.eq(idx).prop("checked", false);
-                });
-            };
-
             var _foldSubRowsReculsively = function ( targetEle ) {
                 $.each(targetEle, function (i, subEle) {
                     subEle = $(subEle);
@@ -90,26 +85,8 @@ $( document ).ready(function () {
                     console.log("Current Element have any sub-entities.");
                 }
             };
-            
-            var _loadTemplate = function (url, targetEle, done) {
-                targetEle.load(url, function () {
-                    if ($.isFunction( done )) {
-                        done();
-                    }
-                    console.log( "Load Templete Complete." );
-                });
-            };
-
-            var _replaceTemplate = function (url, targetEle) {
-                $.get(url, function (template) {
-                    targetEle.replaceWith(template);
-                });
-            };
 
             return {
-                loadTemplate: _loadTemplate,
-                replaceTemplate: _replaceTemplate,
-                clearCheckedInputs: _clearCheckedInputs,
                 toggleTableOfRows: _toggleTableOfRows
             };
         })();

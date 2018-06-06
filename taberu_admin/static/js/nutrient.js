@@ -12,21 +12,19 @@ $(document).ready(function () {
 
     // Jquery Custom Events
     // https://learn.jquery.com/events/introduction-to-custom-events/
-    _nListEle.on("click", "div.tr-nlist",
+    _nListEle.on("click", "div.tr",
         function ( e ) {
-            var _currentEle = $( this ),
-                _done = function () {
-                $("ul#dt_pattern").find("input").prop("disabled", true);
-                $("ul#pattern1").find("input").prop("disabled", true);
-                $("ul#pattern2").find("input").prop("disabled", true);
-            };
+            var _currentEle = $( this );
 
-            if ( _currentEle.is( "div.tr-nlist" )) {
+            if ( _currentEle.is( "div.tr" )) {
                 var _hasSub = _currentEle.data("hasSub"),
                     _pk = _currentEle.data("nutrientCode"),
                     _param = $.param({ nutrient_code: _pk});
-                _nutrient.loadTemplate(_url.api.nutrientForm + "/" + _pk,
-                    _nDetailEle, _done);
+                _nDetailEle.load(_url.api.nutrientForm + "/" + _pk, function () {
+                    $("ul#dt_pattern").find("input").prop("disabled", true);
+                    $("ul#pattern1").find("input").prop("disabled", true);
+                    $("ul#pattern2").find("input").prop("disabled", true);
+                });
                 _fDetailEle.load(_url.api.factorSet, _param, function () {
                     console.log("Load set of factors complete.");
                 });
@@ -55,30 +53,32 @@ $(document).ready(function () {
         "ul#pattern1 > li > input, ul#pattern2 > li > input, li#n-create, " +
         "li#n-update, li#n-reset, li#n-new, li#n-delete",
         function ( e ) {
-            var _currentEle = $( this );
+            var _currentEle = $( this ),
+                _nListSectionEle = $( "div#nlist-section" );
 
             if ( _currentEle.is( "ul#dt_pattern > li > input" ) ) {
-                var _dtPattern = _currentEle.val();
-                _nutrient.clearCheckedInputs($( "ul#dt_pattern")
-                    .find( "input" ));
+                var _dtPattern = _currentEle.val(),
+                    _param = $.param({
+                        dt_pattern: _dtPattern
+                    });
+                $( "ul#dt_pattern").find( "input" ).prop("checked", false);
                 _currentEle.prop("checked", true);
-                _nutrient.clearCheckedInputs($( "ul#pattern1" ).find( "input" ));
+                $( "ul#pattern1" ).find( "input" ).prop("checked", false);
                 $( "ul#pattern2" ).empty();
-                _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern,
-                    _nListEle);
+                _nListSectionEle.load(_url.api.nutrients, _param);
 
             } else if ( _currentEle.is( "ul#pattern1 > li > input" ) ) {
                 var _nPattern2Ele = $("ul#pattern2"),
-                    _pattern1Inputs = $( "ul#pattern1" ).find( "input" ),
-                    _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" )
-                        .val(),
-                    _pattern1 = _currentEle.val();
-                _nutrient.clearCheckedInputs(_pattern1Inputs);
+                    _pattern1 = _currentEle.val(),
+                    _param = $.param({
+                        dt_pattern: $( "ul#dt_pattern" ).find( "input:checked" )
+                            .val(),
+                        pattern1: _pattern1
+                    });
+                $( "ul#pattern1" ).find( "input" ).prop("checked", false);
                 _currentEle.prop("checked", true);
-                _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern
-                    + "-" + _pattern1, _nListEle);
-                _nutrient.loadTemplate(_url.api.nutrientPattern2 + "/"
-                    + _pattern1, _nPattern2Ele);
+                _nListSectionEle.load(_url.api.nutrients, _param);
+                _nPattern2Ele.load(_url.api.nutrientPattern2 + "/" + _pattern1);
 
             } else if ( _currentEle.is( "ul#pattern2 > li > input" ) ) {
                 var _dtPattern = $( "ul#dt_pattern" ).find( "input:checked" )
@@ -86,9 +86,12 @@ $(document).ready(function () {
                     _pattern1 = $( "ul#pattern1" ).find( "input:checked" )
                         .val(),
                     _pattern2 = _currentEle.val(),
-                    _pk = _dtPattern + "-" + _pattern1 + "-" + _pattern2;
-                _nutrient.loadTemplate(_url.api.nutrients + "/" + _pk,
-                    _nListEle);
+                    _param = $.param({
+                        dt_pattern: _dtPattern,
+                        pattern1: _pattern1,
+                        pattern2: _pattern2
+                    });
+                _nListSectionEle.load(_url.api.nutrients, _param)
 
             } else if ( _currentEle.is( "li#n-create" ) ) {
                 var _form = $( "form#ndetail-form" );
@@ -115,31 +118,27 @@ $(document).ready(function () {
                     });
 
             } else if ( _currentEle.is( "li#n-reset" ) ) {
-                var _dtPattern = "s";
                 if ( _currentEle.is( ".new" ) ) {
-                    _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
-                    _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern,
-                        _nListEle);
+                    _nDetailEle.load(_url.api.nutrientForm);
+                    _nListSectionEle.load(_url.api.nutrients);
+
                 } else if ( _currentEle.is( ".selected" ) ) {
                     var _nutrientCode = $("div#ndetail-opted-nutrient")
-                        .data("nutrientCode"),
-                        _done = function () {
+                        .data("nutrientCode");
+                    _nDetailEle.load(_url.api.nutrientForm + "/" + _nutrientCode,
+                        function () {
                             $("ul#dt_pattern").find("input").prop("disabled",
                                 true);
                             $("ul#pattern1").find("input").prop("disabled",
                                 true);
                             $("ul#pattern2").find("input").prop("disabled",
                                 true);
-                        };
-                    _nutrient.loadTemplate(_url.api.nutrientForm + "/"
-                        + _nutrientCode, _nDetailEle, _done);
+                        })
                 }
 
             } else if ( _currentEle.is( "li#n-new" ) ) {
-                var _dtPattern = "s";
-                _nutrient.loadTemplate(_url.api.nutrientForm, _nDetailEle);
-                _nutrient.loadTemplate(_url.api.nutrients + "/" + _dtPattern,
-                        _nListEle);
+                _nDetailEle.load(_url.api.nutrientForm);
+                _nListSectionEle.load(_url.api.nutrients);
                 if ( _nSubEle.is(".on")) {
                     _nSubEle.removeClass("on").addClass("off");
                     _nSubEle.hide();
@@ -169,23 +168,45 @@ $(document).ready(function () {
 
     _nSubEle.on("click", "li#nsub-get",
         function ( e ) {
-            var _currentEle = $( this );
+            var _currentEle = $( this ),
+                _nGetSectionEle = $( "div#nget-section" ),
+                _nGetOptionEle = $("div#nget-option");
 
             if ( _currentEle.is( "li#nsub-get" ) ) {
+                _nGetSectionEle.load(_url.api.nutrients);
+                _nGetOptionEle.load(_url.api.nutrientOption);
                 if ( _nGetEle.is(".off")) {
                     _nGetEle.show();
                     _nGetEle.removeClass("off").addClass("on");
                 }
             }
         });
+    
+    _nGetEle.on("click, change", "select#dt_pattern, select#pattern1, " +
+        "select#pattern2",
+        function ( e ) {
+            var _currentEle = $( this );
+            
+            if ( _currentEle.is("select#dt_pattern") ) {
+                console.log("select dt_pattern");
+            } else if ( _currentEle.is("select#pattern1" ) ) {
+                var _pattern1Val = _currentEle.val();
+                $.get(_url.api.nutrientOption + "/" + _pattern1Val,
+                    function ( data ) {
+                        $("select#pattern2").parent().replaceWith(data);
+                    });
+            } else if ( _currentEle.is("select#pattern2" ) ) {
+                console.log("select pattern2");
+            }
+        });
 
-    _fDetailEle.on("click", "div.tr-fdetail, li#get-flist, li#delete-flist, " +
+    _fDetailEle.on("click", "div.tr, li#get-flist, li#delete-flist, " +
         "li#update-flist",
         function ( e ) {
             var _currentEle = $( this );
 
-            if ( _currentEle.is( "div.tr-fdetail" ) ) {
-                var _markedEle = _fDetailEle.find( "div.opted-factor" ),
+            if ( _currentEle.is( "div.tr" ) ) {
+                var _optedEle = _fDetailEle.find( "div.opted-factor" ),
                     _wrapBt = $( "ul#fdtail-wrap-bt" ),
                     _pk = $("div#opted-nutrient").data("nutrientCode") + "-" +
                         _currentEle.data("factorCode");
@@ -197,8 +218,8 @@ $(document).ready(function () {
                     _currentEle.addClass( "opted" );
                     _currentEle.css( "background-color", "beige" );
                 }
-                _nutrient.replaceTemplate(_url.api.factorSet + "/" + _pk,
-                       _markedEle);
+                _optedEle.load(_url.api.factorSet + "/" + _pk);
+
                 if ( _wrapBt.is(".off") ) {
                     $( "li#delete-flist" ).show();
                     $( "li#update-flist" ).show();
@@ -206,8 +227,7 @@ $(document).ready(function () {
                 }
 
             } else if ( _currentEle.is( "li#get-flist" ) ) {
-                var _fListEle = $( "div#box-flist" );
-                _nutrient.loadTemplate(_url.api.factors, _fListEle);
+                _fListEle.load(_url.api.factors);
                 if ( _fListEle.is(".off") ) {
                     _fListEle.show();
                     _fListEle.removeClass("off").addClass("on");
@@ -219,10 +239,8 @@ $(document).ready(function () {
                     _factorCode = _fDetailEle.find( "div.opted-factor" )
                         .data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
-
                 $.delete(_url.api.factorSet + "/" + _pk, function ( data ) {
-                    _nutrient.loadTemplate(_url.api.factorSet + "/"
-                        + _nutrientCode, _fDetailEle);
+                    _fDetailEle.load(_url.api.factorSet + "/" + _nutrientCode);
                 });
 
             } else if ( _currentEle.is( "li#update-flist" ) ) {
@@ -236,27 +254,25 @@ $(document).ready(function () {
                     _pk = _nutrientCode + "-" + _factorCode + "-"
                         + _selectedUnit + "-" + _inputVal;
                 $.put(_url.api.factorSet + "/" + _pk, function ( data ) {
-                    _nutrient.loadTemplate(_url.api.factorSet + "/"
-                        + _nutrientCode, _fDetailEle);
+                    _fDetailEle.load(_url.api.factorSet + "/" + _nutrientCode);
                 });
 
             }
         });
 
-    _fListEle.on("click", "div.tr-flist, li#flist-reset, li#flist-add",
+    _fListEle.on("click", "div.tr, li#flist-reset, li#flist-add",
         function ( e ) {
             var _currentEle = $( this );
 
-            if( _currentEle.is( "div.tr-flist" ) ) {
+            if( _currentEle.is( "div.tr" ) ) {
                 var _pk = _currentEle.data("code"),
                     _json = $.param({factor_code: _pk});
                 _nutrient.toggleTableOfRows(_url.api.factors, _json,
                     _currentEle);
                 if ( _currentEle.is(".sub") ) {
-                    var _markedEle = _fListEle.find( "div.opted-factor" ),
+                    var _optedEle = _fListEle.find( "div.opted-factor" ),
                         _addEle = $( "li#flist-add" );
-                    _nutrient.replaceTemplate(_url.api.factors + "/" + _pk,
-                        _markedEle);
+                    _optedEle.load(_url.api.factors + "/" + _pk);
                     if (_addEle.is(".off")) {
                         _addEle.show().removeClass("off").addClass("on");
                     }
@@ -279,8 +295,7 @@ $(document).ready(function () {
                 $.post( _url.api.factorSet, _json, function ( data ) {
                     var _fDetailEle = $( "div#box-fdetail" ),
                         _pk = $( "div#opted-nutrient" ).data("nutrientCode");
-                    _nutrient.loadTemplate(_url.api.factorSet + "/" + _pk,
-                        _fDetailEle);
+                    _fDetailEle.load(_url.api.factorSet + "/" + _pk);
                     $( "div#message-flist" ).text(data);
                 });
 

@@ -3,7 +3,7 @@
 
 
 from wtforms import Form, BooleanField, StringField, PasswordField, \
-    validators, SubmitField, RadioField
+    validators, SubmitField, RadioField, SelectField
 
 
 class CreateNutrientForm(Form):
@@ -14,15 +14,15 @@ class CreateNutrientForm(Form):
     render_kw=None, _form=None, _name=None, _prefix='',
     _translations=None, _meta=None):
     """
-    dt_pattern = RadioField(label="DataType", choices=[], validators=[
+    dt_pattern = RadioField(label="DataType", validators=[
         validators.DataRequired('Please Select DTPattern'),
         validators.Length(min=1, max=1)
     ])
-    pattern1 = RadioField(label="Pattern1", choices=[], validators=[
+    pattern1 = RadioField(label="Pattern1", validators=[
         validators.DataRequired('Please Select Pattern1'),
         validators.Length(min=1, max=1)
     ])
-    pattern2 = RadioField(label="Pattern2", choices=[], validators=[
+    pattern2 = RadioField(label="Pattern2", validators=[
         validators.DataRequired('Please Select Pattern2'),
         validators.Length(min=2, max=2)
     ])
@@ -47,4 +47,26 @@ class CreateNutrientForm(Form):
     ])
     chn_name = StringField(label="Chinese Name", validators=[
         validators.Length(min=2, max=100)
+    ])
+
+
+class NutrientOptionForm(Form):
+    dt_pattern = SelectField(label="DataType", validators=[
+        validators.DataRequired('Please Select DTPattern'),
+        validators.Length(min=1, max=1)
+    ])
+    pattern1 = SelectField(label="Pattern1", validators=[
+        validators.DataRequired('Please Select Pattern1'),
+        validators.Length(min=1, max=1)
+    ])
+    pattern2 = SelectField(label="Pattern2", validators=[
+        validators.DataRequired('Please Select Pattern2'),
+        validators.Length(min=2, max=2)
+    ])
+
+
+class NutrientPattern2Form(Form):
+    pattern2 = SelectField(label="Pattern2", validators=[
+        validators.DataRequired('Please Select Pattern2'),
+        validators.Length(min=2, max=2)
     ])

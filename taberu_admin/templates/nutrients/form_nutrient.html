@@ -1,0 +1,27 @@
+<form id="ndetail-form">
+<div class="tb">
+    <div id="ndetail-tr">
+        <div>
+        {{ render_field(form.dt_pattern) }}<br/>
+        {{ render_field(form.pattern1) }}
+        </div>
+        <div>
+        {{ render_field(form.pattern2) }}
+        </div>
+        <div>
+        {{ render_field(form.has_sub) }}<br/>
+        {{ render_field(form.is_active) }}
+        </div>
+        <div>
+        {{ render_field(form.eng_name) }}<br/>
+        {{ render_field(form.eng_plural) }}<br/>
+        {{ render_field(form.kor_name) }}<br/>
+        {{ render_field(form.jpn_name) }}<br/>
+        {{ render_field(form.chn_name) }}<br/>
+        <div id="bt-reset">
+            <input type="reset" value="Reset Names"/>
+        </div><br/>
+        </div>
+    </div>
+</div>
+</form>

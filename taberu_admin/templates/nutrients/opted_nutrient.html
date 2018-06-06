@@ -1,5 +1,6 @@
-<form
-        data-factor-code="{{ factor.pattern1|e }}-{{ factor.pattern2|e }}-{{ factor.pattern3|e }}-{{ factor.pattern4|e }}"
+<form>
+<div class="opted-nutrient"
+     data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
 >
     <div>{{ factor.pattern1 }}{{ factor.pattern2 }}{{ factor.pattern3 }}{{ factor.pattern4 }}</div>
     <div>{{ factor.eng_name }}</div>
@@ -22,4 +23,5 @@
         <div><input type="text" id="quantity"></div>
     {% endif %}
     <div><input type="reset" value="Reset"/></div>
+</div>
 </form>

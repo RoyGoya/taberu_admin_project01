@@ -1,0 +1,16 @@
+<p>
+    <div class="title">Set of Nutrients</div>
+    <div class="opted-item" id="opted-nutrient" style="color:dodgerblue"
+         data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
+    >
+        ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})
+    </div><br/>
+    <div class="opted-nutrient"></div>
+    <div class="message" id="message-fdetail"></div>
+    <ul class="wrap-bt off" id="nsub-wrap-bt">
+        <li class="bt" id="nsub-get">GET</li></li>
+        <li class="bt" id="nsub-delete" style="display: none">DELETE</li>
+        <li class="bt" id="nsub-update" style="display: none">UPDATE</li>
+    </ul>
+</p>
+<div id="nsub-section">{% include 'nutrients/table_nutrient.html' %}</div>

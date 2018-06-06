@@ -9,13 +9,15 @@
 {% block content %}
     <section id="wrap-nt">
         <div class="box" id="box-nlist">
-            {% include 'nutrients/list_nutrient.html' %}
+            {% include 'nutrients/box_list_nutrient.html' %}
         </div>
         <div class="box" id="box-ndetail">
-            {% include 'nutrients/detail_nutrient.html' %}
+            {% include 'nutrients/box_detail_nutrient.html' %}
         </div>
         <div class="box off" id="box-nsub" style="display: none;"></div>
-        <div class="box off" id="box-nget" style="display: none;"></div>
+        <div class="box off" id="box-nget" style="display: none;">
+            {% include 'nutrients/box_get_nutrient.html' %}
+        </div>
         <div class="box off" id="box-fdetail" style="display: none;"></div>
         <div class="box off" id="box-flist" style="display: none;"></div>
         <div class="box off" id="box-logs" style="display: none;"></div>

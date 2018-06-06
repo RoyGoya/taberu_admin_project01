@@ -23,7 +23,7 @@ div.opted-factor {
     text-align: center;
     font-size: 13px;
 }
-div.opted-factor > div {
+div.opted-factor > form > div {
     display : inline;
     margin-right: 10px;
     color: magenta;
@@ -35,4 +35,14 @@ div.message {
 }
 
 
+/*Box Option Nutrient*/
+div#nget-option {
+    margin : auto;
+    text-align: center;
+    font-size: 13px;
+}
 
+div#nget-option > div {
+    display : inline;
+    margin-right: 10px;
+}
