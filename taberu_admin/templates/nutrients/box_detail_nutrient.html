@@ -1,7 +1,7 @@
 <p>
     <div class="title">Nutrient Detail</div>
     {% if nutrient %}
-        <div class="opted-item" id="ndetail-opted-nutrient" style="color: dodgerblue"
+        <div class="opted-item" style="color: dodgerblue"
              data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
         >
             ({{ nutrient.eng_name }} {{ nutrient.dt_pattern }}{{ nutrient.pattern1 }}{{ nutrient.pattern2 }}{{ nutrient.serial }})</div>
@@ -11,13 +11,13 @@
     <div class="message" id="message-flist">{{ message }}</div><br/>
     <ul class="wrap-bt off">
         {% if nutrient %}
-            <li class="bt selected" id="n-reset">RESET</li>
-            <li class="bt" id="n-new">NEW</li>
-            <li class="bt" id="n-delete">DELETE</li>
-            <li class="bt" id="n-update">UPDATE</li>
+            <li class="bt bt-reset selected">RESET</li>
+            <li class="bt bt-new">NEW</li>
+            <li class="bt bt-delete">DELETE</li>
+            <li class="bt bt-update">UPDATE</li>
         {% else %}
-            <li class="bt new" id="n-reset">RESET</li>
-            <li class="bt" id="n-create">CREATE</li>
+            <li class="bt bt-reset new">RESET</li>
+            <li class="bt bt-create">CREATE</li>
         {% endif %}
     </ul>
 </p>

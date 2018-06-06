@@ -32,26 +32,34 @@ $(document).ready(function () {
                     _nSubEle.load(_url.api.nutrientSet, _param, function () {
                         console.log("Load set of nutrients complete.");
                     });
-                    if ( _nSubEle.is(".off")) {
+                    if ( _nSubEle.is(".off") ) {
                         _nSubEle.show();
                         _nSubEle.removeClass("off").addClass("on");
                     }
                 } else {
-                    if ( _nSubEle.is(".on")) {
+                    if ( _nSubEle.is(".on") ) {
                         _nSubEle.removeClass("on").addClass("off");
                         _nSubEle.hide();
                     }
+                    if ( _nGetEle.is(".on") ) {
+                        _nGetEle.removeClass("on").addClass("off");
+                        _nGetEle.hide();
+                    }
                 }
-                if ( _fDetailEle.is(".off")) {
+                if ( _fDetailEle.is(".off") ) {
                     _fDetailEle.show();
                     _fDetailEle.removeClass("off").addClass("on");
+                }
+                if ( _fListEle.is(".on") ) {
+                    _fListEle.removeClass("on").addClass("off")
+                    _fListEle.hide();
                 }
             }
         });
 
     _nDetailEle.on("click", "ul#dt_pattern > li > input, " +
-        "ul#pattern1 > li > input, ul#pattern2 > li > input, li#n-create, " +
-        "li#n-update, li#n-reset, li#n-new, li#n-delete",
+        "ul#pattern1 > li > input, ul#pattern2 > li > input, li.bt-create, " +
+        "li.bt-update, li.bt-reset, li.bt-new, li.bt-delete",
         function ( e ) {
             var _currentEle = $( this ),
                 _nListSectionEle = $( "div#nlist-section" );
@@ -93,13 +101,13 @@ $(document).ready(function () {
                     });
                 _nListSectionEle.load(_url.api.nutrients, _param)
 
-            } else if ( _currentEle.is( "li#n-create" ) ) {
+            } else if ( _currentEle.is( "li.bt-create" ) ) {
                 var _form = $( "form#ndetail-form" );
                 _form.attr("action", _url.api.nutrients).attr("method", "post")
                     .submit();
 
-            } else if ( _currentEle.is( "li#n-update" ) ) {
-                var _nutrientCode = $("div#ndetail-opted-nutrient").data(
+            } else if ( _currentEle.is( "li.bt-update" ) ) {
+                var _nutrientCode = _nDetailEle.find("div.opted-item").data(
                         "nutrientCode"),
                     _json = {
                         has_sub: $("ul#has_sub").find("input:checked")
@@ -117,14 +125,14 @@ $(document).ready(function () {
                         location.reload();
                     });
 
-            } else if ( _currentEle.is( "li#n-reset" ) ) {
+            } else if ( _currentEle.is( "li.bt-reset" ) ) {
                 if ( _currentEle.is( ".new" ) ) {
                     _nDetailEle.load(_url.api.nutrientForm);
                     _nListSectionEle.load(_url.api.nutrients);
 
                 } else if ( _currentEle.is( ".selected" ) ) {
-                    var _nutrientCode = $("div#ndetail-opted-nutrient")
-                        .data("nutrientCode");
+                    var _nutrientCode = _nDetailEle.find("div.opted-item").data(
+                        "nutrientCode");
                     _nDetailEle.load(_url.api.nutrientForm + "/" + _nutrientCode,
                         function () {
                             $("ul#dt_pattern").find("input").prop("disabled",
@@ -136,7 +144,7 @@ $(document).ready(function () {
                         })
                 }
 
-            } else if ( _currentEle.is( "li#n-new" ) ) {
+            } else if ( _currentEle.is( "li.bt-new" ) ) {
                 _nDetailEle.load(_url.api.nutrientForm);
                 _nListSectionEle.load(_url.api.nutrients);
                 if ( _nSubEle.is(".on")) {
@@ -156,9 +164,9 @@ $(document).ready(function () {
                     _fListEle.hide();
                 }
 
-            } else if ( _currentEle.is( "li#n-delete" ) ) {
-                var _nutrientCode = $("div#ndetail-opted-nutrient")
-                        .data("nutrientCode");
+            } else if ( _currentEle.is( "li.bt-delete" ) ) {
+                var _nutrientCode = _nDetailEle.find("div.opted-item").data(
+                        "nutrientCode");
                 $.delete(_url.api.nutrients + "/" + _nutrientCode, function () {
                     location.reload();
                 });
@@ -166,13 +174,13 @@ $(document).ready(function () {
             }
         });
 
-    _nSubEle.on("click", "li#nsub-get",
+    _nSubEle.on("click", "li.bt-get",
         function ( e ) {
             var _currentEle = $( this ),
                 _nGetSectionEle = $( "div#nget-section" ),
                 _nGetOptionEle = $("div#nget-option");
 
-            if ( _currentEle.is( "li#nsub-get" ) ) {
+            if ( _currentEle.is( "li.bt-get" ) ) {
                 _nGetSectionEle.load(_url.api.nutrients);
                 _nGetOptionEle.load(_url.api.nutrientOption);
                 if ( _nGetEle.is(".off")) {
@@ -183,33 +191,61 @@ $(document).ready(function () {
         });
     
     _nGetEle.on("click, change", "select#dt_pattern, select#pattern1, " +
-        "select#pattern2",
+        "select#pattern2, div.tr",
         function ( e ) {
-            var _currentEle = $( this );
+            var _currentEle = $( this ),
+                _nGetSectionEle = $( "div#nget-section" );
             
             if ( _currentEle.is("select#dt_pattern") ) {
-                console.log("select dt_pattern");
+                var _param = $.param({dt_pattern: _currentEle.val()});
+                _nGetSectionEle.load(_url.api.nutrients, _param);
+
             } else if ( _currentEle.is("select#pattern1" ) ) {
-                var _pattern1Val = _currentEle.val();
-                $.get(_url.api.nutrientOption + "/" + _pattern1Val,
+                if (_currentEle.val() === 'empty') {
+                    return false
+                }
+                var _pattern1 = _currentEle.val(),
+                    _dtPattern = $("select#dt_pattern > option:selected").val()
+                    _param = $.param({
+                        dt_pattern: _dtPattern,
+                        pattern1: _pattern1
+                    });
+                $.get(_url.api.nutrientOption + "/" + _pattern1,
                     function ( data ) {
                         $("select#pattern2").parent().replaceWith(data);
                     });
+                _nGetSectionEle.load(_url.api.nutrients, _param);
+
             } else if ( _currentEle.is("select#pattern2" ) ) {
-                console.log("select pattern2");
+                if (_currentEle.val() === 'empty') {
+                    return false
+                }
+                var _dtPattern = $("select#dt_pattern > option:selected").val(),
+                    _pattern1 = $("select#pattern1 > option:selected").val(),
+                    _pattern2 = _currentEle.val(),
+                    _param = $.param({
+                        dt_pattern: _dtPattern,
+                        pattern1: _pattern1,
+                        pattern2: _pattern2
+                    });
+                _nGetSectionEle.load(_url.api.nutrients, _param);
+
+            } else if ( _currentEle.is("div.tr") ) {
+                // TODO: Write click tr events.
             }
         });
 
-    _fDetailEle.on("click", "div.tr, li#get-flist, li#delete-flist, " +
-        "li#update-flist",
+    _fDetailEle.on("click", "div.tr, li.bt-get, li.bt-delete, li.bt-update",
         function ( e ) {
             var _currentEle = $( this );
 
             if ( _currentEle.is( "div.tr" ) ) {
                 var _optedEle = _fDetailEle.find( "div.opted-factor" ),
-                    _wrapBt = $( "ul#fdtail-wrap-bt" ),
-                    _pk = $("div#opted-nutrient").data("nutrientCode") + "-" +
-                        _currentEle.data("factorCode");
+                    _wrapBt = _fDetailEle.find("div.wrap-bt"),
+                    _nutrientCode = _fDetailEle.find("div.opted-item")
+                        .data("nutrientCode"),
+                    _factorCode = _currentEle.data("factorCode"),
+                    _pk = _nutrientCode + "-" + _factorCode;
                 _currentEle.prevAll(".opted").removeClass("opted")
                     .css("background-color", "white");
                 _currentEle.nextAll(".opted").removeClass("opted")
@@ -221,21 +257,21 @@ $(document).ready(function () {
                 _optedEle.load(_url.api.factorSet + "/" + _pk);
 
                 if ( _wrapBt.is(".off") ) {
-                    $( "li#delete-flist" ).show();
-                    $( "li#update-flist" ).show();
+                    _fDetailEle.find( "li.bt-delete" ).show();
+                    _fDetailEle.find( "li.bt-update" ).show();
                     _wrapBt.removeClass("off").addClass("on");
                 }
 
-            } else if ( _currentEle.is( "li#get-flist" ) ) {
+            } else if ( _currentEle.is( "li.bt-get" ) ) {
                 _fListEle.load(_url.api.factors);
                 if ( _fListEle.is(".off") ) {
                     _fListEle.show();
                     _fListEle.removeClass("off").addClass("on");
                 }
 
-            } else if ( _currentEle.is( "li#delete-flist" ) ) {
-                var _nutrientCode = $( "div#opted-nutrient" ).data(
-                    "nutrientCode"),
+            } else if ( _currentEle.is( "li.bt-delete" ) ) {
+                var _nutrientCode = _fDetailEle.find("div.opted-item")
+                        .data("nutrientCode"),
                     _factorCode = _fDetailEle.find( "div.opted-factor" )
                         .data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
@@ -243,13 +279,13 @@ $(document).ready(function () {
                     _fDetailEle.load(_url.api.factorSet + "/" + _nutrientCode);
                 });
 
-            } else if ( _currentEle.is( "li#update-flist" ) ) {
-                var _nutrientCode = $( "div#opted-nutrient" ).data(
-                    "nutrientCode"),
+            } else if ( _currentEle.is( "li.bt-update" ) ) {
+                var _nutrientCode = _fDetailEle.find("div.opted-item")
+                        .data("nutrientCode"),
                     _factorCode = _fDetailEle.find( "div.opted-factor" ).data(
                         "factorCode"),
                     _selectedUnit = _fDetailEle.find(
-                        "select#unit > option:checked" ).val(),
+                        "select.unit > option:checked" ).val(),
                     _inputVal = _fDetailEle.find( "input#quantity" ).val(),
                     _pk = _nutrientCode + "-" + _factorCode + "-"
                         + _selectedUnit + "-" + _inputVal;
@@ -260,7 +296,7 @@ $(document).ready(function () {
             }
         });
 
-    _fListEle.on("click", "div.tr, li#flist-reset, li#flist-add",
+    _fListEle.on("click", "div.tr, li.bt-reset, li.bt-add",
         function ( e ) {
             var _currentEle = $( this );
 
@@ -271,32 +307,34 @@ $(document).ready(function () {
                     _currentEle);
                 if ( _currentEle.is(".sub") ) {
                     var _optedEle = _fListEle.find( "div.opted-factor" ),
-                        _addEle = $( "li#flist-add" );
+                        _addEle = _fListEle.find("li.bt-add");
                     _optedEle.load(_url.api.factors + "/" + _pk);
                     if (_addEle.is(".off")) {
                         _addEle.show().removeClass("off").addClass("on");
                     }
                 }
 
-            } else if ( _currentEle.is( "li#flist-reset" ) ) {
-                $( "li#get-flist" ).trigger("click");
+            } else if ( _currentEle.is( "li.bt-reset" ) ) {
+                _fDetailEle.find("li.bt-get").trigger("click");
 
-            } else if ( _currentEle.is( "li#flist-add" ) ) {
-                var _optedFactor = $( "div#box-flist" ).find( "div.opted-factor" ),
-                    _optedNutrient = $( "div#opted-nutrient" ),
-                    _selectedUnit = _fListEle.find("select#unit > option:checked" ),
+            } else if ( _currentEle.is( "li.bt-add" ) ) {
+                var _optedFactorCode = _fListEle.find( "div.opted-factor" )
+                        .data("factorCode"),
+                    _nutrientCode = _fDetailEle.find("div.opted-item")
+                        .data("nutrientCode"),
+                    _selectedUnitCode = _fListEle
+                        .find("select.unit > option:checked" )
+                        .data("unitCode"),
                     _inputVal = _fListEle.find( "input#quantity" ).val(),
                     _json = {
-                        factor_code: _optedFactor.data("factorCode"),
-                        nutrient_code: _optedNutrient.data("nutrientCode"),
-                        unit_code: _selectedUnit.data("unitCode"),
+                        factor_code: _optedFactorCode,
+                        nutrient_code: _nutrientCode,
+                        unit_code: _selectedUnitCode,
                         quantity: _inputVal
                     };
                 $.post( _url.api.factorSet, _json, function ( data ) {
-                    var _fDetailEle = $( "div#box-fdetail" ),
-                        _pk = $( "div#opted-nutrient" ).data("nutrientCode");
-                    _fDetailEle.load(_url.api.factorSet + "/" + _pk);
-                    $( "div#message-flist" ).text(data);
+                    _fDetailEle.load(_url.api.factorSet + "/" + _nutrientCode);
+                    _fListEle.find("div.message").text(data);
                 });
 
             }

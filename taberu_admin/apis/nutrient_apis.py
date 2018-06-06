@@ -63,7 +63,6 @@ class NutrientAPI(MethodView):
                     Nutrient.dt_pattern == 's',
                 ).all()
             elif pattern1 is None:
-                dt_pattern = nutrient_code
                 nutrients = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                 ).all()
@@ -78,7 +77,9 @@ class NutrientAPI(MethodView):
                     Nutrient.pattern1 == pattern1,
                     Nutrient.pattern2 == pattern2,
                 ).all()
-            return render_template(self.table_tpl, nutrients=nutrients)
+            nutrients_len = len(nutrients)
+            return render_template(self.table_tpl, nutrients=nutrients,
+                                   nutrients_cnt=nutrients_len)
 
         else:
             # Return a single nutrient.
@@ -288,10 +289,11 @@ class NutrientOptionFormAPI(MethodView):
             form.dt_pattern.choices = get_dt_pattern_choices()
             form.dt_pattern.data = 's'
             form.pattern1.choices = get_n_pattern1_choices()
-            form.pattern1.data = 'r'
-            form.pattern2.choices = get_n_pattern2_choices('r')
+            form.pattern1.choices.insert(0, ('empty', '---'))
+            form.pattern2.choices = [('empty', '---')]
             return render_template(self.option_tpl, form=form)
         else:
             form = NutrientPattern2Form()
             form.pattern2.choices = get_n_pattern2_choices(pattern1_code)
+            form.pattern2.choices.insert(0, ('empty', '---'))
             return render_template(self.pattern2_tpl, form=form)

@@ -9,7 +9,7 @@
         <div>{{ form.quantity }}</div>
     {% else %}
         <div>
-            <select id="unit">
+            <select class="unit">
             {% for unit in units %}
                 <option
                         data-unit-code="{{ unit.pattern1 }}-{{ unit.pattern2 }}"
