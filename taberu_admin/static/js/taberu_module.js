@@ -38,6 +38,23 @@ $( document ).ready(function () {
             }
         };
 
+        var _common = (function () {
+           var _coloringATableOfRow = function (targetEle, before, after) {
+                targetEle.prevAll(".opted").removeClass("opted")
+                    .css("background-color", before);
+                targetEle.nextAll(".opted").removeClass("opted")
+                    .css("background-color", before);
+                if (targetEle.not(".opted")) {
+                    targetEle.addClass( "opted" );
+                    targetEle.css( "background-color", after );
+                }
+           };
+
+           return {
+               coloringATableOfRow: _coloringATableOfRow
+           };
+        })();
+
         var _nutrient = (function() {
             var _foldSubRowsReculsively = function ( targetEle ) {
                 $.each(targetEle, function (i, subEle) {
@@ -93,6 +110,7 @@ $( document ).ready(function () {
 
         return {
             url: _urlDict,
+            common: _common,
             nutrient: _nutrient
         }
     })();

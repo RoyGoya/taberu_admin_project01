@@ -10,7 +10,7 @@ div > ul#navbar-list {
     margin-bottom: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333333;
+    background-color: #336699;
 }
 div > ul#navbar-list > li {
     float: left;
@@ -23,7 +23,7 @@ div > ul#navbar-list > li > a {
     text-decoration: none;
 }
 div > ul#navbar-list > li > a:hover {
-    background-color: #111111;
+    background-color: #2a557f;
 }
 div#content {
     margin-bottom: 20px;
@@ -33,6 +33,8 @@ div#footer {
     background-color: ghostwhite;
     min-height: 80px;
     font-family: 'Nanum Gothic', sans-serif;
+    margin-left: 5px;
+    margin-right: 10px;
 }
 p#txt-footer {
     text-align: center;
@@ -52,6 +54,7 @@ p#txt-footer {
     margin-left: 5px;
     border-style: solid;
     border-width: 1px;
+    border-color: darkgrey;
 }
 
 /* Box > Title */

@@ -59,7 +59,7 @@
                 {{ set_of_nutrient.sub_nutrient.dt_pattern|e}}{{ set_of_nutrient.sub_nutrient.pattern1|e }}{{ set_of_nutrient.sub_nutrient.pattern2|e }}{{ set_of_nutrient.sub_nutrient.serial|e }}
             </div>
             <div>{{ set_of_nutrient.sub_nutrient.eng_name|e }}</div>
-            <div>{{ set_of_nutrient.quantity }}{{ set_of_nutrient.unit_common.symbol }}</div>
+            <div>{{ set_of_nutrient.quantity }} {{ set_of_nutrient.unit_common.symbol }}</div>
             {% if set_of_nutrient.sub_nutrient.is_active %}
                 <div style="color: dodgerblue">{{ set_of_nutrient.sub_nutrient.is_active }}</div>
             {% else%}

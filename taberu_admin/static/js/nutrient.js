@@ -1,10 +1,11 @@
 $(document).ready(function () {
 
-    // Import Modules
-    // Encapsulated Functions
-    // Abstracted Urls
-    // Partitioned Element Delegations.
-    var _nutrient = $.taberu.nutrient,
+    // Import Modules along with kind of below
+    // Encapsulated Functions and
+    // Abstracted Urls and
+    // Partitioned Delegate Elements.
+    var _common = $.taberu.common,
+        _nutrient = $.taberu.nutrient,
         _url = $.taberu.url,
         _nListEle = $( "div#box-nlist" ),
         _nDetailEle = $( "div#box-ndetail" ),
@@ -13,9 +14,9 @@ $(document).ready(function () {
         _fDetailEle = $( "div#box-fdetail" ),
         _fListEle = $( "div#box-flist" );
 
-    // Using Event Delegation
-    // For prevent event propagation
-    // And anchoring asynchronous loaded documents.
+    // Using Event Delegation for
+    // Prevent event propagation and
+    // Anchoring asynchronous loaded documents.
     _nListEle.on("click", "div.tr",
         function ( e ) {
             var _currentEle = $( this );
@@ -186,7 +187,13 @@ $(document).ready(function () {
 
             if ( _currentEle.is( "div.tr" ) ) {
                 var _deleteBt = _nSubEle.find("li.bt-delete"),
-                    _updateBt = _nSubEle.find("li.bt-update");
+                    _updateBt = _nSubEle.find("li.bt-update"),
+                    _optedItemEle = _nSubEle.find("div.opted-item"),
+                    _superCode = _nSubEle.find("div.delegate-item")
+                        .data("nutrientCode"),
+                    _subCode = _currentEle.data("nutrientCode");
+                _optedItemEle.load(_url.api.nutrientSet + "/" + _superCode +
+                    "-" + _subCode);
                 if ( _deleteBt.is(".off") ) {
                     _deleteBt.show();
                     _deleteBt.removeClass("off").addClass("on");
@@ -195,6 +202,8 @@ $(document).ready(function () {
                     _updateBt.show();
                     _updateBt.removeClass("off").addClass("on");
                 }
+                _nSubEle.find("div.message").empty();
+                _common.coloringATableOfRow(_currentEle, "white", "beige");
 
             } else if ( _currentEle.is( "li.bt-get" ) ) {
                 _nGetSectionEle.load(_url.api.nutrients);
@@ -205,8 +214,31 @@ $(document).ready(function () {
                 }
 
             } else if ( _currentEle.is( "li.bt-delete" ) ) {
+                var _superCode = _nSubEle.find("div.delegate-item")
+                        .data("nutrientCode"),
+                    _subCode = _nSubEle.find("form").data("nutrientCode"),
+                    _pk = _superCode + "-" + _subCode;
+                $.delete(_url.api.nutrientSet + "/" + _pk, function (data) {
+                    _nSubEle.load(_url.api.nutrientSet,
+                        $.param({nutrient_code: _superCode}), function () {
+                            _nSubEle.find("div.message").text(data);
+                        });
+                });
 
             } else if ( _currentEle.is( "li.bt-update" ) ) {
+                var _superCode = _nSubEle.find("div.delegate-item")
+                        .data("nutrientCode"),
+                    _subCode = _nSubEle.find("form").data("nutrientCode"),
+                    _unitCode = _nSubEle.find("select#unit").val(),
+                    _quantity = _nSubEle.find("input#quantity").val(),
+                    _pk = _superCode + "-" + _subCode + "-" + _unitCode +
+                        "-" + _quantity;
+                $.put(_url.api.nutrientSet + "/" + _pk, function (data) {
+                    _nSubEle.load(_url.api.nutrientSet,
+                        $.param({nutrient_code: _superCode}), function () {
+                            _nSubEle.find("div.message").text(data);
+                        });
+                });
 
             }
         });
@@ -268,6 +300,7 @@ $(document).ready(function () {
                     _addBt.show();
                     _addBt.removeClass("off").addClass("on");
                 }
+                _common.coloringATableOfRow(_currentEle, "white", "beige");
 
             } else if ( _currentEle.is("li.bt-reset") ) {
                 var _addBt = _nGetEle.find("li.bt-add");
@@ -288,10 +321,14 @@ $(document).ready(function () {
                         sub_code: _optedItemCode,
                         unit_code: _unitCode,
                         quantity: _quantity
-                    };
-                $.post(_url.api.nutrientSet, _json, function () {
-                    _nSubEle.load(_url.api.nutrientSet,
-                        $.param({nutrient_code: _nutrientCode}));
+                    },
+                    _param = $.param({nutrient_code: _nutrientCode});
+                $.post(_url.api.nutrientSet, _json, function (data) {
+                    _nSubEle.load(_url.api.nutrientSet, _param,
+                        function () {
+                            _nSubEle.find("div.message").text(data);
+                        });
+
                 });
 
             }
@@ -309,14 +346,7 @@ $(document).ready(function () {
                         .data("nutrientCode"),
                     _factorCode = _currentEle.data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
-                _currentEle.prevAll(".opted").removeClass("opted")
-                    .css("background-color", "white");
-                _currentEle.nextAll(".opted").removeClass("opted")
-                    .css("background-color", "white");
-                if (_currentEle.not(".opted")) {
-                    _currentEle.addClass( "opted" );
-                    _currentEle.css( "background-color", "beige" );
-                }
+                _common.coloringATableOfRow(_currentEle, "white", "beige");
                 _optedEle.load(_url.api.factorSet + "/" + _pk);
 
                 if ( _wrapBt.is(".off") ) {

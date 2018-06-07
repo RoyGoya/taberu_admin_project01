@@ -294,13 +294,14 @@ class NutrientSetAPI(MethodView):
                 NutrientSet.sub_pattern2 == sub_pattern2,
                 NutrientSet.sub_serial == sub_serial
             ).first()
-            nutrient = nutrient_set.nutrient
+            sub_nutrient = nutrient_set.sub_nutrient
             form = SelectUnitForm()
             form.unit.choices = get_unit_choices()
             unit = nutrient_set.unit_common
             form.unit.data = (unit.pattern1 + '-' + unit.pattern2)
             form.quantity.data = nutrient_set.quantity
-            return render_template(self.opted_tpl, nutrient=nutrient, form=form)
+            return render_template(self.opted_tpl, nutrient=sub_nutrient,
+                                   form=form)
 
     def post(self):
         # Create a set of new nutrient.
@@ -346,11 +347,48 @@ class NutrientSetAPI(MethodView):
 
     def delete(self, nutrient_set_code):
         # Delete a set of a single nutrient.
-        pass
+        [super_dt_pattern, super_pattern1, super_pattern2, super_serial,
+         sub_dt_pattern, sub_pattern1, sub_pattern2, sub_serial] \
+            = nutrient_set_code.split('-')
+        nutrient_set = NutrientSet.query.filter(
+            NutrientSet.super_dt_pattern == super_dt_pattern,
+            NutrientSet.super_pattern1 == super_pattern1,
+            NutrientSet.super_pattern2 == super_pattern2,
+            NutrientSet.super_serial == super_serial,
+            NutrientSet.sub_dt_pattern == sub_dt_pattern,
+            NutrientSet.sub_pattern1 == sub_pattern1,
+            NutrientSet.sub_pattern2 == sub_pattern2,
+            NutrientSet.sub_serial == sub_serial
+        ).first()
+        db_session.delete(nutrient_set)
+        db_session.commit()
+        message = '%r Successfully Deleted.' %nutrient_set.sub_nutrient\
+            .eng_name
+        return message
 
     def put(self, nutrient_set_code):
         # Update a set of a single nutrient.
-        pass
+        [super_dt_pattern, super_pattern1, super_pattern2, super_serial,
+         sub_dt_pattern, sub_pattern1, sub_pattern2, sub_serial,
+         unit_pattern1, unit_pattern2, quantity] = nutrient_set_code\
+            .split('-')
+        nutrient_set = NutrientSet.query.filter(
+            NutrientSet.super_dt_pattern == super_dt_pattern,
+            NutrientSet.super_pattern1 == super_pattern1,
+            NutrientSet.super_pattern2 == super_pattern2,
+            NutrientSet.super_serial == super_serial,
+            NutrientSet.sub_dt_pattern == sub_dt_pattern,
+            NutrientSet.sub_pattern1 == sub_pattern1,
+            NutrientSet.sub_pattern2 == sub_pattern2,
+            NutrientSet.sub_serial == sub_serial
+        ).first()
+        nutrient_set.unit_pattern1 = unit_pattern1
+        nutrient_set.unit_pattern2 = unit_pattern2
+        nutrient_set.quantity = quantity
+        db_session.commit()
+        message = '%r Successfully Updated.' %nutrient_set.sub_nutrient\
+            .eng_name
+        return message
 
 
 class NutrientOptionFormAPI(MethodView):
