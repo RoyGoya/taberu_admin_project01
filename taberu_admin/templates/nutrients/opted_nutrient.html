@@ -1,10 +1,9 @@
-<form>
-<div class="opted-nutrient"
-     data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
+<form
+        data-nutrient-code="{{ nutrient.dt_pattern|e }}-{{ nutrient.pattern1|e }}-{{ nutrient.pattern2|e }}-{{ nutrient.serial|e }}"
 >
-    <div>{{ factor.pattern1 }}{{ factor.pattern2 }}{{ factor.pattern3 }}{{ factor.pattern4 }}</div>
-    <div>{{ factor.eng_name }}</div>
-    <div>{{ factor.kor_name }}</div>
+    <div>{{ nutrient.dt_pattern|e }}{{ nutrient.pattern1|e }}{{ nutrient.pattern2|e }}{{ nutrient.serial|e }}</div>
+    <div>{{ nutrient.eng_name }}</div>
+    <div>{{ nutrient.kor_name }}</div>
     {% if form %}
         <div>{{ form.unit }}</div>
         <div>{{ form.quantity }}</div>
@@ -23,5 +22,4 @@
         <div><input type="text" id="quantity"></div>
     {% endif %}
     <div><input type="reset" value="Reset"/></div>
-</div>
 </form>

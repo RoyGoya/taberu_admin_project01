@@ -9,7 +9,7 @@ from ..errors import InvalidUsage
 from ..models.nutrient_models import Nutrient
 from ..models.factor_models import Factor, FactorSet
 from ..models.unit_models import UnitCommon
-from ..forms.factor_forms import UpdateFactorForm
+from ..forms.factor_forms import SelectUnitForm
 
 
 def get_unit_choices():
@@ -97,16 +97,16 @@ class FactorSetAPI(MethodView):
             # Return a set of factors.
             nutrient_code = request.values.get('nutrient_code')
             [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
-            set_of_facotrs = FactorSet.query.filter(
+            factor_set = FactorSet.query.filter(
                 FactorSet.nutrient_dt_pattern == dt_pattern,
                 FactorSet.nutrient_pattern1 == pattern1,
                 FactorSet.nutrient_pattern2 == pattern2,
                 FactorSet.nutrient_serial == serial
             ).all()
 
-            set_of_facotrs_len = len(set_of_facotrs)
+            factor_set_len = len(factor_set)
 
-            if set_of_facotrs_len <= 0:
+            if factor_set_len <= 0:
                 nutrient = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
@@ -114,9 +114,9 @@ class FactorSetAPI(MethodView):
                     Nutrient.serial == serial
                 ).first()
             else:
-                nutrient = set_of_facotrs[0].nutrient
-            return render_template(self.detail_tpl, set_of_facotrs=set_of_facotrs,
-                                   set_of_facotrs_cnt=set_of_facotrs_len,
+                nutrient = factor_set[0].nutrient
+            return render_template(self.detail_tpl, factor_set=factor_set,
+                                   factor_set_cnt=factor_set_len,
                                    nutrient=nutrient)
 
         else:
@@ -133,7 +133,7 @@ class FactorSetAPI(MethodView):
                 FactorSet.factor_pattern3 == f_pattern3,
                 FactorSet.factor_pattern4 == f_pattern4).first()
             factor = factor_set.factor
-            form = UpdateFactorForm(request.form)
+            form = SelectUnitForm()
             form.unit.choices = get_unit_choices()
             unit = factor_set.unit_common
             form.unit.data = (unit.pattern1 + '-' + unit.pattern2)

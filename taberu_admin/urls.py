@@ -1,5 +1,5 @@
 from .views import IndexView, NutrientView
-from .apis.nutrient_apis import NutrientAPI, NutrientPattern2API, \
+from .apis.nutrient_apis import NutrientAPI, NutrientPatternAPI, \
     NutrientFormAPI, NutrientSetAPI, NutrientOptionFormAPI
 from .apis.factor_apis import FactorAPI, FactorSetAPI
 
@@ -26,13 +26,14 @@ class UrlMapper:
         )
         nutrient_set_api = NutrientSetAPI.as_view(
             name='nutrient_set_api',
-            template='nutrients/box_sub_nutrient.html'
+            templates={'sub': 'nutrients/box_sub_nutrient.html',
+                       'opted': 'nutrients/opted_nutrient.html'}
         )
         nutrient_form_api = NutrientFormAPI.as_view(
             name='nutrient_form_api',
             template='nutrients/box_detail_nutrient.html'
         )
-        nutrient_pattern2_api = NutrientPattern2API.as_view(
+        nutrient_pattern2_api = NutrientPatternAPI.as_view(
             name='nutrient_pattern2_api',
             template='nutrients/inputs_nutrient.html'
         )
@@ -111,7 +112,7 @@ class UrlMapper:
             methods=['GET']
         )
         self.app.add_url_rule(
-            rule='/api/nutrient-option/',
+            rule='/api/nutrient-option',
             view_func=nutrient_option_form_api,
             methods=['GET'],
             defaults={'pattern1_code': None}

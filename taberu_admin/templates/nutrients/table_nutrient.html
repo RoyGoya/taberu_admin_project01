@@ -1,5 +1,6 @@
 <div class="cnt">{{ nutrients_cnt|e }}</div>
 <section class="tb">
+{% if nutrients %}
     <header>
         <div>Code</div>
         <div>EngName</div>
@@ -36,4 +37,45 @@
             <div>{{ nutrient.chn_name|e }}</div>
         </div>
     {% endfor %}
+{% elif nutrient_set %}
+    <header>
+        <div>Code</div>
+        <div>EngName</div>
+        <div>Quantity</div>
+        <div>IsActive</div>
+        <div>HasSub</div>
+        <div>EngPlural</div>
+        <div>KorName</div>
+        <div>JpnName</div>
+        <div>ChnName</div>
+    </header>
+    {% for set_of_nutrient in nutrient_set %}
+        <div
+                class="tr"
+                data-nutrient-code="{{ set_of_nutrient.sub_nutrient.dt_pattern|e }}-{{ set_of_nutrient.sub_nutrient.pattern1|e }}-{{ set_of_nutrient.sub_nutrient.pattern2|e }}-{{ set_of_nutrient.sub_nutrient.serial|e }}"
+                data-has-sub="{{ set_of_nutrient.sub_nutrient.has_sub }}"
+        >
+            <div>
+                {{ set_of_nutrient.sub_nutrient.dt_pattern|e}}{{ set_of_nutrient.sub_nutrient.pattern1|e }}{{ set_of_nutrient.sub_nutrient.pattern2|e }}{{ set_of_nutrient.sub_nutrient.serial|e }}
+            </div>
+            <div>{{ set_of_nutrient.sub_nutrient.eng_name|e }}</div>
+            <div>{{ set_of_nutrient.quantity }}{{ set_of_nutrient.unit_common.symbol }}</div>
+            {% if set_of_nutrient.sub_nutrient.is_active %}
+                <div style="color: dodgerblue">{{ set_of_nutrient.sub_nutrient.is_active }}</div>
+            {% else%}
+                <div style="color: lightblue">{{ set_of_nutrient.sub_nutrient.is_active }}</div>
+            {% endif %}
+            {% if set_of_nutrient.sub_nutrient.has_sub %}
+                <div style="color: dodgerblue">{{ set_of_nutrient.sub_nutrient.has_sub }}</div>
+            {% else%}
+                <div style="color: lightblue">{{ set_of_nutrient.sub_nutrient.has_sub }}</div>
+            {% endif %}
+            <div>{{ set_of_nutrient.sub_nutrient.eng_plural|e }}</div>
+            <div>{{ set_of_nutrient.sub_nutrient.kor_name|e }}</div>
+            <div>{{ set_of_nutrient.sub_nutrient.jpn_name|e }}</div>
+            <div>{{ set_of_nutrient.sub_nutrient.chn_name|e }}</div>
+        </div>
+    {% endfor %}
+{% endif %}
+
 </section>

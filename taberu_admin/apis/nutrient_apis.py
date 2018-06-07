@@ -1,12 +1,16 @@
 from flask import request, render_template, redirect, url_for
 from flask.views import MethodView
 
+from sqlalchemy import or_
+
 from ..database import db_session
 from ..errors import InvalidUsage
 from ..forms.nutrient_forms import CreateNutrientForm, NutrientOptionForm, \
     NutrientPattern2Form
+from ..forms.factor_forms import SelectUnitForm
 from ..models.nutrient_models import Nutrient, NutrientPattern, DataPattern, \
     NutrientSet
+from ..models.unit_models import UnitCommon
 
 
 def get_dt_pattern_choices():
@@ -39,6 +43,17 @@ def get_n_pattern2_choices(pattern1):
 
     for nutrient_pattern in nutrient_patterns:
         choice_tuple = (nutrient_pattern.pattern2, nutrient_pattern.eng_name)
+        choice_tuple_list += {choice_tuple}
+    return choice_tuple_list
+
+
+def get_unit_choices():
+    choice_tuple_list = []
+    units = UnitCommon.query.filter(
+        or_(UnitCommon.pattern1 == 'ma', UnitCommon.pattern1 == 'vl')
+    ).all()
+    for unit in units:
+        choice_tuple = ((unit.pattern1+'-'+unit.pattern2), unit.symbol)
         choice_tuple_list += {choice_tuple}
     return choice_tuple_list
 
@@ -90,7 +105,9 @@ class NutrientAPI(MethodView):
                 Nutrient.pattern2 == pattern2,
                 Nutrient.serial == serial
             ).first()
-            return render_template(self.opted_tpl, nutrient=nutrient)
+            form = SelectUnitForm()
+            form.unit.choices = get_unit_choices()
+            return render_template(self.opted_tpl, nutrient=nutrient, form=form)
 
     def post(self):
         # Create a new nutrient.
@@ -212,7 +229,7 @@ class NutrientFormAPI(MethodView):
                                        nutrient=nutrient)
 
 
-class NutrientPattern2API(MethodView):
+class NutrientPatternAPI(MethodView):
     def __init__(self, template):
         self.template = template
 
@@ -231,43 +248,101 @@ class NutrientPattern2API(MethodView):
 
 
 class NutrientSetAPI(MethodView):
-    def __init__(self, template):
-        self.template = template
+    def __init__(self, templates):
+        self.sub_tpl = templates['sub']
+        self.opted_tpl = templates['opted']
 
     def get(self, nutrient_set_code):
         if nutrient_set_code is None:
             # Return a set of nutrients.
             nutrient_code = request.values.get('nutrient_code')
             [dt_pattern, pattern1, pattern2, serial] = nutrient_code.split('-')
-            set_of_nutrients = NutrientSet.query.filter(
+            nutrient_set = NutrientSet.query.filter(
                 NutrientSet.super_dt_pattern == dt_pattern,
                 NutrientSet.super_pattern1 == pattern1,
                 NutrientSet.super_pattern2 == pattern2,
                 NutrientSet.super_serial == serial
             ).all()
 
-            set_of_nutrients_len = len(set_of_nutrients)
+            nutrient_set_len = len(nutrient_set)
 
-            if set_of_nutrients_len <= 0:
-                nutrient = Nutrient.query.filter(
+            if nutrient_set_len <= 0:
+                super_nutrient = Nutrient.query.filter(
                     Nutrient.dt_pattern == dt_pattern,
                     Nutrient.pattern1 == pattern1,
                     Nutrient.pattern2 == pattern2,
                     Nutrient.serial == serial
                 ).first()
             else:
-                nutrient = set_of_nutrients[0].nutrient
-            return render_template(self.template,
-                                   set_of_nutrients=set_of_nutrients,
-                                   nutrients_cnt=set_of_nutrients_len,
-                                   nutrient=nutrient)
+                super_nutrient = nutrient_set[0].super_nutrient
+            return render_template(self.sub_tpl,
+                                   nutrient_set=nutrient_set,
+                                   nutrients_cnt=nutrient_set_len,
+                                   nutrient=super_nutrient)
         else:
             # Return a set of a single nutrient.
-            pass
+            [super_dt_pattern, super_pattern1, super_pattern2, super_serial,
+             sub_dt_pattern, sub_pattern1, sub_pattern2, sub_serial] \
+                = nutrient_set_code.split('-')
+            nutrient_set = NutrientSet.query.filter(
+                NutrientSet.super_dt_pattern == super_dt_pattern,
+                NutrientSet.super_pattern1 == super_pattern1,
+                NutrientSet.super_pattern2 == super_pattern2,
+                NutrientSet.super_serial == super_serial,
+                NutrientSet.sub_dt_pattern == sub_dt_pattern,
+                NutrientSet.sub_pattern1 == sub_pattern1,
+                NutrientSet.sub_pattern2 == sub_pattern2,
+                NutrientSet.sub_serial == sub_serial
+            ).first()
+            nutrient = nutrient_set.nutrient
+            form = SelectUnitForm()
+            form.unit.choices = get_unit_choices()
+            unit = nutrient_set.unit_common
+            form.unit.data = (unit.pattern1 + '-' + unit.pattern2)
+            form.quantity.data = nutrient_set.quantity
+            return render_template(self.opted_tpl, nutrient=nutrient, form=form)
 
     def post(self):
         # Create a set of new nutrient.
-        pass
+        super_code = request.values.get('super_code')
+        sub_code = request.values.get('sub_code')
+        unit_code = request.values.get('unit_code')
+        quantity = request.values.get('quantity')
+        [super_dt_pattern, super_pattern1, super_pattern2, super_serial] = \
+            super_code.split('-')
+        [sub_dt_pattern, sub_pattern1, sub_pattern2, sub_serial] = \
+            sub_code.split('-')
+        [unit_pattern1, unit_pattern2] = unit_code.split('-')
+        nutrient_set = NutrientSet.query.filter(
+            NutrientSet.super_dt_pattern == super_dt_pattern,
+            NutrientSet.super_pattern1 == super_pattern1,
+            NutrientSet.super_pattern2 == super_pattern2,
+            NutrientSet.super_serial == super_serial,
+            NutrientSet.sub_dt_pattern == sub_dt_pattern,
+            NutrientSet.sub_pattern1 == sub_pattern1,
+            NutrientSet.sub_pattern2 == sub_pattern2,
+            NutrientSet.sub_serial == sub_serial
+        ).first()
+        if nutrient_set is None:
+            nutrient_set = NutrientSet(super_dt_pattern=super_dt_pattern,
+                                       super_pattern1=super_pattern1,
+                                       super_pattern2=super_pattern2,
+                                       super_serial=super_serial,
+                                       sub_dt_pattern=sub_dt_pattern,
+                                       sub_pattern1=sub_pattern1,
+                                       sub_pattern2=sub_pattern2,
+                                       sub_serial=sub_serial,
+                                       is_active=True,
+                                       unit_pattern1=unit_pattern1,
+                                       unit_pattern2=unit_pattern2,
+                                       quantity=quantity)
+            db_session.add(nutrient_set)
+            db_session.commit()
+            message = '%r Successfully Added.' % sub_code
+            return message
+        else:
+            message = '%r is Already taken.' % sub_code
+            return message
 
     def delete(self, nutrient_set_code):
         # Delete a set of a single nutrient.

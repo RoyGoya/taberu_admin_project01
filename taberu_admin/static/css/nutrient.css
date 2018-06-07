@@ -18,12 +18,12 @@ div.ndetail-ul > ul {
 }
 
 /* Content > Factor List */
-div.opted-factor {
+div.opted-item {
     margin : auto;
     text-align: center;
     font-size: 13px;
 }
-div.opted-factor > form > div {
+div.opted-item > form > div {
     display : inline;
     margin-right: 10px;
     color: magenta;
@@ -36,13 +36,13 @@ div.message {
 
 
 /*Box Option Nutrient*/
-div#nget-option {
+div.option {
     margin : auto;
     text-align: center;
     font-size: 13px;
 }
 
-div#nget-option > div {
+div.option > div {
     display : inline;
     margin-right: 10px;
 }

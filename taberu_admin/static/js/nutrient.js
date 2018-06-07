@@ -1,6 +1,9 @@
 $(document).ready(function () {
 
     // Import Modules
+    // Encapsulated Functions
+    // Abstracted Urls
+    // Partitioned Element Delegations.
     var _nutrient = $.taberu.nutrient,
         _url = $.taberu.url,
         _nListEle = $( "div#box-nlist" ),
@@ -10,8 +13,9 @@ $(document).ready(function () {
         _fDetailEle = $( "div#box-fdetail" ),
         _fListEle = $( "div#box-flist" );
 
-    // Jquery Custom Events
-    // https://learn.jquery.com/events/introduction-to-custom-events/
+    // Using Event Delegation
+    // For prevent event propagation
+    // And anchoring asynchronous loaded documents.
     _nListEle.on("click", "div.tr",
         function ( e ) {
             var _currentEle = $( this );
@@ -51,7 +55,7 @@ $(document).ready(function () {
                     _fDetailEle.removeClass("off").addClass("on");
                 }
                 if ( _fListEle.is(".on") ) {
-                    _fListEle.removeClass("on").addClass("off")
+                    _fListEle.removeClass("on").addClass("off");
                     _fListEle.hide();
                 }
             }
@@ -107,7 +111,7 @@ $(document).ready(function () {
                     .submit();
 
             } else if ( _currentEle.is( "li.bt-update" ) ) {
-                var _nutrientCode = _nDetailEle.find("div.opted-item").data(
+                var _nutrientCode = _nDetailEle.find("div.delegate-item").data(
                         "nutrientCode"),
                     _json = {
                         has_sub: $("ul#has_sub").find("input:checked")
@@ -131,7 +135,7 @@ $(document).ready(function () {
                     _nListSectionEle.load(_url.api.nutrients);
 
                 } else if ( _currentEle.is( ".selected" ) ) {
-                    var _nutrientCode = _nDetailEle.find("div.opted-item").data(
+                    var _nutrientCode = _nDetailEle.find("div.delegate-item").data(
                         "nutrientCode");
                     _nDetailEle.load(_url.api.nutrientForm + "/" + _nutrientCode,
                         function () {
@@ -165,7 +169,7 @@ $(document).ready(function () {
                 }
 
             } else if ( _currentEle.is( "li.bt-delete" ) ) {
-                var _nutrientCode = _nDetailEle.find("div.opted-item").data(
+                var _nutrientCode = _nDetailEle.find("div.delegate-item").data(
                         "nutrientCode");
                 $.delete(_url.api.nutrients + "/" + _nutrientCode, function () {
                     location.reload();
@@ -174,33 +178,51 @@ $(document).ready(function () {
             }
         });
 
-    _nSubEle.on("click", "li.bt-get",
+    _nSubEle.on("click", "div.tr, li.bt-get, li.bt-delete, li.bt-update",
         function ( e ) {
             var _currentEle = $( this ),
-                _nGetSectionEle = $( "div#nget-section" ),
-                _nGetOptionEle = $("div#nget-option");
+                _nGetSectionEle = _nGetEle.find( "div.tb-section" ),
+                _nGetOptionEle = _nGetEle.find( "div.option" );
 
-            if ( _currentEle.is( "li.bt-get" ) ) {
+            if ( _currentEle.is( "div.tr" ) ) {
+                var _deleteBt = _nSubEle.find("li.bt-delete"),
+                    _updateBt = _nSubEle.find("li.bt-update");
+                if ( _deleteBt.is(".off") ) {
+                    _deleteBt.show();
+                    _deleteBt.removeClass("off").addClass("on");
+                }
+                if ( _updateBt.is(".off") ) {
+                    _updateBt.show();
+                    _updateBt.removeClass("off").addClass("on");
+                }
+
+            } else if ( _currentEle.is( "li.bt-get" ) ) {
                 _nGetSectionEle.load(_url.api.nutrients);
                 _nGetOptionEle.load(_url.api.nutrientOption);
                 if ( _nGetEle.is(".off")) {
                     _nGetEle.show();
                     _nGetEle.removeClass("off").addClass("on");
                 }
+
+            } else if ( _currentEle.is( "li.bt-delete" ) ) {
+
+            } else if ( _currentEle.is( "li.bt-update" ) ) {
+
             }
         });
     
-    _nGetEle.on("click, change", "select#dt_pattern, select#pattern1, " +
-        "select#pattern2, div.tr",
+    _nGetEle.on("change", "select#dt_pattern, select#pattern1, select#pattern2",
         function ( e ) {
             var _currentEle = $( this ),
-                _nGetSectionEle = $( "div#nget-section" );
+                _nGetSectionEle = _nGetEle.find( "div.tb-section" );
             
-            if ( _currentEle.is("select#dt_pattern") ) {
+            if ( _currentEle.is( "select#dt_pattern" ) ) {
                 var _param = $.param({dt_pattern: _currentEle.val()});
                 _nGetSectionEle.load(_url.api.nutrients, _param);
+                $( "select#pattern1 > option:selected" ).prop("selected", false);
+                $( "select#pattern2 > option:selected" ).prop("selected", false);
 
-            } else if ( _currentEle.is("select#pattern1" ) ) {
+            } else if ( _currentEle.is( "select#pattern1" ) ) {
                 if (_currentEle.val() === 'empty') {
                     return false
                 }
@@ -216,7 +238,7 @@ $(document).ready(function () {
                     });
                 _nGetSectionEle.load(_url.api.nutrients, _param);
 
-            } else if ( _currentEle.is("select#pattern2" ) ) {
+            } else if ( _currentEle.is( "select#pattern2" ) ) {
                 if (_currentEle.val() === 'empty') {
                     return false
                 }
@@ -230,9 +252,50 @@ $(document).ready(function () {
                     });
                 _nGetSectionEle.load(_url.api.nutrients, _param);
 
-            } else if ( _currentEle.is("div.tr") ) {
-                // TODO: Write click tr events.
             }
+        });
+    
+    _nGetEle.on("click", "div.tr, li.bt-reset, li.bt-add",
+        function ( e ) {
+            var _currentEle = $( this );
+
+            if ( _currentEle.is( "div.tr" ) ) {
+                var _nutrientCode = _currentEle.data("nutrientCode"),
+                    _optedSectionEle = _nGetEle.find("div.opted-item"),
+                    _addBt = _nGetEle.find("li.bt-add");
+                _optedSectionEle.load(_url.api.nutrients + "/" + _nutrientCode);
+                if ( _addBt.is(".off") ) {
+                    _addBt.show();
+                    _addBt.removeClass("off").addClass("on");
+                }
+
+            } else if ( _currentEle.is("li.bt-reset") ) {
+                var _addBt = _nGetEle.find("li.bt-add");
+                _nSubEle.find("li.bt-get").trigger("click");
+                _nGetEle.find("div.opted-item").empty();
+                if ( _addBt.is(".on") ) {
+                    _addBt.hide();
+                    _addBt.removeClass("on").addClass("off");
+                }
+
+            } else if ( _currentEle.is("li.bt-add") ) {
+                var _nutrientCode = _nSubEle.find("div.delegate-item").data("nutrientCode"),
+                    _optedItemCode = _nGetEle.find("form").data("nutrientCode"),
+                    _unitCode = _nGetEle.find("select#unit > option:selected").val(),
+                    _quantity = _nGetEle.find("input#quantity").val(),
+                    _json = {
+                        super_code: _nutrientCode,
+                        sub_code: _optedItemCode,
+                        unit_code: _unitCode,
+                        quantity: _quantity
+                    };
+                $.post(_url.api.nutrientSet, _json, function () {
+                    _nSubEle.load(_url.api.nutrientSet,
+                        $.param({nutrient_code: _nutrientCode}));
+                });
+
+            }
+
         });
 
     _fDetailEle.on("click", "div.tr, li.bt-get, li.bt-delete, li.bt-update",
@@ -240,9 +303,9 @@ $(document).ready(function () {
             var _currentEle = $( this );
 
             if ( _currentEle.is( "div.tr" ) ) {
-                var _optedEle = _fDetailEle.find( "div.opted-factor" ),
+                var _optedEle = _fDetailEle.find( "div.opted-item" ),
                     _wrapBt = _fDetailEle.find("div.wrap-bt"),
-                    _nutrientCode = _fDetailEle.find("div.opted-item")
+                    _nutrientCode = _fDetailEle.find("div.delegate-item")
                         .data("nutrientCode"),
                     _factorCode = _currentEle.data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
@@ -270,9 +333,9 @@ $(document).ready(function () {
                 }
 
             } else if ( _currentEle.is( "li.bt-delete" ) ) {
-                var _nutrientCode = _fDetailEle.find("div.opted-item")
+                var _nutrientCode = _fDetailEle.find("div.delegate-item")
                         .data("nutrientCode"),
-                    _factorCode = _fDetailEle.find( "div.opted-factor" )
+                    _factorCode = _fDetailEle.find( "div.opted-item" )
                         .data("factorCode"),
                     _pk = _nutrientCode + "-" + _factorCode;
                 $.delete(_url.api.factorSet + "/" + _pk, function ( data ) {
@@ -280,9 +343,9 @@ $(document).ready(function () {
                 });
 
             } else if ( _currentEle.is( "li.bt-update" ) ) {
-                var _nutrientCode = _fDetailEle.find("div.opted-item")
+                var _nutrientCode = _fDetailEle.find("div.delegate-item")
                         .data("nutrientCode"),
-                    _factorCode = _fDetailEle.find( "div.opted-factor" ).data(
+                    _factorCode = _fDetailEle.find( "div.opted-item" ).data(
                         "factorCode"),
                     _selectedUnit = _fDetailEle.find(
                         "select.unit > option:checked" ).val(),
@@ -306,7 +369,7 @@ $(document).ready(function () {
                 _nutrient.toggleTableOfRows(_url.api.factors, _json,
                     _currentEle);
                 if ( _currentEle.is(".sub") ) {
-                    var _optedEle = _fListEle.find( "div.opted-factor" ),
+                    var _optedEle = _fListEle.find( "div.opted-item" ),
                         _addEle = _fListEle.find("li.bt-add");
                     _optedEle.load(_url.api.factors + "/" + _pk);
                     if (_addEle.is(".off")) {
@@ -318,9 +381,9 @@ $(document).ready(function () {
                 _fDetailEle.find("li.bt-get").trigger("click");
 
             } else if ( _currentEle.is( "li.bt-add" ) ) {
-                var _optedFactorCode = _fListEle.find( "div.opted-factor" )
+                var _optedFactorCode = _fListEle.find( "div.opted-item" )
                         .data("factorCode"),
-                    _nutrientCode = _fDetailEle.find("div.opted-item")
+                    _nutrientCode = _fDetailEle.find("div.delegate-item")
                         .data("nutrientCode"),
                     _selectedUnitCode = _fListEle
                         .find("select.unit > option:checked" )

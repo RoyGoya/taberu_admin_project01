@@ -70,6 +70,8 @@ class NutrientSet(Base):
     unit_pattern2 = Column(CHAR(2), nullable=False)
     quantity = Column(Float, nullable=False)
 
-    nutrient = relationship('Nutrient', primaryjoin='NutrientSet.sub_dt_pattern == Nutrient.dt_pattern')
-    nutrient1 = relationship('Nutrient', primaryjoin='NutrientSet.super_dt_pattern == Nutrient.dt_pattern')
+    super_nutrient = relationship('Nutrient',
+                                  primaryjoin='and_(NutrientSet.super_dt_pattern == Nutrient.dt_pattern, NutrientSet.super_pattern1 == Nutrient.pattern1, NutrientSet.super_pattern2 == Nutrient.pattern2)')
+    sub_nutrient = relationship('Nutrient',
+                                primaryjoin='and_(NutrientSet.sub_dt_pattern == Nutrient.dt_pattern, NutrientSet.sub_pattern1 == Nutrient.pattern1, NutrientSet.sub_pattern2 == Nutrient.pattern2)')
     unit_common = relationship('UnitCommon')
