@@ -22,7 +22,8 @@ class UrlMapper:
             templates={'list': 'nutrients/box_list_nutrient.html',
                        'get': 'nutrients/box_get_nutrient.html',
                        'table': 'nutrients/table_nutrient.html',
-                       'opted': 'nutrients/opted_nutrient.html'}
+                       'opted': 'nutrients/opted_nutrient.html',
+                       'detail': 'nutrients/box_detail_nutrient.html'}
         )
         nutrient_set_api = NutrientSetAPI.as_view(
             name='nutrient_set_api',

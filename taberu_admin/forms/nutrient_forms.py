@@ -27,26 +27,26 @@ class CreateNutrientForm(Form):
         validators.Length(min=2, max=2)
     ])
     has_sub = RadioField(label="Has Sub?", choices=[
-        (True, 'True'), (False, 'False')
+        ('True', 'True'), ('False', 'False')
     ], validators=[validators.DataRequired()])
     is_active = RadioField(label="Is Active?", choices=[
-        (True, 'True'), (False, 'False')
+        ('True', 'True'), ('False', 'False')
     ], validators=[validators.DataRequired()])
     eng_name = StringField(label="English Name", validators=[
         validators.DataRequired("Please Enter A English Name."),
         validators.Length(min=2, max=100)
     ])
     eng_plural = StringField(label="English plural", validators=[
-        validators.Length(min=2, max=100)
+        validators.Length(min=0, max=100)
     ])
     kor_name = StringField(label="Korean Name", validators=[
-        validators.Length(min=2, max=100)
+        validators.Length(min=0, max=100)
     ])
     jpn_name = StringField(label="Japanese Name", validators=[
-        validators.Length(min=2, max=100)
+        validators.Length(min=0, max=100)
     ])
     chn_name = StringField(label="Chinese Name", validators=[
-        validators.Length(min=2, max=100)
+        validators.Length(min=0, max=100)
     ])
 
 

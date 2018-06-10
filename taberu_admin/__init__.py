@@ -15,7 +15,7 @@ app.config.from_pyfile('settings.cfg')
 # app.config.from_envvar('TABERU_ADMIN_SETTINGS')
 
 # Set-up Raven Sentry
-sentry = Sentry(app, dsn='https://42db0d82433d4346b828266f9f1961d8:263209988e554541b91c79fefbfb0904@sentry.io/1214614')
+# sentry = Sentry(app, dsn='https://42db0d82433d4346b828266f9f1961d8:263209988e554541b91c79fefbfb0904@sentry.io/1214614')
 
 
 # SQLAlchemy

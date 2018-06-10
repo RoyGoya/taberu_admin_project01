@@ -65,6 +65,7 @@ class NutrientAPI(MethodView):
         self.get_tpl = templates['get']
         self.opted_tpl = templates['opted']
         self.table_tpl = templates['table']
+        self.detail_tpl = templates['detail']
 
     def get(self, nutrient_code) -> object:
         # Return a list of nutrients.
@@ -112,36 +113,43 @@ class NutrientAPI(MethodView):
     def post(self):
         # Create a new nutrient.
         form = CreateNutrientForm(request.form)
-        nutrient_cnt = Nutrient.query.filter(
-            Nutrient.dt_pattern == form.dt_pattern.data,
-            Nutrient.pattern1 == form.pattern1.data,
-            Nutrient.pattern2 == form.pattern2.data
-        ).count()
+        form.dt_pattern.choices = get_dt_pattern_choices()
+        form.pattern1.choices = get_n_pattern1_choices()
+        form.pattern2.choices = get_n_pattern2_choices(form.pattern1.data)
+        if form.validate():
+            nutrient_cnt = Nutrient.query.filter(
+                Nutrient.dt_pattern == form.dt_pattern.data,
+                Nutrient.pattern1 == form.pattern1.data,
+                Nutrient.pattern2 == form.pattern2.data
+            ).count()
 
-        if form.has_sub.data == 'True':
-            has_sub = True
-        else:
-            has_sub = False
-        if form.is_active.data == 'True':
-            is_active = True
-        else:
-            is_active = False
+            if form.has_sub.data == 'True':
+                has_sub = True
+            else:
+                has_sub = False
+            if form.is_active.data == 'True':
+                is_active = True
+            else:
+                is_active = False
 
-        nutrient = Nutrient(
-            dt_pattern=form.dt_pattern.data,
-            pattern1=form.pattern1.data,
-            pattern2=form.pattern2.data,
-            serial=(nutrient_cnt+1),
-            has_sub=has_sub,
-            is_active=is_active,
-            eng_name=form.eng_name.data,
-            eng_plural=form.eng_plural.data,
-            kor_name=form.kor_name.data,
-            jpn_name=form.jpn_name.data,
-            chn_name=form.chn_name.data)
-        db_session.add(nutrient)
-        db_session.commit()
-        return redirect(url_for('nutrient_page'))
+            nutrient = Nutrient(
+                dt_pattern=form.dt_pattern.data,
+                pattern1=form.pattern1.data,
+                pattern2=form.pattern2.data,
+                serial=(nutrient_cnt+1),
+                has_sub=has_sub,
+                is_active=is_active,
+                eng_name=form.eng_name.data,
+                eng_plural=form.eng_plural.data,
+                kor_name=form.kor_name.data,
+                jpn_name=form.jpn_name.data,
+                chn_name=form.chn_name.data)
+            db_session.add(nutrient)
+            db_session.commit()
+            message = 'success'
+            return message
+        else:
+            return render_template(self.detail_tpl, form=form)
 
     def delete(self, nutrient_code):
         # Delete a single nutrient.

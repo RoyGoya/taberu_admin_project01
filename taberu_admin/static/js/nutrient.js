@@ -107,9 +107,15 @@ $(document).ready(function () {
                 _nListSectionEle.load(_url.api.nutrients, _param)
 
             } else if ( _currentEle.is( "li.bt-create" ) ) {
-                var _form = $( "form#ndetail-form" );
-                _form.attr("action", _url.api.nutrients).attr("method", "post")
-                    .submit();
+                var _form = _nDetailEle.find("form").serialize();
+                $.post(_url.api.nutrients, _form, function (data) {
+                    if (data == 'success') {
+                        location.reload();
+                    } else {
+                        _nDetailEle.empty();
+                        _nDetailEle.append(data);
+                    }
+                });
 
             } else if ( _currentEle.is( "li.bt-update" ) ) {
                 var _nutrientCode = _nDetailEle.find("div.delegate-item").data(

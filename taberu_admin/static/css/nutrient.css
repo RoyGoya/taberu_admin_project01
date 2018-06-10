@@ -1,48 +1,16 @@
-/* Content */
-section#wrap-nt {
-    margin-right: 10px;
-}
-
-/* Content > Nutrient Detail */
-div#ndetail-tr {
+/* Nutrient Detail Form */
+div.form-tr {
     display: table-row;
 }
-div#ndetail-tr > div {
+div.form-tr > div {
     display: table-cell;
     text-align: center;
     padding-right: 20px;
 }
-div.ndetail-ul > ul {
+div.form-ul > ul {
     list-style: none;
     text-align: left;
 }
-
-/* Content > Factor List */
-div.opted-item {
-    margin : auto;
-    text-align: center;
-    font-size: 13px;
-}
-div.opted-item > form > div {
-    display : inline;
-    margin-right: 10px;
-    color: magenta;
-}
-div.message {
-    text-align: center;
-    color: #e4e4f8;
-    font-size: 13px;
-}
-
-
-/*Box Option Nutrient*/
-div.option {
-    margin : auto;
-    text-align: center;
-    font-size: 13px;
-}
-
-div.option > div {
-    display : inline;
-    margin-right: 10px;
+ul.errors > li {
+    color: orangered;
 }

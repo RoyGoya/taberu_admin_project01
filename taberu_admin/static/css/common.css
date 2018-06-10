@@ -1,8 +1,5 @@
-/* Body > Navigation Bar */
-div#navbar {
-    font-family: 'Nanum Gothic', sans-serif;
-}
-div > ul#navbar-list {
+/* Navigation Bar */
+ul#navbar {
     list-style-type: none;
     margin-left: 5px;
     margin-right: 10px;
@@ -11,24 +8,30 @@ div > ul#navbar-list {
     padding: 0;
     overflow: hidden;
     background-color: #336699;
+    font-family: 'Nanum Gothic', sans-serif;
 }
-div > ul#navbar-list > li {
+ul#navbar > li {
     float: left;
 }
-div > ul#navbar-list > li > a {
+ul#navbar > li > a {
     display: block;
     color: white;
     text-align: center;
     padding: 16px;
     text-decoration: none;
 }
-div > ul#navbar-list > li > a:hover {
-    background-color: #2a557f;
+ul#navbar > li > a:hover {
+    background-color: white;
+    color: #2a557f;
 }
+
+/* Content */
 div#content {
     margin-bottom: 20px;
     font-family: 'Nanum Gothic', sans-serif;
 }
+
+/* Footer */
 div#footer {
     background-color: ghostwhite;
     min-height: 80px;
@@ -43,6 +46,9 @@ p#txt-footer {
 }
 
 /* Box */
+section.wrap-box {
+    margin-right: 10px;
+}
 .box {
     display: block;
     overflow: scroll;
@@ -57,7 +63,7 @@ p#txt-footer {
     border-color: darkgrey;
 }
 
-/* Box > Title */
+/* Title */
 .title {
     text-align: center;
     font-size: 18px;
@@ -68,7 +74,7 @@ p#txt-footer {
     text-align: center;
 }
 
-/* Table Style Sections */
+/* Table Style */
 .tb {
     display: table;
     margin: auto;
@@ -118,4 +124,35 @@ ul.wrap-bt > li {
 .cnt {
     text-align: right;
     color: orangered;
+}
+
+/* Opted Item */
+div.opted-item {
+    margin : auto;
+    text-align: center;
+    font-size: 13px;
+}
+div.opted-item > form > div {
+    display : inline;
+    margin-right: 10px;
+    color: magenta;
+}
+
+/* Message */
+div.message {
+    text-align: center;
+    color: #e4e4f8;
+    font-size: 13px;
+}
+
+/* Option */
+div.option {
+    margin : auto;
+    text-align: center;
+    font-size: 13px;
+}
+
+div.option > div {
+    display : inline;
+    margin-right: 10px;
 }
