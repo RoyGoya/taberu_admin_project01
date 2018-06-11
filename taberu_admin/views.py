@@ -29,3 +29,11 @@ class NutrientView(View):
         return render_template(self.template, form=form,
                                nutrients=nutrients,
                                nutrients_cnt=nutrient_len)
+
+
+class MedicationView(View):
+    def __init__(self, template):
+        self.template = template
+
+    def dispatch_request(self):
+        return render_template(self.template)

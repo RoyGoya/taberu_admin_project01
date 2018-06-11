@@ -1,7 +1,8 @@
-from .views import IndexView, NutrientView
+from .views import IndexView, NutrientView, MedicationView
 from .apis.nutrient_apis import NutrientAPI, NutrientPatternAPI, \
     NutrientFormAPI, NutrientSetAPI, NutrientOptionFormAPI
 from .apis.factor_apis import FactorAPI, FactorSetAPI
+from .apis.medication_apis import MedicationOpenAPI
 
 
 class UrlMapper:
@@ -16,6 +17,10 @@ class UrlMapper:
         nutrient_view = NutrientView.as_view(
             name='nutrient_page',
             template='base_nutrient.html'
+        )
+        medication_view = MedicationView.as_view(
+            name='medication_page',
+            template='base_medication.html'
         )
         nutrient_api = NutrientAPI.as_view(
             name='nutrient_api',
@@ -54,6 +59,10 @@ class UrlMapper:
             templates={'detail': 'factors/box_detail_factor.html',
                        'opted': 'factors/opted_factor.html'}
         )
+        medication_open_api = MedicationOpenAPI.as_view(
+            name='medication_open_api',
+            template='medications/box_result_medication.html'
+        )
         self.app.add_url_rule(
             rule='/',
             methods=['GET', 'POST'],
@@ -63,6 +72,11 @@ class UrlMapper:
             rule='/nutrients',
             methods=['GET', 'POST'],
             view_func=nutrient_view
+        )
+        self.app.add_url_rule(
+            rule='/medications',
+            methods=['GET', 'POST'],
+            view_func=medication_view
         )
         self.app.add_url_rule(
             rule='/api/nutrients',
@@ -148,5 +162,10 @@ class UrlMapper:
         self.app.add_url_rule(
             rule='/api/factors/<string:factor_code>',
             view_func=factor_api,
+            methods=['GET']
+        )
+        self.app.add_url_rule(
+            rule='/api/medication-open',
+            view_func=medication_open_api,
             methods=['GET']
         )

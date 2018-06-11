@@ -1,0 +1,16 @@
+{% extends "base_layout.html" %}
+{% block title %}Nutrients{% endblock %}
+{% block head %}
+  {{ super() }}
+    <link rel="stylesheet" href=
+            "{{ url_for('static', filename='css/medication.css') }}">
+    <script src="{{ url_for('static', filename='js/medication.js') }}"></script>
+{% endblock %}
+{% block content %}
+    <section class="wrap-box">
+        <div class="box" id="box-mtest">
+            {% include 'medications/box_test_medication.html' %}
+        </div>
+        <div class="box off" id="box-mresult" style="display: none;"></div>
+    </section>
+{% endblock %}

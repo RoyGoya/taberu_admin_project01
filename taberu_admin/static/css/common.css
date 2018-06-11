@@ -156,3 +156,20 @@ div.option > div {
     display : inline;
     margin-right: 10px;
 }
+
+/* Form */
+div.form-tr {
+    display: table-row;
+}
+div.form-tr > div {
+    display: table-cell;
+    text-align: center;
+    padding-right: 20px;
+}
+div.form-ul > ul {
+    list-style: none;
+    text-align: left;
+}
+ul.errors > li {
+    color: orangered;
+}

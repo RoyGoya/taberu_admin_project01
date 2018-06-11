@@ -7,7 +7,7 @@
   </style>
 {% endblock %}
 {% block content %}
-{% from "formhelpers.html" import render_field %}
+{% from "helper_form.html" import render_field %}
 <form method=post>
     <h2>Profile</h2>
     {% if current_user.is_authenticated %}

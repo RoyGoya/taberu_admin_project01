@@ -31,6 +31,7 @@ $( document ).ready(function () {
                 nutrientOption: "api/nutrient-option",
                 factors: "/api/factors",
                 factorSet: "/api/factor-set",
+                medicationOpen: "/api/medication-open",
                 tags: "/api/tags"
             },
             view: {

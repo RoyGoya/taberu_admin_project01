@@ -5,8 +5,8 @@ $(document).ready(function () {
     // Abstracted Urls and
     // Partitioned Delegate Elements.
     var _common = $.taberu.common,
-        _nutrient = $.taberu.nutrient,
         _url = $.taberu.url,
+        _nutrient = $.taberu.nutrient,
         _nListEle = $( "div#box-nlist" ),
         _nDetailEle = $( "div#box-ndetail" ),
         _nSubEle = $( "div#box-nsub"),

@@ -1,0 +1,16 @@
+<div>
+    {% for item in items %}
+        <div>
+            <div>{{ item.INGR_ENG_NAME }}</div>
+            <div>{{ item.INGR_KOR_NAME }}</div>
+            <div>{{ item.ITEM_NAME_ENG }}</div>
+            <div>{{ item.ITEM_NAME_KOR }}</div>
+            <div>{{ item.SELLING_CORP }}</div>
+            <div>{{ item.DOSAGE_FORM }}</div>
+            <div>{{ item.STRENGTH }}</div>
+            <div>{{ item.GROUPING_NO }}</div>
+            <div>{{ item.PMS_EXP_DATE }}</div>
+            <div>{{ item.KOR_SUIT_YN }}</div>
+        </div><br/>
+    {% endfor %}
+</div>
